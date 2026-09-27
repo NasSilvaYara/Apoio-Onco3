@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Encontre apoio perto de você</title>
+
+    <!-- CDN Font Awesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+
+        /* Navbar */
+        header { background-color: #b38add; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .logo-container { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #3d1a58; font-size: 1.2rem; }
+        .logo-img { width: 32px; height: 32px; object-fit: contain; }
+        
+        nav { display: flex; gap: 25px; align-items: center; }
+        nav a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+        nav a:hover { text-decoration: underline; }
+        .user-icon { width: 35px; height: 35px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #b38add; }
+
+        /* Hero Section */
+        .hero { background-color: #b38add; padding: 40px 50px 60px 50px; text-align: center; color: white; }
+        .hero-title { font-size: 2rem; margin-bottom: 25px; font-weight: 600; }
+
+        /* Search Bar Box */
+        .search-box { background: #4a2d66; padding: 12px; border-radius: 40px; display: inline-flex; gap: 10px; max-width: 700px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 40px; }
+        .search-input-group { background: #e2e8f0; border-radius: 20px; display: flex; align-items: center; padding: 8px 15px; flex: 1; }
+        .search-input-group i { color: #666; font-size: 0.9rem; margin-right: 8px; }
+        .search-input-group input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.9rem; color: #333; }
+        .btn-search { background-color: #e63956; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-search:hover { background-color: #d02e48; }
+
+        /* Content Grid */
+        .hero-content { 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: center; 
+            gap: 40px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            text-align: left; 
+        }
+        
+        .text-side { 
+            flex: 1; 
+            padding-bottom: 30px; /* Eleva levemente o texto enquanto a imagem vai até o fundo */
+        }
+        .text-side p { font-size: 1.2rem; line-height: 1.5; margin-bottom: 25px; font-weight: 500; color: #2d1442; }
+        .btn-saibamais { background-color: #4a2d66; color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block; }
+        
+        .image-side { 
+            flex: 1; 
+            text-align: center; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .hero-illustration { 
+            max-width: 360px; /* Aumenta um pouco o tamanho da ilustração */
+            width: 100%; 
+            height: auto; 
+            margin-bottom: -60px; /* Faz a imagem "descer" e encostar na borda inferior do hero */
+            display: block;
+        }
+
+        .hero-illustration { max-width: 280px; width: 100%; height: auto; }
+
+        /* Seção de Resultados */
+        .results-section { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .results-title { font-size: 1.3rem; color: #3d1a58; margin-bottom: 20px; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card-inst { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .card-inst h3 { color: #5b357d; font-size: 1.1rem; margin-bottom: 8px; }
+        .card-inst p { color: #666; font-size: 0.9rem; margin-bottom: 5px; }
+        .card-inst i { color: #b38add; width: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="logo-container">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-img">
+            <span>ApoioOnco</span>
+        </div>
+        <nav>
+            <a href="{% url 'home' %}">Início</a>
+            <a href="#">Sobre</a>
+            <a href="#">Instituições</a>
+            <a href="#">Informações</a>
+            <div class="user-icon" title="Perfil">
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Hero Banner -->
+    <section class="hero">
+        <h1 class="hero-title">Encontre apoio perto de você</h1>
+
+        <!-- Search Bar Funcional -->
+        <form action="{% url 'home' %}" method="GET" class="search-box">
+            <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" name="busca" value="{{ busca }}" placeholder="O que você procura?">
+            </div>
+            <div class="search-input-group">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" name="cidade" value="{{ cidade }}" placeholder="Sua cidade">
+            </div>
+            <button type="submit" class="btn-search">Buscar</button>
+        </form>
+
+        <!-- Text & Illustration -->
+        <div class="hero-content">
+            <div class="text-side">
+                <p>Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer.</p>
+                <a href="#" class="btn-saibamais">Saiba mais</a>
+            </div>
+            <div class="image-side">
+                <img src="{% static 'img/ilustracao.png' %}" alt="Apoio Onco Ilustração" class="hero-illustration">
+            </div>
+        </div>
+    </section>
+
+    <!-- Área de Exibição dos Resultados da Busca -->
+    {% if busca or cidade %}
+    <section class="results-section">
+        <h2 class="results-title">Resultados da busca:</h2>
+        <div class="results-grid">
+            {% for inst in instituicoes %}
+                <div class="card-inst">
+                    <h3>{{ inst.nomeInst }}</h3>
+                    <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
+                    {% if inst.telefone %}
+                        <p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>
+                    {% endif %}
+                    {% if inst.email %}
+                        <p><i class="fa-solid fa-envelope"></i> {{ inst.email }}</p>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>Nenhuma instituição encontrada com os critérios informados.</p>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</body>
+</html>

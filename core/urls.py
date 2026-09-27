@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from ongs.views import home_view, dashboard_view
 
 urlpatterns = [
+    path('', home_view, name='home'),                     # <--- Página inicial (http://127.0.0.1:8000/)
     path('admin/', admin.site.urls),
+    path('dashboard/', dashboard_view, name='dashboard'), # <--- Painel Admin
 ]
