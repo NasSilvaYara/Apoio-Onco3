@@ -40,3 +40,6 @@ def dashboard_view(request):
         'aguardando_aprovacao': aguardando_aprovacao,
     }
     return render(request, 'dashboard.html', context)
+
+def login_view(request):
+    return render(request, 'login.html')
