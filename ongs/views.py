@@ -43,3 +43,6 @@ def dashboard_view(request):
 
 def login_view(request):
     return render(request, 'login.html')
+
+def cadastro_view(request):
+    return render(request, 'cadastro.html')
