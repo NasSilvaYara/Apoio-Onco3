@@ -1,6 +1,6 @@
 # Plataforma de Apoio a Mulheres com Câncer
 
-Plataforma web que centraliza instituições, ONGs e hospitais de apoio a mulheres com câncer de mama, permitindo buscar serviços por localização e tipo de apoio — como bancos de perucas, bancos de lenços, apoio psicológico e assistência social. O sistema não possui estoque próprio nem presta os serviços diretamente; as informações de disponibilidade são de responsabilidade das instituições cadastradas.
+Plataforma web que centraliza instituições, ONGs e hospitais de apoio a mulheres com câncer de mama, permitindo buscar serviços por localização e tipo de apoio — como bancos de perucas, bancos de lenços e apoio psicológico. O sistema não possui estoque próprio nem presta os serviços diretamente; as informações de disponibilidade são de responsabilidade das instituições cadastradas.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
