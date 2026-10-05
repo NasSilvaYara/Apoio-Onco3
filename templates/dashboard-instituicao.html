@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Área da Instituição</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard-instituicao' %}" class="menu-item active" aria-current="page" target="_blank">Início</a>
+            <a href="{% url 'dashboard-instituicao-perfil' %}" class="menu-item" >Meu perfil</a>
+            <a href="#" class="menu-item">Dados de contato</a>
+            <a href="#" class="menu-item">Configurações</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Olá, {{ instituicao.nome|default:"(nome da instituição)" }}!</h1>
+                <p class="welcome-subtitle">Aqui você acompanha as informações da sua instituição.</p>
+            </div>
+            <button type="button" class="btn-notificacao" aria-label="Notificações">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <section class="grid-inicio">
+
+            <article class="card card-servicos">
+                <h2>Serviços cadastrados</h2>
+                <p class="numero">{{ total_servicos|default:0 }}</p>
+                <a href="#" class="link-card">Ver serviços</a>
+            </article>
+
+            <article class="card card-atualizacao">
+                <h2>Última atualização</h2>
+                <p class="data">{{ instituicao.atualizado_em|date:"d/m/Y" }}</p>
+            </article>
+
+            <article class="card card-mensagem">
+                <p class="mensagem">
+                    Mantenha as informações do perfil sempre atualizadas para que pacientes e familiares
+                    encontrem sua instituição com facilidade. Se precisar alterar seus serviços ou dados
+                    de contato, utilize o menu lateral ou as ações rápidas abaixo.
+                    <strong>Obrigado por fazer a diferença na luta contra o câncer!</strong>
+                </p>
+                <img src="{% static 'img/ilustracao-instituicao.png' %}" alt="" class="ilustracao">
+            </article>
+
+            <article class="acoes-rapidas">
+                <h2>Ações rápidas</h2>
+                <ul>
+                    <li><a href="#"><i class="ti ti-edit" aria-hidden="true"></i> Editar perfil</a></li>
+                    <li><a href="#"><i class="ti ti-phone" aria-hidden="true"></i> Ver detalhes de contato</a></li>
+                    <li><a href="#"><i class="ti ti-settings" aria-hidden="true"></i> Configurações</a></li>
+                </ul>
+            </article>
+
+            <section class="resumo">
+                <h2 class="resumo-titulo">Resumo da sua instituição</h2>
+                <article class="card resumo-card">
+                    {% if instituicao.logo %}
+                        <img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nome }}" class="resumo-logo">
+                    {% else %}
+                        <div class="resumo-logo resumo-logo-vazio" aria-hidden="true">
+                            <i class="ti ti-building-community"></i>
+                        </div>
+                    {% endif %}
+                    <div class="resumo-info">
+                        <h3>{{ instituicao.nome|default:"Nome da instituição" }}</h3>
+                        <p class="local">
+                            <i class="ti ti-map-pin" aria-hidden="true"></i>
+                            {{ instituicao.cidade }} - {{ instituicao.estado }}
+                        </p>
+                        <a href="#" class="btn-perfil">Ver perfil</a>
+                    </div>
+                </article>
+            </section>
+
+        </section>
+    </main>
+
+</body>
+</html>

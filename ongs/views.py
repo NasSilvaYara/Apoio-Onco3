@@ -46,3 +46,9 @@ def login_view(request):
 
 def cadastro_view(request):
     return render(request, 'cadastro.html')
+
+def dashboard_instituicao_view(request):
+    return render(request, 'dashboard-instituicao.html')
+
+def dashboard_instituicao_perfil_view(request):
+    return render(request, 'dashboard-instituicao-perfil.html')

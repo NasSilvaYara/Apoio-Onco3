@@ -1,8 +1,4 @@
-/* Complementa o css/cadastro.css (o mesmo do login). Carregue DEPOIS dele. */
-
 [hidden] { display: none !important; }
-
-/* Banner */
 
 .banner-login {
   justify-content: space-between;
@@ -24,8 +20,6 @@
   color: var(--lilas);
 }
 
-
-/* Título da etapa: oculto no desktop (o banner mostra), visível no mobile */
 .titulo-etapa {
   position: absolute;
   width: 1px; height: 1px;
@@ -101,7 +95,6 @@
 .check { display: flex; align-items: center; gap: 0.6rem; font-size: 1rem; color: var(--cinza); }
 .check input { width: 1.1rem; height: 1.1rem; accent-color: var(--roxo-escuro); }
 
-/* Botões */
 .acoes { display: flex; justify-content: center; gap: 1rem; width: 100%; margin-top: 0.5rem; }
 button.secundario {
   background: transparent;
@@ -109,7 +102,6 @@ button.secundario {
   border: 2px solid var(--roxo-escuro);
 }
 
-/* Revisão */
 .resumo {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -119,7 +111,6 @@ button.secundario {
 .resumo dt { font-weight: 700; color: var(--cinza); }
 .resumo dd { color: var(--preto); overflow-wrap: anywhere; }
 
-/* Sucesso */
 .sucesso {
   display: flex;
   flex-direction: column;
@@ -137,7 +128,6 @@ button.secundario {
   font-size: 1rem;
 }
 
-/* Foco visível */
 input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
   outline: 3px solid var(--lilas);
   outline-offset: 2px;

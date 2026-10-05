@@ -5,39 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - Área Administrativa</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { display: flex; background-color: #f8f9fa; min-height: 100vh; }
-        
-        /* Sidebar */
-        .sidebar { width: 220px; background-color: #b38add; padding: 20px; display: flex; flex-direction: column; gap: 30px; }
-        
-        /* Logo / Branding */
-	.logo { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #3d1a58; font-size: 1.2rem; }
-	.logo-img { width: 32px; height: 32px; object-fit: contain; border: none; display: block; }
-
-        .menu { display: flex; flex-direction: column; gap: 10px; }
-        .menu-title { font-size: 0.75rem; font-weight: bold; color: #4a2d66; margin-bottom: 5px; }
-        .menu-item { background: transparent; padding: 10px 15px; border-radius: 20px; color: white; text-decoration: none; font-size: 0.9rem; }
-        .menu-item.active { background-color: #5b357d; }
-        
-        /* Main Content */
-        .main-content { flex: 1; padding: 30px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .welcome-title { color: #000; font-size: 1.5rem; margin-bottom: 5px; }
-        .welcome-subtitle { color: #8e44ad; font-size: 0.95rem; max-width: 600px; }
-        
-        /* Grid Layout */
-        .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
-        .card { background: white; border: 1px solid #e2e8f0; border-radius: 15px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .card h3 { font-size: 0.9rem; color: #333; margin-bottom: 10px; }
-        .card .number { font-size: 1.8rem; font-weight: bold; color: #5b357d; }
-        
-        .dashboard-body { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .chart-box { background: white; border: 1px solid #e2e8f0; border-radius: 15px; padding: 20px; min-height: 250px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #666; }
-        .summary-box { background: #4a236e; border-radius: 15px; padding: 20px; color: white; min-height: 250px; }
-        .summary-box h3 { font-size: 1rem; margin-bottom: 15px; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
 </head>
 <body>
 

@@ -157,6 +157,19 @@ button:hover {
   text-decoration: underline;
 }
 
+.formulario-login input:focus,
+.formulario-login input:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+  border-color: var(--roxo-escuro);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
 @media (max-width: 768px) {
   main {
     flex-direction: column;
