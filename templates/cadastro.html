@@ -5,33 +5,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - ApoioOnco</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}">
+    <script src="{% static 'js/cadastro.js' %}" defer></script>
 </head>
 <body>
     <main>
         <div class="banner-login" aria-hidden="true">
-            <h2>Juntos, ampliamos o acesso ao apoio.</h2>
-            <img src="{% static 'img/Login-pana.png' %}" alt="Figura Login Apoio Onco">
+            <h2 id="titulo-banner">Validar o CNPJ</h2>
+            
+            <p class="texto-banner">Cadastre sua organização e ajude mais pessoas a encontrarem os serviços que vocês oferecem.</p>
         </div>
-        <div class="corpo-login-form">
-         <img src="{% static 'img/logo-inteira.png' %}" alt="Logo">
-         <h1>Bem vindo de volta</h1>
-        <p class="subtitulo">Acesse sua conta para gerenciar as informações da sua instituição.</p>
 
-        <form action="" method="POST">
-            <div class="formulario-login">
-                <label for="identificacao">E-mail ou CNPJ</label>
-                <input type="text" id="identificacao" name="identificacao" required>
+        <div class="corpo-login-form">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco">
+            <p class="subtitulo">Faça parte da nossa rede</p>
+
+            <!-- Indicador de etapas -->
+            <ol class="passos" id="passos" aria-label="Etapas do cadastro">
+                <li class="passo" title="CNPJ"><i class="ti ti-building" aria-hidden="true"></i><span class="so-leitor">CNPJ</span></li>
+                <li class="passo" title="Dados da instituição"><i class="ti ti-clipboard-text" aria-hidden="true"></i><span class="so-leitor">Dados da instituição</span></li>
+                <li class="passo" title="Endereço"><i class="ti ti-map-pin" aria-hidden="true"></i><span class="so-leitor">Endereço</span></li>
+                <li class="passo" title="Contato"><i class="ti ti-phone" aria-hidden="true"></i><span class="so-leitor">Contato</span></li>
+                <li class="passo" title="Acesso"><i class="ti ti-lock" aria-hidden="true"></i><span class="so-leitor">Acesso</span></li>
+                <li class="passo" title="Revisão"><i class="ti ti-checklist" aria-hidden="true"></i><span class="so-leitor">Revisão</span></li>
+            </ol>
+
+            <h1 id="titulo-etapa" class="titulo-etapa">Validar o CNPJ</h1>
+
+            <form id="cadastro" action="" method="POST" novalidate>
+                {% csrf_token %}
+
+                <!-- Etapa 1: CNPJ -->
+                <section class="etapa">
+                    <div class="formulario-login">
+                        <label for="cnpj">CNPJ</label>
+                        <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" required>
+                    </div>
+                </section>
+
+                <!-- Etapa 2: Dados da instituição -->
+                <section class="etapa">
+                    <div class="formulario-login">
+                        <label for="nome">Nome da instituição</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="tipo">Tipo de instituição</label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="" selected disabled>Selecione</option>
+                            <option>ONG / associação</option>
+                            <option>Hospital</option>
+                            <option>Clínica / centro de tratamento</option>
+                            <option>Casa de apoio</option>
+                            <option>Instituto / fundação</option>
+                            <option>Voluntariado / grupo de apoio</option>
+                            <option>Órgão público</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required></textarea>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="horario">Horário de atendimento</label>
+                        <input type="text" id="horario" name="horario" placeholder="Ex.: seg a sex, 8h às 17h" required>
+                    </div>
+                    <fieldset class="servicos">
+                        <legend>Tipos de serviço</legend>
+                        <label class="check"><input type="checkbox" name="servicos" value="Banco de perucas"> Banco de perucas</label>
+                        <label class="check"><input type="checkbox" name="servicos" value="Banco de lenços"> Banco de lenços</label>
+                        <label class="check"><input type="checkbox" name="servicos" value="Apoio psicológico"> Apoio psicológico</label>
+                        <label class="check"><input type="checkbox" name="servicos" value="Assistência social"> Assistência social</label>
+                    </fieldset>
+                </section>
+
+                <!-- Etapa 3: Endereço -->
+                <section class="etapa">
+                    <div class="linha">
+                        <div class="formulario-login">
+                            <label for="cep">CEP</label>
+                            <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000" maxlength="9" required>
+                        </div>
+                        <div class="formulario-login">
+                            <label for="estado">Estado (UF)</label>
+                            <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP" pattern="[A-Za-z]{2}" title="Use a sigla do estado, com 2 letras" required>
+                        </div>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="logradouro">Logradouro</label>
+                        <input type="text" id="logradouro" name="logradouro" required>
+                    </div>
+                    <div class="linha">
+                        <div class="formulario-login">
+                            <label for="numero">Número</label>
+                            <input type="text" id="numero" name="numero" required>
+                        </div>
+                        <div class="formulario-login">
+                            <label for="complemento">Complemento <span class="opcional">(opcional)</span></label>
+                            <input type="text" id="complemento" name="complemento">
+                        </div>
+                    </div>
+                    <div class="linha">
+                        <div class="formulario-login">
+                            <label for="bairro">Bairro</label>
+                            <input type="text" id="bairro" name="bairro" required>
+                        </div>
+                        <div class="formulario-login">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" name="cidade" required>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Etapa 4: Contato -->
+                <section class="etapa">
+                    <p class="ajuda">Preencha pelo menos uma opção.</p>
+                    <div class="formulario-login">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000">
+                    </div>
+                    <div class="formulario-login">
+                        <label for="whatsapp">WhatsApp</label>
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="formulario-login">
+                        <label for="email_contato">E-mail de atendimento</label>
+                        <input type="email" id="email_contato" name="email_contato">
+                    </div>
+                    <div class="formulario-login">
+                        <label for="site">Site</label>
+                        <input type="url" id="site" name="site" placeholder="https://">
+                    </div>
+                    <div class="formulario-login">
+                        <label for="redes">Outras redes sociais <span class="opcional">(opcional)</span></label>
+                        <input type="text" id="redes" name="redes" placeholder="@suainstituicao">
+                    </div>
+                </section>
+
+                <!-- Etapa 5: Acesso -->
+                <section class="etapa">
+                    <p class="ajuda">Com esses dados você entra no painel da instituição.</p>
+                    <div class="formulario-login">
+                        <label for="email">E-mail de acesso</label>
+                        <input type="email" id="email" name="email" autocomplete="email" required>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password" required>
+                        <span class="ajuda">Mínimo de 8 caracteres.</span>
+                    </div>
+                    <div class="formulario-login">
+                        <label for="senha2">Confirmar senha</label>
+                        <input type="password" id="senha2" name="senha2" autocomplete="new-password" required>
+                    </div>
+                </section>
+
+                <!-- Etapa 6: Revisão -->
+                <section class="etapa">
+                    <dl class="resumo" id="resumo"></dl>
+                </section>
+
+                <div class="acoes">
+                    <button type="button" id="voltar" class="secundario">Voltar</button>
+                    <button type="button" id="avancar">Avançar</button>
+                </div>
+            </form>
+
+            <!-- Tela de sucesso -->
+            <div id="sucesso" class="sucesso" hidden>
+                <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+                    <circle cx="48" cy="48" r="44" fill="none" stroke="#5A3D7F" stroke-width="6"/>
+                    <path d="M28 50l14 14 27-30" fill="none" stroke="#5A3D7F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>Cadastro enviado!</h1>
+                <p>Sua instituição será analisada pela equipe de administração.</p>
+                <p class="signup-text"><a href="{% url 'login' %}">Voltar para o login</a></p>
             </div>
-            <div class="formulario-login">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
-            </div>
-            <button type="submit">Entrar</button>
-        </form>
-        <p class="signup-text">
-      Ainda não possui conta? <a href="{% url 'cadastro' %}">cadastre-se aqui</a>
-        </p>
+
+            <p class="signup-text" id="rodape-login">
+                Já possui conta? <a href="{% url 'login' %}">entre aqui</a>
+            </p>
         </div>
     </main>
 </body>

@@ -51,7 +51,10 @@ main{
 
 .banner-login img {
   max-width: 80%;
+  max-height: 65vh;   
+  width: auto;
   height: auto;
+  object-fit: contain;
   margin-top: 1.5rem;
 }
 

@@ -1,0 +1,170 @@
+/* Complementa o css/cadastro.css (o mesmo do login). Carregue DEPOIS dele. */
+
+[hidden] { display: none !important; }
+
+/* Banner */
+
+.banner-login {
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 3rem 2.5rem;
+}
+
+.banner-login h2 {
+  text-align: left;
+  font-size: 1.8rem;
+  max-width: 18ch;
+}
+
+.banner-login .texto-banner {
+  max-width: 32ch;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--lilas);
+}
+
+
+/* Título da etapa: oculto no desktop (o banner mostra), visível no mobile */
+.titulo-etapa {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* Indicador de etapas */
+.passos {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 1.2rem 0 0.5rem;
+}
+.passo {
+  position: relative;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--lilas);
+  background: var(--branco);
+  color: var(--roxo-escuro);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.passo + .passo { margin-left: 36px; }
+.passo + .passo::before {
+  content: "";
+  position: absolute;
+  right: 100%; top: 50%;
+  width: 36px; height: 2px;
+  background: var(--lilas);
+}
+.passo.atual { border-color: var(--roxo-escuro); box-shadow: 0 0 0 4px #EEE5FC; }
+.passo.atual::before, .passo.feito::before { background: var(--roxo-escuro); }
+.passo.feito { background: var(--roxo-escuro); border-color: var(--roxo-escuro); color: var(--branco); }
+
+/* Etapas */
+.etapa {
+  display: none;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+}
+.etapa.ativa { display: flex; }
+
+.etapa .formulario-login label { font-size: 1.05rem; }
+.formulario-login select,
+.formulario-login textarea {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #DDD;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--branco);
+}
+.formulario-login textarea { resize: vertical; }
+.formulario-login select:focus,
+.formulario-login textarea:focus { border-color: var(--roxo-escuro); }
+
+.linha {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.opcional, .ajuda { font-weight: 400; font-size: 0.9rem; color: var(--cinza); }
+
+.servicos { border: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.servicos legend { font-size: 1.05rem; font-weight: 600; color: var(--cinza); margin-bottom: 0.4rem; }
+.check { display: flex; align-items: center; gap: 0.6rem; font-size: 1rem; color: var(--cinza); }
+.check input { width: 1.1rem; height: 1.1rem; accent-color: var(--roxo-escuro); }
+
+/* Botões */
+.acoes { display: flex; justify-content: center; gap: 1rem; width: 100%; margin-top: 0.5rem; }
+button.secundario {
+  background: transparent;
+  color: var(--roxo-escuro);
+  border: 2px solid var(--roxo-escuro);
+}
+
+/* Revisão */
+.resumo {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  font-size: 0.95rem;
+}
+.resumo dt { font-weight: 700; color: var(--cinza); }
+.resumo dd { color: var(--preto); overflow-wrap: anywhere; }
+
+/* Sucesso */
+.sucesso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+.sucesso h1 { color: var(--roxo-escuro); }
+.sucesso p { color: var(--cinza); }
+
+.signup-text {
+  font-size: 0.875rem;
+  color: var(--cinza);
+  font-size: 1rem;
+}
+
+/* Foco visível */
+input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+.passo .ti { font-size: 1.2rem; }
+
+.so-leitor {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 768px) {
+  .passo .ti { font-size: 1rem; }
+}
+
+@media (max-width: 768px) {
+  .titulo-etapa {
+    position: static; width: auto; height: auto;
+    overflow: visible; clip-path: none;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .passo { width: 32px; height: 32px; font-size: 0.9rem; }
+  .passo + .passo { margin-left: 20px; }
+  .passo + .passo::before { width: 20px; }
+  .linha { grid-template-columns: 1fr; }
+  .acoes { flex-direction: column-reverse; align-items: center; }
+}
