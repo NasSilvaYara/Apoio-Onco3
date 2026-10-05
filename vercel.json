@@ -2,13 +2,6 @@
   "version": 2,
   "builds": [
     {
-      "src": "build.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles"
-      }
-    },
-    {
       "src": "core/wsgi.py",
       "use": "@vercel/python"
     }
