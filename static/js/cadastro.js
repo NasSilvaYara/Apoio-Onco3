@@ -64,27 +64,9 @@ form.addEventListener('submit', (e) => { e.preventDefault(); avancar(); });
 
 /* ---------- Validação por etapa ---------- */
 
-function cnpjValido(valor) {
-  const n = valor.replace(/\D/g, '');
-  if (n.length !== 14 || /^(\d)\1+$/.test(n)) return false;
-  const digito = (base) => {
-    let soma = 0, peso = base.length - 7;
-    for (const d of base) {
-      soma += d * peso--;
-      if (peso < 2) peso = 9;
-    }
-    const resto = soma % 11;
-    return resto < 2 ? 0 : 11 - resto;
-  };
-  return digito(n.slice(0, 12)) == n[12] && digito(n.slice(0, 13)) == n[13];
-}
-
 function validar(i) {
   const etapa = etapas[i];
 
-  if (i === 0) {
-    form.cnpj.setCustomValidity(cnpjValido(form.cnpj.value) ? '' : 'Informe um CNPJ válido.');
-  }
   if (i === 1) {
     const marcados = etapa.querySelectorAll('input[name="servicos"]:checked').length;
     etapa.querySelector('input[name="servicos"]')
