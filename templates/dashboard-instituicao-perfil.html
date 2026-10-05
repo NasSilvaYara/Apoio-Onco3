@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Meu perfil</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
+    <script src="{% static 'js/meu-perfil.js' %}" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard-instituicao' %}" class="menu-item" aria-current="page" target="_blank">Início</a>
+            <a href="{% url 'dashboard-instituicao-perfil' %}" class="menu-item active" target="_blank">Meu perfil</a>
+            <a href="#" class="menu-item">Dados de contato</a>
+            <a href="#" class="menu-item">Configurações</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Meu perfil</h1>
+                <p class="welcome-subtitle">Estas informações aparecem para as pacientes na busca.</p>
+            </div>
+            <button type="button" class="btn-notificacao" aria-label="Notificações">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <form action="" method="POST" enctype="multipart/form-data" class="perfil-form">
+            {% csrf_token %}
+
+            <section class="card-perfil">
+                <h2>Identidade da instituição</h2>
+
+                <div class="logo-linha">
+                    <div class="logo-preview" id="logo-preview">
+                        {% if instituicao.logo %}
+                            <img src="{{ instituicao.logo.url }}" alt="Logo atual">
+                        {% else %}
+                            <i class="ti ti-photo" aria-hidden="true"></i>
+                        {% endif %}
+                    </div>
+                    <input type="file" id="logo-arquivo" name="logo" accept="image/*" hidden>
+                    <button type="button" id="btn-trocar-logo" class="btn btn-primario">Trocar logo</button>
+                </div>
+
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="nome">Nome da instituição</label>
+                        <input type="text" id="nome" name="nome" value="{{ instituicao.nome }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="tipo">Tipo de instituição</label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="" disabled>Selecione</option>
+                            <option>ONG / associação</option>
+                            <option>Hospital</option>
+                            <option>Clínica / centro de tratamento</option>
+                            <option>Casa de apoio</option>
+                            <option>Instituto / fundação</option>
+                            <option>Voluntariado / grupo de apoio</option>
+                            <option>Órgão público</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+                    <div class="campo span-todos">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ instituicao.descricao }}</textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-perfil">
+                <h2>Localização</h2>
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" value="{{ instituicao.cep }}" required>
+                    </div>
+                    <div class="campo span-2">
+                        <label for="logradouro">Logradouro</label>
+                        <input type="text" id="logradouro" name="logradouro" value="{{ instituicao.logradouro }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero" value="{{ instituicao.numero }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" id="complemento" name="complemento" value="{{ instituicao.complemento }}">
+                    </div>
+                    <div class="campo">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" value="{{ instituicao.bairro }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" name="cidade" value="{{ instituicao.cidade }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="estado">Estado (UF)</label>
+                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="Use a sigla do estado, com 2 letras" value="{{ instituicao.estado }}" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tipos de apoio oferecidos -->
+            <section class="card-perfil">
+                <h2>Tipos de apoio oferecidos</h2>
+
+                <div class="chips" id="chips">
+                    {# Troque estes dois chips de exemplo por um {% for %} com os serviços da instituição #}
+                    <span class="chip">Assistência social
+                        <button type="button" class="chip-remover" aria-label="Remover Assistência social"><i class="ti ti-x" aria-hidden="true"></i></button>
+                        <input type="hidden" name="servicos" value="Assistência social">
+                    </span>
+                    <span class="chip">Banco de perucas
+                        <button type="button" class="chip-remover" aria-label="Remover Banco de perucas"><i class="ti ti-x" aria-hidden="true"></i></button>
+                        <input type="hidden" name="servicos" value="Banco de perucas">
+                    </span>
+                </div>
+
+                <div class="adicionar-apoio">
+                    <button type="button" id="btn-add-apoio" class="btn btn-primario" aria-expanded="false" aria-controls="menu-apoios">
+                        <i class="ti ti-circle-plus" aria-hidden="true"></i> Adicionar apoio
+                    </button>
+                    <ul id="menu-apoios" class="menu-apoios" hidden></ul>
+                </div>
+            </section>
+
+            <!-- Funcionamento -->
+            <section class="card-perfil">
+                <h2>Funcionamento</h2>
+                <div class="campo">
+                    <label for="horario">Horário de atendimento</label>
+                    <textarea id="horario" name="horario" rows="3" placeholder="Ex.: seg a sex, das 8h às 17h" required>{{ instituicao.horario }}</textarea>
+                </div>
+            </section>
+
+            <div class="acoes-form">
+                <a href="#" class="btn btn-secundario">Cancelar</a>
+                <a href="#" class="btn btn-medio">Ver como a usuária vê</a>
+                <button type="submit" class="btn btn-primario">Salvar alterações</button>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>

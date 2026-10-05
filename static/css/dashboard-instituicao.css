@@ -1,0 +1,349 @@
+/* ===== Reset e base ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+  /* Cores principais */
+  --roxo-escuro: #5A3D7F;
+  --roxo-medio: #7750A9;
+  /* Cores do fundo */
+  --lilas: #C39DF5;
+  --branco: #ffffff;
+  /* Cores de texto */
+  --preto: #101010;
+  --cinza: #3F3A3D;
+  /* Bordas */
+  --borda: #e2e8f0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background-color: var(--lilas);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.logo-img {
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-title {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--roxo-escuro);
+  margin-bottom: 5px;
+}
+
+.menu-item {
+  background: transparent;
+  padding: 10px 15px;
+  border-radius: 20px;
+  color: var(--roxo-escuro);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.menu-item:hover {
+  background-color: rgba(90, 61, 127, 0.12);
+}
+
+.menu-item.active {
+  background-color: var(--roxo-escuro);
+  color: var(--branco);
+}
+
+/* ===== Conteúdo principal ===== */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 30px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 25px;
+}
+
+.welcome-title {
+  color: var(--preto);
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.welcome-subtitle {
+  color: #8e44ad;
+  font-size: 0.95rem;
+  font-weight: 600;
+  max-width: 600px;
+}
+
+.btn-notificacao {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--branco);
+  color: var(--roxo-escuro);
+  border: 1px solid var(--borda);
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+/* ===== Grid da tela inicial ===== */
+.grid-inicio {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(0, 2.2fr);
+  grid-template-areas:
+    "servicos    mensagem"
+    "atualizacao mensagem"
+    "acoes       resumo";
+  gap: 20px;
+}
+
+.card {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.card h2 {
+  font-size: 0.95rem;
+  color: var(--preto);
+}
+
+/* Serviços cadastrados e última atualização */
+.card-servicos,
+.card-atualizacao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.card-servicos { grid-area: servicos; }
+.card-atualizacao { grid-area: atualizacao; }
+
+.numero {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--preto);
+}
+
+.data {
+  font-size: 1rem;
+  color: var(--cinza);
+}
+
+.link-card {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--roxo-escuro);
+  text-decoration: none;
+}
+
+.link-card:hover {
+  text-decoration: underline;
+}
+
+
+.card-mensagem {
+  grid-area: mensagem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.mensagem {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--cinza);
+}
+
+.mensagem strong {
+  display: block;
+  margin-top: 6px;
+  font-weight: 500;
+  color: var(--roxo-escuro);
+}
+
+.ilustracao {
+  max-width: 35%;
+  max-height: 260px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Ações rápidas */
+.acoes-rapidas {
+  grid-area: acoes;
+  background-color: var(--roxo-escuro);
+  color: var(--branco);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.acoes-rapidas h2 {
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+}
+
+.acoes-rapidas ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acoes-rapidas a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--branco);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.acoes-rapidas a:hover {
+  text-decoration: underline;
+}
+
+.acoes-rapidas .ti {
+  font-size: 1.1rem;
+}
+
+.resumo { grid-area: resumo; }
+
+.resumo-titulo {
+  font-size: 0.95rem;
+  color: var(--preto);
+  margin-bottom: 10px;
+}
+
+.resumo-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.resumo-logo {
+  width: 110px;
+  height: 90px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 8px;
+}
+
+.resumo-logo-vazio {
+  display: grid;
+  place-items: center;
+  background: #EEE5FC;
+  color: var(--roxo-escuro);
+  font-size: 2rem;
+}
+
+.resumo-info h3 {
+  font-size: 1rem;
+  color: var(--preto);
+  margin-bottom: 4px;
+}
+
+.local {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--cinza);
+  margin-bottom: 12px;
+}
+
+.btn-perfil {
+  display: inline-block;
+  background-color: var(--roxo-escuro);
+  color: var(--branco);
+  padding: 0.5rem 1.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-perfil:hover {
+  opacity: 0.9;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+
+  .menu { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .menu-title { display: none; }
+
+  .grid-inicio {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "servicos"
+      "atualizacao"
+      "mensagem"
+      "acoes"
+      "resumo";
+  }
+
+  .card-mensagem { flex-direction: column; }
+  .ilustracao { max-width: 60%; }
+  .resumo-card { flex-direction: column; text-align: center; }
+  .local { justify-content: center; }
+}
+

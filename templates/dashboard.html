@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Área Administrativa</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">
+    		<img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-img">
+    		<span>ApoioOnco</span>
+	</div>
+        <div class="menu">
+            <span class="menu-title">MENU</span>
+            <a href="#" class="menu-item active">Dashboard</a>
+            <a href="#" class="menu-item">Instituições</a>
+            <a href="#" class="menu-item">Relatórios</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div>
+                <h1 class="welcome-title">Bem vindo a área administrativa</h1>
+                <p class="welcome-subtitle">Acompanhe o impacto da rede de apoio e garanta que as informações para os pacientes estejam sempre atualizadas.</p>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <h3>Instituições cadastradas</h3>
+                <div class="number">{{ total_instituicoes }}</div>
+            </div>
+            <div class="card">
+                <h3>Instituições ativas</h3>
+                <div class="number">{{ instituicoes_ativas }}</div>
+            </div>
+            <div class="card">
+                <h3>Aguardando aprovação</h3>
+                <div class="number">{{ aguardando_aprovacao }}</div>
+            </div>
+        </div>
+
+        <div class="dashboard-body">
+            <div class="chart-box">
+                GRÁFICO
+            </div>
+            <div class="summary-box">
+                <h3>Resumo geral:</h3>
+                <p style="font-size: 0.85rem; opacity: 0.8;">Nenhum alerta recente no sistema.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

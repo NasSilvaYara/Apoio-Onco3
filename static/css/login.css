@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root{
+    /* Cores Principais */
+    --roxo-escuro: #5A3D7F;
+    --roxo-medio: #7750A9;
+    /* Cores do fundo */
+    --lilas: #C39DF5;
+    --branco: #ffffff;
+    /* Cores de texto */
+    --preto: #101010;
+    --roxo-escuro: #5A3D7F;
+    --roxo-medio: #7750A9;
+    --cinza: #3F3A3D;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-color: var(--branco);
+}
+
+main{
+    display: flex;
+    min-height: 100vh; 
+    width: 100%;
+}
+
+.banner-login{
+    flex: 1; 
+    background-color: var(--roxo-escuro);
+    color: var(--branco);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    
+}
+
+.banner-login h2 {
+ 
+  font-size: 2rem;       
+
+}
+
+.banner-login img {
+  max-width: 80%;
+  max-height: 65vh;   
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin-top: 1.5rem;
+}
+
+.corpo-login-form {
+  flex: 1; 
+  background-color: var(--branco);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centraliza verticalmente na tela */
+padding: 3rem 2rem; 
+}
+
+.corpo-login-form img{
+    max-width: 30%;
+    height: auto;
+    margin-top: 1.5rem;
+}
+
+.corpo-login-form h1{
+    color: var(--cinza);
+}
+
+.corpo-login-form .subtitulo{
+    color: var(--roxo-medio);
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+form{
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+}
+
+.formulario-login{
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start; 
+  gap: 0.4rem;            
+  width: 100%;
+
+}
+
+.formulario-login label{
+  font-size: 1.5rem;
+  color: var(--cinza);
+  font-weight: 600;
+}
+
+.formulario-login input {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #DDD;
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+.formulario-login input:focus {
+  border-color: var(--roxo-escuro);
+}
+
+button {
+  background-color: var(--roxo-escuro);
+    color: #FFF;
+  border: none;
+  padding: 0.75rem 2.5rem;
+  width: auto;
+  min-width: 200px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.signup-text {
+  font-size: 0.875rem;
+  color: var(--cinza);
+  font-size: 1.3rem;
+}
+
+.signup-text a {
+  color: #EA3C6C;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+
+.formulario-login input:focus,
+.formulario-login input:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+  border-color: var(--roxo-escuro);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .banner-login {
+    display: none; 
+  }
+
+  .corpo-login-form {
+    width: 100%;
+    min-height: 100vh;
+    justify-content: flex-start; 
+    padding: 2rem 1.5rem;
+  }
+  .corpo-login-form img{
+    max-width: 50%;
+    height: auto;
+    margin-top: 1.5rem;
+  }
+  
+  .corpo-login-form h1 {
+    font-size: 1.5rem;
+  }
+
+  .corpo-login-form .subtitulo {
+    font-size: 1rem;
+  }
+
+  .formulario-login label {
+    font-size: 1rem;
+  }
+
+  form {
+    margin: 1rem 0;
+    gap: 1rem;
+  }
+
+  .signup-text{
+    font-size: 1rem;
+  }
+}
+
