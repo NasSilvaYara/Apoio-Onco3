@@ -6,138 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - Encontre apoio perto de você</title>
 
-    <!-- CDN Font Awesome para os ícones -->
+    <!-- Google Fonts: Plus Jakarta Sans e Sail -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sail&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f8f9fa; color: #333; }
-
-        /* Navbar */
-        header { background-color: #b38add; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; }
-        .logo-container { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #3d1a58; font-size: 1.2rem; }
-        .logo-img { width: 32px; height: 32px; object-fit: contain; }
-        
-        nav { display: flex; gap: 25px; align-items: center; }
-        nav a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; }
-        nav a:hover { text-decoration: underline; }
-        .user-icon { width: 35px; height: 35px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #b38add; }
-
-        /* Hero Section */
-        .hero { background-color: #b38add; padding: 40px 50px 60px 50px; text-align: center; color: white; }
-        .hero-title { font-size: 2rem; margin-bottom: 25px; font-weight: 600; }
-
-        /* Search Bar Box */
-        .search-box { background: #4a2d66; padding: 12px; border-radius: 40px; display: inline-flex; gap: 10px; max-width: 700px; width: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 40px; }
-        .search-input-group { background: #e2e8f0; border-radius: 20px; display: flex; align-items: center; padding: 8px 15px; flex: 1; }
-        .search-input-group i { color: #666; font-size: 0.9rem; margin-right: 8px; }
-        .search-input-group input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.9rem; color: #333; }
-        .btn-search { background-color: #e63956; color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-search:hover { background-color: #d02e48; }
-
-        /* Content Grid */
-        .hero-content { 
-            display: flex; 
-            align-items: flex-end; 
-            justify-content: center; 
-            gap: 40px; 
-            max-width: 900px; 
-            margin: 0 auto; 
-            text-align: left; 
-        }
-        
-        .text-side { 
-            flex: 1; 
-            padding-bottom: 30px; /* Eleva levemente o texto enquanto a imagem vai até o fundo */
-        }
-        .text-side p { font-size: 1.2rem; line-height: 1.5; margin-bottom: 25px; font-weight: 500; color: #2d1442; }
-        .btn-saibamais { background-color: #4a2d66; color: white; border: none; padding: 12px 30px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block; }
-        
-        .image-side { 
-            flex: 1; 
-            text-align: center; 
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-        }
-        
-        .hero-illustration { 
-            max-width: 360px; /* Aumenta um pouco o tamanho da ilustração */
-            width: 100%; 
-            height: auto; 
-            margin-bottom: -60px; /* Faz a imagem "descer" e encostar na borda inferior do hero */
-            display: block;
-        }
-
-        .hero-illustration { max-width: 280px; width: 100%; height: auto; }
-
-        /* Seção de Resultados */
-        .results-section { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        .results-title { font-size: 1.3rem; color: #3d1a58; margin-bottom: 20px; }
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card-inst { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-        .card-inst h3 { color: #5b357d; font-size: 1.1rem; margin-bottom: 8px; }
-        .card-inst p { color: #666; font-size: 0.9rem; margin-bottom: 5px; }
-        .card-inst i { color: #b38add; width: 20px; }
-    </style>
+    <!-- Conexão com o CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <!-- Header / Navbar -->
-    <header>
-        <div class="logo-container">
-            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-img">
-            <span>ApoioOnco</span>
-        </div>
-        <nav>
-            <a href="{% url 'home' %}">Início</a>
-            <a href="#">Sobre</a>
-            <a href="#">Instituições</a>
-            <a href="#">Informações</a>
-            <div class="user-icon" title="Perfil">
-                <a href="{% url 'login' %}">
-                    <i class="fa-solid fa-user"></i>
-                </a>
+    <!-- 1. SEÇÃO INICIAL: HERO & HEADER (HOME) -->
+    <header class="hero-header">
+        <!-- Navegação Superior -->
+        <nav class="navbar">
+            <div class="nav-logo">
+                <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="nav-logo-full-img">
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}" class="active">Início</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#instituicoes">Instituições</a></li>
+                <li><a href="#informacoes">Informações</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="theme-toggle-btn" aria-label="Alternar tema">
+                    <img src="{% static 'img/moon 1.png' %}" alt="Tema" class="moon-icon-img">
+                </button>
+                <!-- Botão Roxo Cadastrar/Login -->
+                <a href="{% url 'login' %}" class="btn-login">Fazer login/cadastro</a>
             </div>
         </nav>
-    </header>
 
-    <!-- Main Hero Banner -->
-    <section class="hero">
-        <h1 class="hero-title">Encontre apoio perto de você</h1>
-
-        <!-- Search Bar Funcional -->
-        <form action="{% url 'home' %}" method="GET" class="search-box">
-            <div class="search-input-group">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" name="busca" value="{{ busca }}" placeholder="O que você procura?">
-            </div>
-            <div class="search-input-group">
-                <i class="fa-solid fa-location-dot"></i>
-                <input type="text" name="cidade" value="{{ cidade }}" placeholder="Sua cidade">
-            </div>
-            <button type="submit" class="btn-search">Buscar</button>
-        </form>
-
-        <!-- Text & Illustration -->
+        <!-- Conteúdo Principal do Banner Hero -->
         <div class="hero-content">
-            <div class="text-side">
-                <p>Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer.</p>
-                <a href="#" class="btn-saibamais">Saiba mais</a>
-            </div>
-            <div class="image-side">
-                <img src="{% static 'img/ilustracao.png' %}" alt="Apoio Onco Ilustração" class="hero-illustration">
+            <h1 class="hero-title">Encontre <span class="highlight-apoio">apoio</span> perto de você</h1>
+
+            <!-- Container de Busca Funcional do Django -->
+            <form action="{% url 'home' %}" method="GET" class="search-box-container">
+                <div class="search-bar">
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" name="busca" value="{{ busca }}" placeholder="O que você procura?">
+                    </div>
+                    <div class="input-with-icon">
+                        <i class="fa-solid fa-location-dot search-icon"></i>
+                        <input type="text" name="cidade" value="{{ cidade }}" placeholder="Sua cidade">
+                    </div>
+                    <button type="submit" class="search-btn">Buscar</button>
+                </div>
+
+                <!-- Botões de Filtro/Pills -->
+                <div class="search-filters">
+                    <button type="button" class="filter-btn">
+                        <i class="fa-solid fa-location-dot pin-icon"></i> Localização
+                    </button>
+                    <button type="button" class="filter-btn">
+                        <i class="fa-solid fa-hospital pin-icon"></i> Tipo de instituição
+                    </button>
+                    <button type="button" class="filter-btn">
+                        <i class="fa-solid fa-hand-holding-heart pin-icon"></i> Tipo de apoio
+                    </button>
+                </div>
+            </form>
+
+            <!-- Chamada Principal e Ilustração -->
+            <div class="hero-banner">
+                <div class="hero-text-side">
+                    <p class="hero-description">
+                        Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer.
+                    </p>
+                    <a href="#sobre" class="btn-hero-more">Saiba mais</a>
+                </div>
+                <div class="hero-image-side">
+                    <img src="{% static 'img/ilustracao.png' %}" alt="Ilustração ApoioOnco" class="hero-img">
+                </div>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Área de Exibição dos Resultados da Busca -->
+    <!-- ÁREA DINÂMICA: RESULTADOS DA BUSCA DO DJANGO -->
     {% if busca or cidade %}
     <section class="results-section">
         <h2 class="results-title">Resultados da busca:</h2>
         <div class="results-grid">
             {% for inst in instituicoes %}
-                <div class="card-inst">
+                <div class="card-inst-result">
                     <h3>{{ inst.nomeInst }}</h3>
                     <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
                     {% if inst.telefone %}
@@ -146,6 +105,7 @@
                     {% if inst.email %}
                         <p><i class="fa-solid fa-envelope"></i> {{ inst.email }}</p>
                     {% endif %}
+                    <a href="{% url 'home' %}" class="inst-btn" style="display:inline-block; margin-top:10px;">Ver instituição</a>
                 </div>
             {% empty %}
                 <p>Nenhuma instituição encontrada com os critérios informados.</p>
@@ -153,6 +113,194 @@
         </div>
     </section>
     {% endif %}
+
+    <!-- Conteúdo Principal da Página -->
+    <main class="main-content">
+
+        <!-- 2. SEÇÃO: SOBRE NÓS -->
+        <section id="sobre" class="section-container">
+            <h2 class="section-title">Sobre nós</h2>
+            <div class="about-text">
+                <p>
+                    O <span class="highlight-purple">ApoioOnco</span> nasceu com o objetivo de centralizar e facilitar o acesso a informações sobre instituições, ONGs, hospitais e serviços de apoio destinados a mulheres com câncer. Sabemos que a jornada do tratamento oncológico traz diversos desafios físicos e emocionais, e encontrar o suporte certo não deveria ser mais um deles. Nossa plataforma funciona como uma ponte: permitimos que a usuária <span class="highlight-purple">encontre redes de apoio</span> de acordo com a sua localização e com o tipo de ajuda que ela precisa no momento, <span class="highlight-purple">como:</span>
+                </p>
+            </div>
+
+            <div class="purple-cards-container">
+                <div class="purple-card">
+                    <h3>Banco de perucas</h3>
+                    <p>Encontre instituições que disponibilizam perucas.</p>
+                </div>
+                <div class="purple-card">
+                    <h3>Banco de Lenços</h3>
+                    <p>Encontre locais que oferecem lenços e acessórios.</p>
+                </div>
+                <div class="purple-card">
+                    <h3>Apoio Psicológico</h3>
+                    <p>Encontre organizações que oferecem acolhimento psicológico.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEÇÃO: QUEM SOMOS? -->
+        <section class="section-container team-section">
+            <h2 class="section-title">Quem somos?</h2>
+            <p class="team-intro">
+                Este projeto é fruto de um trabalho interdisciplinar desenvolvido com muita dedicação por três alunas:
+            </p>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="{% static 'img/Design sem nome 1.png' %}" alt="Foto Livia Schendroski" class="member-img">
+                    <span class="member-name">Livia Schendroski</span>
+                </div>
+                <div class="team-member">
+                    <img src="{% static 'img/Design sem nome (2) 1.png' %}" alt="Foto Yara Silva" class="member-img">
+                    <span class="member-name">Yara Silva</span>
+                </div>
+                <div class="team-member">
+                    <img src="{% static 'img/Design sem nome (1) 1.png' %}" alt="Foto Nicoly Santos" class="member-img">
+                    <span class="member-name">Nicoly Santos</span>
+                </div>
+            </div>
+
+            <p class="team-footer-text">
+                Unimos a tecnologia e a programação para criar uma ferramenta de impacto social, acreditando que a informação acessível e o acolhimento comunitário são fundamentais para fortalecer mulheres na luta contra o câncer.
+            </p>
+        </section>
+
+        <!-- 4. SEÇÃO: INSTITUIÇÕES EM DESTAQUE -->
+        <section id="instituicoes" class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Instituições em destaque</h2>
+                <a href="#instituicoes" class="see-all-link">Ver todas <span class="arrow">&rarr;</span></a>
+            </div>
+
+            <div class="institution-cards-container">
+                <div class="institution-card">
+                    <div class="logo-box">
+                        <img src="{% static 'img/image 1.png' %}" alt="Instituto Mama" class="inst-logo">
+                    </div>
+                    <h3 class="inst-title">Instituto mama</h3>
+                    <p class="inst-location">Guarulhos - SP</p>
+                    <p class="inst-description">Assistência social, banco de perucas...</p>
+                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
+                </div>
+
+                <div class="institution-card">
+                    <div class="logo-box">
+                        <img src="{% static 'img/instituição 1.png' %}" alt="Instituto Mama" class="inst-logo">
+                    </div>
+                    <h3 class="inst-title">Instituto mama</h3>
+                    <p class="inst-location">Guarulhos - SP</p>
+                    <p class="inst-description">Assistência social, banco de perucas...</p>
+                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
+                </div>
+
+                <div class="institution-card">
+                    <div class="logo-box">
+                        <img src="{% static 'img/image 2.png' %}" alt="Instituto Mama" class="inst-logo">
+                    </div>
+                    <h3 class="inst-title">Instituto mama</h3>
+                    <p class="inst-location">Guarulhos - SP</p>
+                    <p class="inst-description">Assistência social, banco de perucas...</p>
+                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SEÇÃO: COMO FUNCIONA O APOIOONCO? -->
+        <section class="section-container how-it-works-section">
+            <h2 class="section-title">Como Funciona o ApoioOnco?</h2>
+            <p class="subtitle-purple">Encontrar o suporte que você precisa é simples e rápido. Siga os passos abaixo:</p>
+
+            <ol class="steps-list">
+                <li>
+                    <strong>Busque por Categoria ou Localização</strong>
+                    <p>Escolha o tipo de ajuda que você precisa (como banco de perucas, apoio psicológico ou assistência social) e informe a sua região.</p>
+                </li>
+                <li>
+                    <strong>Encontre as Instituições</strong>
+                    <p>Navegue pelo mapa ou pela lista de ONGs, hospitais e casas de apoio cadastrados que atendem aos seus critérios.</p>
+                </li>
+                <li>
+                    <strong>Acesse as Informações de Contato</strong>
+                    <p>Veja os horários de funcionamento, endereço, telefone e os documentos necessários para solicitar o atendimento direto com a instituição escolhida.</p>
+                </li>
+            </ol>
+        </section>
+
+        <!-- 6. SEÇÃO: INFORMAÇÕES PARA VOCÊ -->
+        <section id="informacoes" class="section-container">
+            <h2 class="section-title">Informações para você</h2>
+            <div class="card-container">
+                <div class="card">
+                    <div>
+                        <h3 class="card-text">Entenda o câncer</h3>
+                        <p class="card-subdescription">Informações para conhecer a doença, o tratamento e suas diferentes fases.</p>
+                    </div>
+                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <h3 class="card-text">Saúde emocional</h3>
+                        <p class="card-subdescription">Conteúdos para cuidar das emoções e lidar com os desafios do tratamento.</p>
+                    </div>
+                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                </div>
+
+                <div class="card">
+                    <div>
+                        <h3 class="card-text">Autoestima durante o tratamento</h3>
+                        <p class="card-subdescription">Cuidados e informações para se sentir bem consigo mesma durante essa fase.</p>
+                    </div>
+                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-column logo-column">
+                <div class="logo-group">
+                    <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Navegação</h3>
+                <ul>
+                    <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
+                    <li><a href="#instituicoes">Instituições</a></li>
+                    <li><a href="#informacoes">Informações</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Para Instituições</h3>
+                <ul>
+                    <li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
+                    <li><a href="{% url 'login' %}">Entrar</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Fale conosco</h3>
+                <ul>
+                    <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
+        </div>
+    </footer>
 
 </body>
 </html>

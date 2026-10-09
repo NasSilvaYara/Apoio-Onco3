@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Dados de contato</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
+    <script src="{% static 'js/dados-contato.js' %}" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard-instituicao' %}" class="menu-item" target="_blank">Início</a>
+            <a href="{% url 'dashboard-instituicao-perfil' %}" class="menu-item" target="_blank">Meu perfil</a>
+            <a href="{% url 'dashboard-instituicao-contato' %}" class="menu-item active" aria-current="page" target="_blank">Dados de contato</a>
+            <a href="{% url 'dashboard-instituicao-configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Dados de contato</h1>
+                <p class="welcome-subtitle">É por aqui que as pacientes vão falar com a sua instituição.</p>
+            </div>
+            <button type="button" class="btn-notificacao" aria-label="Notificações">
+                <i class="ti ti-bell" aria-hidden="true"></i>
+            </button>
+        </header>
+
+        <form action="" method="POST" class="perfil-form">
+            {% csrf_token %}
+
+            <section class="card-perfil">
+                <h2>Telefones</h2>
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="telefone">Telefone principal</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ instituicao.telefone }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="whatsapp">WhatsApp <span class="opcional">(opcional)</span></label>
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ instituicao.whatsapp }}">
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-perfil">
+                <h2>E-mail e site</h2>
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="email_atendimento">E-mail de atendimento</label>
+                        <input type="email" id="email_atendimento" name="email_atendimento" value="{{ instituicao.email_atendimento }}" required>
+                    </div>
+                    <div class="campo">
+                        <label for="site">Site <span class="opcional">(opcional)</span></label>
+                        <input type="url" id="site" name="site" placeholder="https://" value="{{ instituicao.site }}">
+                    </div>
+                </div>
+            </section>
+
+            <section class="card-perfil">
+                <h2>Redes sociais</h2>
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="instagram">Instagram <span class="opcional">(opcional)</span></label>
+                        <input type="text" id="instagram" name="instagram" placeholder="@suainstituicao" value="{{ instituicao.instagram }}">
+                    </div>
+                    <div class="campo">
+                        <label for="facebook">Facebook <span class="opcional">(opcional)</span></label>
+                        <input type="text" id="facebook" name="facebook" placeholder="facebook.com/suapagina" value="{{ instituicao.facebook }}">
+                    </div>
+                </div>
+            </section>
+
+            <div class="acoes-form">
+                <a href="#" class="btn btn-secundario">Cancelar</a>
+                <a href="#" class="btn btn-medio">Ver como a usuária vê</a>
+                <button type="submit" class="btn btn-primario">Salvar alterações</button>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>

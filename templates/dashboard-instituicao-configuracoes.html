@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Configurações</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'css/configuracoes.css' %}">
+    <script src="{% static 'js/configuracoes.js' %}" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard-instituicao' %}" class="menu-item" target="_blank">Início</a>
+            <a href="{% url 'dashboard-instituicao-perfil' %}" class="menu-item" target="_blank">Meu perfil</a>
+            <a href="{% url 'dashboard-instituicao-contato' %}" class="menu-item " aria-current="page" target="_blank">Dados de contato</a>
+            <a href="{% url 'dashboard-instituicao-configuracoes' %}" class="menu-item active" target="_blank">Configurações</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Configurações</h1>
+                <p class="welcome-subtitle">Gerencie sua conta e como seu perfil aparece na plataforma.</p>
+            </div>
+        </header>
+
+        <form action="" method="POST" class="perfil-form">
+            {% csrf_token %}
+            <section class="card-perfil">
+                <h2>Conta</h2>
+                <div class="campo">
+                    <label for="email">E-mail de acesso</label>
+                    <input type="email" id="email" name="email" autocomplete="email" value="{{ instituicao.email }}" required>
+                </div>
+
+                <div class="linha-senha">
+                    <div>
+                        <p class="opcao-titulo">Senha</p>
+                        <p class="opcao-desc">Alterada há {{ instituicao.senha_alterada_em|timesince|default:"—" }}</p>
+                    </div>
+                    <a href="#" class="btn btn-primario">Alterar senha</a>
+                </div>
+            </section>
+            <section class="card-perfil">
+                <h2>Visibilidade do perfil</h2>
+                <div class="opcao">
+                    <div>
+                        <label for="visivel" class="opcao-titulo">Perfil visível nas buscas</label>
+                        <p id="visivel-desc" class="opcao-desc">Desative para pausar sua instituição sem excluir os dados.</p>
+                    </div>
+                    <input type="checkbox" role="switch" id="visivel" name="visivel" class="switch"
+                           aria-describedby="visivel-desc" {% if instituicao.visivel %}checked{% endif %}>
+                </div>
+            </section>
+
+            <section class="zona-perigo">
+                <div>
+                    <h2>Excluir conta</h2>
+                    <p>A instituição deixa de aparecer na plataforma e os dados são removidos. Essa ação não pode ser desfeita.</p>
+                </div>
+                <button type="button" id="btn-excluir" class="btn btn-perigo">Excluir conta</button>
+            </section>
+
+            <div class="acoes-form">
+                <a href="#" class="btn btn-secundario">Cancelar</a>
+                <button type="submit" class="btn btn-primario">Salvar alterações</button>
+            </div>
+        </form>
+    </main>
+
+    <dialog id="dialogo-excluir" aria-labelledby="titulo-excluir">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="excluir_conta">
+            <h2 id="titulo-excluir">Excluir a conta?</h2>
+            <p>Todos os dados da instituição serão removidos e ela deixará de aparecer na plataforma. Essa ação não pode ser desfeita.</p>
+            <div class="dialogo-acoes">
+                <button type="button" id="btn-cancelar-exclusao" class="btn btn-secundario">Cancelar</button>
+                <button type="submit" class="btn btn-perigo">Sim, excluir</button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>

@@ -6,10 +6,8 @@ def home_view(request):
     busca = request.GET.get('busca', '').strip()
     cidade = request.GET.get('cidade', '').strip()
     
-    # Inicia buscando apenas as instituições ativas
     instituicoes = Instituicao.objects.filter(status='Ativa')
     
-    # Filtra por nome, cidade ou estado se o campo busca for preenchido
     if busca:
         instituicoes = instituicoes.filter(
             Q(nomeInst__icontains=busca) | 
@@ -17,7 +15,6 @@ def home_view(request):
             Q(estado__icontains=busca)
         )
         
-    # Filtra especificamente por cidade se o campo cidade for preenchido
     if cidade:
         instituicoes = instituicoes.filter(cidade__icontains=cidade)
         
@@ -52,3 +49,9 @@ def dashboard_instituicao_view(request):
 
 def dashboard_instituicao_perfil_view(request):
     return render(request, 'dashboard-instituicao-perfil.html')
+
+def dashboard_instituicao_contato_view(request):
+    return render(request, 'dashboard-instituicao-contato.html')
+
+def dashboard_instituicao_configuracoes_view(request):
+    return render(request, 'dashboard-instituicao-configuracoes.html')
