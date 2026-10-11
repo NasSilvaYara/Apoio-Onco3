@@ -3,10 +3,15 @@ from django.db.models import Q
 from .models import Instituicao
 
 def home_view(request):
+    """View para a página inicial"""
+    return render(request, 'index.html')
+
+def busca_view(request):
+    """View para a página/tela de busca e filtros"""
     busca = request.GET.get('busca', '').strip()
     cidade = request.GET.get('cidade', '').strip()
     
-    instituicoes = Instituicao.objects.filter(status='Ativa')
+    instituicoes = Instituicao.objects.all()
     
     if busca:
         instituicoes = instituicoes.filter(
@@ -23,7 +28,9 @@ def home_view(request):
         'busca': busca,
         'cidade': cidade,
     }
-    return render(request, 'index.html', context)
+    return render(request, 'busca.html', context)
+
+# Mantenha suas outras views aqui embaixo (login_view, cadastro_view, etc.)
 
 
 def dashboard_view(request):

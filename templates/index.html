@@ -48,7 +48,7 @@
             <h1 class="hero-title">Encontre <span class="highlight-apoio">apoio</span> perto de você</h1>
 
             <!-- Container de Busca Funcional do Django -->
-            <form action="{% url 'home' %}" method="GET" class="search-box-container">
+            <form action="/busca/" method="GET" class="search-box-container">
                 <div class="search-bar">
                     <div class="input-with-icon">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -90,29 +90,35 @@
         </div>
     </header>
 
-    <!-- ÁREA DINÂMICA: RESULTADOS DA BUSCA DO DJANGO -->
-    {% if busca or cidade %}
-    <section class="results-section">
-        <h2 class="results-title">Resultados da busca:</h2>
-        <div class="results-grid">
+  <!-- ÁREA DINÂMICA DE RESULTADOS DA BUSCA -->
+{% if busca or cidade or request.GET.busca %}
+<section class="results-section" style="padding: 40px 20px; background-color: #f9f9f9; text-align: center;">
+    <div class="results-container" style="max-width: 1200px; margin: 0 auto;">
+        
+        <h2 class="results-title" style="margin-bottom: 20px; color: #333;">
+            Resultados da busca: {% if busca %}<strong>"{{ busca }}"</strong>{% endif %}
+        </h2>
+
+        <div class="results-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
             {% for inst in instituicoes %}
-                <div class="card-inst-result">
-                    <h3>{{ inst.nomeInst }}</h3>
+                <div class="card-inst-result" style="background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; width: 300px; text-align: left;">
+                    <h3 style="color: #6c5ce7; margin-bottom: 10px;">{{ inst.nomeInst }}</h3>
                     <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
-                    {% if inst.telefone %}
-                        <p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>
-                    {% endif %}
-                    {% if inst.email %}
-                        <p><i class="fa-solid fa-envelope"></i> {{ inst.email }}</p>
-                    {% endif %}
-                    <a href="{% url 'home' %}" class="inst-btn" style="display:inline-block; margin-top:10px;">Ver instituição</a>
+                    {% if inst.telefone %}<p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>{% endif %}
+                    {% if inst.email %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email }}</p>{% endif %}
                 </div>
             {% empty %}
-                <p>Nenhuma instituição encontrada com os critérios informados.</p>
+                <div style="background: #fff; border: 2px dashed #6c5ce7; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; margin: 0 auto;">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 36px; color: #6c5ce7; margin-bottom: 10px;"></i>
+                    <h3 style="color: #333; margin-bottom: 8px;">Nenhuma instituição encontrada</h3>
+                    <p style="color: #666;">Não encontramos nenhuma instituição cadastrada para o termo "{{ busca }}".</p>
+                </div>
             {% endfor %}
         </div>
-    </section>
-    {% endif %}
+
+    </div>
+</section>
+{% endif %}
 
     <!-- Conteúdo Principal da Página -->
     <main class="main-content">
