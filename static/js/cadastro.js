@@ -64,6 +64,48 @@ form.addEventListener('submit', (e) => { e.preventDefault(); avancar(); });
 
 /* ---------- Validação por etapa ---------- */
 
+document.addEventListener('DOMContentLoaded', () => {
+    const campoCnpj = document.getElementById('cnpj');
+    const razaoSocial = document.getElementById('razao_social');
+    const nomeFantasia = document.getElementById('nome_fantasia');
+    const resultado = document.getElementById('resultado-cnpj');
+
+    campoCnpj.addEventListener('blur', async () => {
+        const cnpj = campoCnpj.value.replace(/\D/g, '');
+
+        razaoSocial.value = '';
+        nomeFantasia.value = '';
+        resultado.textContent = '';
+
+        if (cnpj.length !== 14) {
+            if (cnpj.length > 0) {
+                resultado.textContent = 'Informe um CNPJ com 14 dígitos.';
+            }
+            return;
+        }
+
+        resultado.textContent = 'Consultando CNPJ...';
+
+        try {
+            const resposta = await fetch(`/api/cnpj/${cnpj}/`);
+            const dados = await resposta.json();
+
+            if (!resposta.ok || dados.valido !== true || dados.ativo !== true) {
+                resultado.textContent =
+                    dados.mensagem || 'CNPJ inválido ou empresa inativa.';
+                return;
+            }
+
+            razaoSocial.value = dados.razao_social || '';
+            nomeFantasia.value = dados.nome_fantasia || '';
+            resultado.textContent = 'CNPJ válido e empresa ativa.';
+        } catch (erro) {
+            resultado.textContent =
+                'Não foi possível consultar o CNPJ. Tente novamente.';
+        }
+    });
+});
+
 function validar(i) {
   const etapa = etapas[i];
 
@@ -149,3 +191,4 @@ function montarRevisao() {
 }
 
 mostrar(0);
+
