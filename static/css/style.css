@@ -135,6 +135,7 @@ body {
 
 .search-bar {
     background-color: #5A3D7F;
+    border: none;
     padding: 8px 10px 8px 16px;
     border-radius: 16px;
     display: flex;
@@ -149,7 +150,7 @@ body {
     align-items: center;
     gap: 10px;
     flex: 1;
-    background-color: #E2DCED;
+    background-color: #FFFFFF;
     border-radius: 10px;
     padding: 8px 14px;
 }
@@ -201,8 +202,8 @@ body {
 }
 
 .filter-btn {
-    background-color: #E2DCED;
-    border: none;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(90, 61, 127, 0.18);
     padding: 8px 16px;
     border-radius: 12px;
     font-size: 13px;
@@ -1268,7 +1269,7 @@ img {
         width: 100%;
         padding: 15px 20px;
 
-        color: #FFFFFF;
+        color: #2B2140;
         font-size: 22px;
         font-weight: 600;
         text-decoration: none;

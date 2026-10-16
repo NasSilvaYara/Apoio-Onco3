@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ instituicao.nomeInst|default:"Cabelegria" }} | ApoioOnco</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}">
+</head>
+<body>
+	<header class="site-header">
+		<a class="site-header__brand" href="{% url 'home' %}" aria-label="ApoioOnco, página inicial">
+			<img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco">
+		</a>
+
+		<form class="site-search" action="{% url 'busca' %}" method="get" role="search">
+			<label class="site-search__label" for="busca-instituicoes">Buscar instituições</label>
+			<svg class="site-search__icon" viewBox="0 0 24 24" aria-hidden="true">
+				<circle cx="11" cy="11" r="7"></circle>
+				<path d="m16 16 4.5 4.5"></path>
+			</svg>
+			<input id="busca-instituicoes" name="busca" type="search" placeholder="Buscar instituições" value="{{ busca|default:'' }}">
+			<button type="submit" aria-label="Pesquisar instituições">
+				<svg viewBox="0 0 24 24" aria-hidden="true">
+					<path d="m5 12 14 0M13 6l6 6-6 6"></path>
+				</svg>
+			</button>
+		</form>
+	</header>
+
+	<main class="institution-page">
+		<a class="back-link" href="{% url 'filtro' %}">
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M19 12H5m7 7-7-7 7-7"></path>
+			</svg>
+			<span>Voltar</span>
+		</a>
+
+		<div class="institution-layout">
+			<div class="institution-main">
+				<section class="institution-heading" aria-labelledby="institution-name">
+				<div class="institution-logo">
+					{% if instituicao.logo %}
+						<img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nomeInst|default:'Cabelegria' }}">
+					{% else %}
+						<img src="{% static 'img/instituição 1.png' %}" alt="Logo da Cabelegria">
+					{% endif %}
+				</div>
+				<div class="institution-heading__content">
+					<h1 id="institution-name">{{ instituicao.nomeInst|default:"Cabelegria" }}</h1>
+					<p class="institution-location">{{ instituicao.cidade|default:"São Paulo" }} - {{ instituicao.estado|default:"SP" }}</p>
+					<span class="registration-status">Instituição cadastrada</span>
+				</div>
+				</section>
+
+				<section class="institution-details" aria-label="Informações da instituição">
+					<section class="content-section" aria-labelledby="about-title">
+						<h2 id="about-title">Sobre a instituição</h2>
+						<p>{{ instituicao.descricao|default:"O Cabelegria é uma ONG criada em 2013 que arrecada doações de cabelo para confeccionar e doar perucas gratuitamente a pacientes em tratamento contra o câncer ou com alopecia. A entrega é feita em hospitais, por envio postal e pelo Banco de Perucas Móvel, um caminhão itinerante focado na distribuição e na coleta de mechas." }}</p>
+					</section>
+
+					<section class="content-section" aria-labelledby="services-title">
+						<h2 id="services-title">Serviços oferecidos</h2>
+						<ul class="service-list">
+							{% if instituicao %}
+								{% for servico in instituicao.servicosOferecidos.all %}
+									<li>{{ servico.nome }}</li>
+								{% empty %}
+									<li>Nenhum serviço informado</li>
+								{% endfor %}
+							{% else %}
+								<li>Banco de perucas</li>
+							{% endif %}
+						</ul>
+					</section>
+
+					<section class="content-section" aria-labelledby="hours-title">
+						<h2 id="hours-title">Horário de funcionamento</h2>
+						<p>{{ instituicao.horarioAtendimento|default:"O atendimento presencial funciona de segunda-feira das 09h às 16h e de terça a sexta-feira das 08h às 16h, permanecendo fechado aos sábados e domingos." }}</p>
+					</section>
+				</section>
+			</div>
+
+			<div class="institution-aside">
+				<aside class="contact-panel" aria-labelledby="contact-title">
+				<h2 id="contact-title">Informações de contato</h2>
+				<dl class="contact-list">
+					<div class="contact-list__item">
+						<dt>Telefone</dt>
+						<dd>{{ instituicao.telefone|default:"(11) 3241-5795" }}</dd>
+					</div>
+					<div class="contact-list__item">
+						<dt>E-mail</dt>
+						<dd><a href="mailto:{{ instituicao.email|default:'contato@cabelegria.org' }}">{{ instituicao.email|default:"contato@cabelegria.org" }}</a></dd>
+					</div>
+					<div class="contact-list__item">
+						<dt>Site</dt>
+						<dd>
+							{% if instituicao.site %}
+								<a href="{{ instituicao.site }}" target="_blank" rel="noopener noreferrer">{{ instituicao.site }}</a>
+							{% else %}
+								<a href="https://www.cabelegria.org" target="_blank" rel="noopener noreferrer">www.cabelegria.org</a>
+							{% endif %}
+						</dd>
+					</div>
+					<div class="contact-list__item">
+						<dt>Endereço</dt>
+						<dd>
+							{{ instituicao.logradouro|default:"Avenida Luiz Dumont Villares, 1160 - Sala 86 - Jardim São Paulo" }}<br>
+							{{ instituicao.cidade|default:"São Paulo" }} - {{ instituicao.estado|default:"SP" }}
+						</dd>
+					</div>
+				</dl>
+			</aside>
+
+			<section class="map-panel" aria-labelledby="map-title">
+				<h2 id="map-title">Localização no mapa</h2>
+				<iframe
+					title="Mapa com a localização da instituição"
+					src="https://maps.google.com/maps?q={{ instituicao.logradouro|default:'Avenida Luiz Dumont Villares, 1160 - Sala 86 - Jardim São Paulo'|urlencode }}%2C%20{{ instituicao.cidade|default:'São Paulo'|urlencode }}%2C%20{{ instituicao.estado|default:'SP'|urlencode }}&amp;output=embed"
+					loading="lazy"
+					referrerpolicy="no-referrer-when-downgrade"></iframe>
+			</section>
+		</div>
+	</main>
+</body>
+</html>

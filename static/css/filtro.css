@@ -12,7 +12,7 @@
  
 body {
   font-family: "Poppins", system-ui, sans-serif;
-  background: var(--lilas-100);
+  background: var(--branco);
   color: var(--texto);
   min-height: 100vh;
 }
@@ -29,7 +29,7 @@ ul { list-style: none; }
   gap: 24px;
   padding: 14px 32px;
 }
-.topo__logo img { height: 38px; display: block; }
+.topo__logo img { display: block; width: auto; max-width: 100%; max-height: 50px; object-fit: contain; }
  
 .busca {
   flex: 1;
@@ -147,9 +147,9 @@ ul { list-style: none; }
     "corpo botao";
   align-items: end;
   gap: 8px 16px;
-  background: var(--branco);
-  border: 1px solid var(--roxo-500);
-  border-radius: 8px;
+  background: #FFF9FA;
+  border: 1px solid #F3E8EE;
+  border-radius: 20px;
   padding: 16px 20px;
   margin-bottom: 16px;
 }

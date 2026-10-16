@@ -41,9 +41,11 @@ body {
 }
 
 .logo-img {
-  width: 140px;
+  display: block;
+  width: auto;
   max-width: 100%;
-  height: auto;
+  max-height: 50px;
+  object-fit: contain;
 }
 
 .menu {

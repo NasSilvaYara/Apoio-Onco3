@@ -77,3 +77,6 @@ def dashboard_admin_configuracoes_view(request):
 
 def filtro_view(request):
     return render(request, 'filtro.html')
+
+def ver_instituicao_view(request):
+    return render(request, 'ver-instituicao.html')
