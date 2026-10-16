@@ -15,6 +15,7 @@ from ongs.views import (
     dashboard_admin_gerenciar_view,
     dashboard_admin_categoria_view,
     dashboard_admin_configuracoes_view,
+    filtro_view,
 )
 
 from ongs.cnpj_api import consultar_cnpj
@@ -81,4 +82,6 @@ urlpatterns = [
         dashboard_admin_configuracoes_view,
         name='dashboard_admin_configuracoes'
     ),
+
+    path('filtro/', filtro_view, name='filtro'),
 ]

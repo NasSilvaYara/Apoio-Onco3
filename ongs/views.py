@@ -75,5 +75,5 @@ def dashboard_admin_categoria_view(request):
 def dashboard_admin_configuracoes_view(request):
     return render(request, 'dashboard-admin-configuracoes.html')
 
-
-
+def filtro_view(request):
+    return render(request, 'filtro.html')

@@ -17,32 +17,101 @@
     <!-- Conexão com o CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const botao = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".nav-links");
+    const acoes = document.querySelector(".nav-actions");
+
+    if (!botao || !menu) return;
+
+    function fecharMenu() {
+        menu.classList.remove("menu-aberto");
+        botao.classList.remove("menu-aberto");
+        botao.setAttribute("aria-expanded", "false");
+        botao.setAttribute("aria-label", "Abrir menu");
+
+        if (acoes) {
+            acoes.classList.remove("menu-aberto");
+        }
+    }
+
+    botao.addEventListener("click", function () {
+        const aberto = !menu.classList.contains("menu-aberto");
+
+        menu.classList.toggle("menu-aberto", aberto);
+        botao.classList.toggle("menu-aberto", aberto);
+        botao.setAttribute("aria-expanded", String(aberto));
+        botao.setAttribute(
+            "aria-label",
+            aberto ? "Fechar menu" : "Abrir menu"
+        );
+
+        if (acoes) {
+            acoes.classList.toggle("menu-aberto", aberto);
+        }
+    });
+
+    menu.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", fecharMenu);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            fecharMenu();
+        }
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 820) {
+            fecharMenu();
+        }
+    });
+});
+</script>
+
 <body>
 
     <!-- 1. SEÇÃO INICIAL: HERO & HEADER (HOME) -->
     <header class="hero-header">
         <!-- Navegação Superior -->
-        <nav class="navbar">
-            <div class="nav-logo">
-                <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="nav-logo-full-img">
-            </div>
+       <nav class="navbar">
+    <div class="nav-logo">
+        <img src="{% static 'img/logo-inteira.png' %}"
+             alt="Logo ApoioOnco"
+             class="nav-logo-full-img">
+    </div>
 
-            <ul class="nav-links">
-                <li><a href="{% url 'home' %}" class="active">Início</a></li>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#instituicoes">Instituições</a></li>
-                <li><a href="#informacoes">Informações</a></li>
-            </ul>
+    <button class="menu-toggle"
+            type="button"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="menu-principal">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-            <div class="nav-actions">
-                <button class="theme-toggle-btn" aria-label="Alternar tema">
-                    <img src="{% static 'img/moon 1.png' %}" alt="Tema" class="moon-icon-img">
-                </button>
-                <!-- Botão Roxo Cadastrar/Login -->
-                <a href="{% url 'login' %}" class="btn-login">Fazer login/cadastro</a>
-            </div>
-        </nav>
+    <ul class="nav-links" id="menu-principal">
+        <li><a href="{% url 'home' %}" class="active">Início</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#instituicoes">Instituições</a></li>
+        <li><a href="#informacoes">Informações</a></li>
+    </ul>
 
+    <div class="nav-actions">
+        <button class="theme-toggle-btn" aria-label="Alternar tema">
+            <img src="{% static 'img/moon 1.png' %}"
+                 alt="Tema"
+                 class="moon-icon-img">
+        </button>
+
+        <a href="{% url 'login' %}" class="btn-login">
+            Fazer login/cadastro
+        </a>
+    </div>
+</nav>
         <!-- Conteúdo Principal do Banner Hero -->
         <div class="hero-content">
             <h1 class="hero-title">Encontre <span class="highlight-apoio">apoio</span> perto de você</h1>
@@ -54,10 +123,7 @@
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
                         <input type="text" name="busca" value="{{ busca }}" placeholder="O que você procura?">
                     </div>
-                    <div class="input-with-icon">
-                        <i class="fa-solid fa-location-dot search-icon"></i>
-                        <input type="text" name="cidade" value="{{ cidade }}" placeholder="Sua cidade">
-                    </div>
+                   
                     <button type="submit" class="search-btn">Buscar</button>
                 </div>
 
@@ -185,7 +251,7 @@
             <div class="institution-cards-container">
                 <div class="institution-card">
                     <div class="logo-box">
-                        <img src="{% static 'img/image 1.png' %}" alt="Instituto Mama" class="inst-logo">
+                       <img src="{% static 'img/image 1.png' %}" alt="Instituto Mama" class="inst-logo">
                     </div>
                     <h3 class="inst-title">Instituto mama</h3>
                     <p class="inst-location">Guarulhos - SP</p>
