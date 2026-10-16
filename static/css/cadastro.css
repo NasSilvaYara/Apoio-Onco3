@@ -155,6 +155,31 @@ button:hover {
   text-decoration: underline;
 }
 
+.formulario-login input[type="file"] {
+    width: 100%;
+    padding: 0.6rem 1.25rem;
+    border: 1px solid #DDD;
+    border-radius: 20px;
+    font-size: 1rem;
+    background-color: var(--branco);
+    color: var(--cinza);
+    cursor: pointer;
+}
+
+.formulario-login input[type="file"]:focus {
+    border-color: var(--roxo-escuro);
+}
+
+
+.formulario-login label:has(+ input[required], + select[required], + textarea[required])::after,
+.formulario-login label:has(input[required])::after,
+.formulario-login label:has(select[required])::after,
+.formulario-login label:has(textarea[required])::after {
+    content: " *";
+    color: #e74c3c; /* Vermelho */
+    font-weight: bold;
+}
+
 @media (max-width: 768px) {
   main {
     flex-direction: column;

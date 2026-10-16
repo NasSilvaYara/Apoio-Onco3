@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-udste#dd&*2(*oywmnt3i)!e*dm8*0-pp@nhvikli@sxu8*'
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true'
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'apoioonco.vercel.app',

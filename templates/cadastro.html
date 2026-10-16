@@ -91,11 +91,16 @@
                         <textarea id="descricao" name="descricao" rows="3" maxlength="300" required></textarea>
                     </div>
                     <div class="formulario-login">
+                        <label for="imagem_instituicao">Foto ou logo da instituição</label>
+                        <input type="file" id="imagem_instituicao" name="imagem_instituicao" accept="image/*">
+                    </div>
+                    
+                    <div class="formulario-login">
                         <label for="horario">Horário de atendimento</label>
                         <input type="text" id="horario" name="horario" placeholder="Ex.: seg a sex, 8h às 17h" required>
                     </div>
                     <fieldset class="servicos">
-                        <legend>Tipos de serviço</legend>
+                        <legend>Tipos de serviço <span style="color:#e74c3c;">*</span></legend>
                         <label class="check"><input type="checkbox" name="servicos" value="Banco de perucas"> Banco de
                             perucas</label>
                         <label class="check"><input type="checkbox" name="servicos" value="Banco de lenços"> Banco de
@@ -107,6 +112,7 @@
                     </fieldset>
                 </section>
 
+             
                 <!-- Etapa 3: Endereço -->
                 <section class="etapa">
                     <div class="linha">
@@ -122,19 +128,10 @@
                         </div>
                     </div>
                     <div class="formulario-login">
-                        <label for="logradouro">Logradouro</label>
-                        <input type="text" id="logradouro" name="logradouro" required>
+                        <label for="endereco">Endereço</label>
+                        <input type="text" id="endereco" name="endereco" required>
                     </div>
-                    <div class="linha">
-                        <div class="formulario-login">
-                            <label for="numero">Número</label>
-                            <input type="text" id="numero" name="numero" required>
-                        </div>
-                        <div class="formulario-login">
-                            <label for="complemento">Complemento <span class="opcional">(opcional)</span></label>
-                            <input type="text" id="complemento" name="complemento">
-                        </div>
-                    </div>
+                    
                     <div class="linha">
                         <div class="formulario-login">
                             <label for="bairro">Bairro</label>
@@ -152,7 +149,7 @@
                     <p class="ajuda">Preencha pelo menos uma opção.</p>
                     <div class="formulario-login">
                         <label for="telefone">Telefone</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000">
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" required>
                     </div>
                     <div class="formulario-login">
                         <label for="whatsapp">WhatsApp</label>

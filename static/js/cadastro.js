@@ -157,21 +157,47 @@ form.estado.addEventListener('input', () => {
   form.estado.value = form.estado.value.toUpperCase();
 });
 
+/* ---------- Manipulação do Input de Arquivo Customizado ---------- */
+const inputArquivo = document.getElementById('imagem_instituicao');
+const textoArquivo = document.getElementById('nome-arquivo-selecionado');
+
+if (inputArquivo && textoArquivo) {
+    inputArquivo.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            textoArquivo.textContent = e.target.files[0].name;
+            textoArquivo.style.color = 'var(--roxo-escuro)';
+            textoArquivo.style.fontWeight = '600';
+        } else {
+            textoArquivo.textContent = 'Escolher arquivo...';
+        }
+    });
+}
+
 /* ---------- Revisão ---------- */
+
+
 
 function montarRevisao() {
   const valor = (nome) => form[nome].value.trim() || '—';
   const servicos = [...form.querySelectorAll('input[name="servicos"]:checked')]
     .map((c) => c.value).join(', ');
 
+  const inputImagem = form.querySelector('#imagem_instituicao');
+  let nomeImagem = 'Nenhuma imagem selecionada';
+
+  if (inputImagem && inputImagem.files && inputImagem.files.length > 0) {
+    nomeImagem = inputImagem.files[0].name;
+  }
+
   const linhas = [
     ['CNPJ', valor('cnpj')],
     ['Instituição', valor('nome')],
     ['Tipo', valor('tipo')],
     ['Descrição', valor('descricao')],
+    ['Imagem/Logo', nomeImagem], 
     ['Horário', valor('horario')],
     ['Serviços', servicos || '—'],
-    ['Endereço', `${valor('logradouro')}, ${valor('numero')} - ${valor('bairro')}, ${valor('cidade')}/${valor('estado')} (${valor('cep')})`],
+    ['Endereço', `${valor('endereco')}, ${valor('bairro')}, ${valor('cidade')}/${valor('estado')} (${valor('cep')})`], // <--- Ajustado aqui!
     ['Telefone', valor('telefone')],
     ['WhatsApp', valor('whatsapp')],
     ['E-mail', valor('email_contato')],
@@ -191,4 +217,3 @@ function montarRevisao() {
 }
 
 mostrar(0);
-
