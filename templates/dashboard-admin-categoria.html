@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Categorias</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/categorias.css' %}">
+    
+    <script src="{% static 'js/categorias.js' %}" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+             <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item" aria-current="page" target="_blank">Dashboard</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item" target="_blank">Gerenciar</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item active" >Categorias</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
+        </nav>
+                <div class="sidebar-perfil">
+            <i class="ti ti-user-circle" aria-hidden="true"></i>
+            <div>
+                <strong>Administrador</strong>
+                <a href="#">Sair</a>
+            </div>
+        </div>
+    </aside>
+ 
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Categorias</h1>
+                <p class="welcome-subtitle">Tipos de apoio que as instituições podem oferecer.</p>
+            </div>
+        </header>
+ 
+        <div class="tabela-wrap">
+            <table class="tabela" id="tabela-categorias">
+                <caption class="so-leitor">Lista de categorias de apoio</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Categoria</th>
+                        <th scope="col" class="col-centro">Instituições</th>
+                        <th scope="col" class="col-centro">Ativa</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-id="1" data-instituicoes="8">
+                        <td class="nome-categoria">Banco de perucas</td>
+                        <td class="col-centro">8</td>
+                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Banco de perucas ativa"></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-editar" aria-label="Editar Banco de perucas"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-excluir" aria-label="Excluir Banco de perucas" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-id="2" data-instituicoes="12">
+                        <td class="nome-categoria">Banco de lenços</td>
+                        <td class="col-centro">12</td>
+                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Banco de lenços ativa"></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-editar" aria-label="Editar Banco de lenços"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-excluir" aria-label="Excluir Banco de lenços" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-id="3" data-instituicoes="15">
+                        <td class="nome-categoria">Apoio psicológico</td>
+                        <td class="col-centro">15</td>
+                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Apoio psicológico ativa"></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-editar" aria-label="Editar Apoio psicológico"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-excluir" aria-label="Excluir Apoio psicológico" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-id="4" data-instituicoes="10">
+                        <td class="nome-categoria">Assistência social</td>
+                        <td class="col-centro">10</td>
+                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Assistência social ativa"></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-editar" aria-label="Editar Assistência social"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-excluir" aria-label="Excluir Assistência social" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+ 
+        <section class="nova-categoria">
+            <h2>Nova categoria</h2>
+            <form id="form-nova" class="linha-nova" novalidate>
+                <div class="campo">
+                    <label for="nome-nova">Nome da categoria</label>
+                    <input type="text" id="nome-nova" maxlength="40" autocomplete="off">
+                </div>
+                <button type="submit" class="btn-adicionar">Adicionar</button>
+            </form>
+            <p id="mensagem-form" class="mensagem" role="status"></p>
+        </section>
+    </main>
+ 
+    <!-- Modelo de linha para as categorias novas -->
+    <template id="linha-modelo">
+        <tr data-instituicoes="0">
+            <td class="nome-categoria"></td>
+            <td class="col-centro">0</td>
+            <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked></td>
+            <td class="acoes">
+                <button type="button" class="btn-editar"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                <button type="button" class="btn-excluir" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+            </td>
+        </tr>
+    </template>
+ 
+    <!-- Janela de edição -->
+    <dialog id="dialogo-editar" aria-labelledby="titulo-editar">
+        <form id="form-editar" action="" method="POST" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="editar_categoria">
+            <input type="hidden" name="categoria_id" id="id-editar">
+            <h2 id="titulo-editar">Editar categoria</h2>
+            <div class="campo">
+                <label for="nome-editar">Nome da categoria</label>
+                <input type="text" id="nome-editar" name="nome" maxlength="40" autocomplete="off" required>
+            </div>
+            <p id="mensagem-editar" class="mensagem" role="status"></p>
+            <div class="dialogo-acoes">
+                <button type="button" id="btn-cancelar-edicao" class="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn-adicionar">Salvar</button>
+            </div>
+        </form>
+    </dialog>
+
+</body>
+</html>

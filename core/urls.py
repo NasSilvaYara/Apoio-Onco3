@@ -11,6 +11,10 @@ from ongs.views import (
     dashboard_instituicao_perfil_view,
     dashboard_instituicao_contato_view,
     dashboard_instituicao_configuracoes_view,
+    dashboard_admin_view,
+    dashboard_admin_gerenciar_view,
+    dashboard_admin_categoria_view,
+    dashboard_admin_configuracoes_view,
 )
 
 from ongs.cnpj_api import consultar_cnpj
@@ -52,5 +56,29 @@ urlpatterns = [
         'api/cnpj/<str:cnpj>/',
         consultar_cnpj,
         name='consultar_cnpj'
+    ),
+
+    path(
+        'dashboard/admin/',
+        dashboard_admin_view,
+        name='dashboard_admin'
+    ),
+
+    path(
+        'dashboard/admin/gerenciar/',
+        dashboard_admin_gerenciar_view,
+        name='dashboard_admin_gerenciar'
+    ),
+
+    path(
+        'dashboard/admin/categoria/',
+        dashboard_admin_categoria_view,
+        name='dashboard_admin_categoria'
+    ),
+
+    path(
+        'dashboard/admin/configuracoes/',
+        dashboard_admin_configuracoes_view,
+        name='dashboard_admin_configuracoes'
     ),
 ]

@@ -1,0 +1,164 @@
+
+.tabela .col-centro { text-align: center; }
+.acoes { display: flex; align-items: center; gap: 8px; }
+
+.btn-editar {
+  width: 34px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border: none;
+  border-radius: 8px;
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-excluir {
+  width: 34px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  border: none;
+  border-radius: 8px;
+  background: #F9C0CE;
+  color: #C0243F;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.btn-editar:hover,
+.btn-excluir:hover { opacity: 0.85; }
+
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: #C8CDD3;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--branco);
+  transition: transform 0.2s;
+}
+
+.switch:checked { background: var(--roxo-escuro); }
+.switch:checked::after { transform: translateX(20px); }
+
+.nova-categoria {
+  max-width: 900px;
+  margin-top: 20px;
+  padding: 20px 24px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+}
+
+.nova-categoria h2 {
+  font-size: 0.95rem;
+  color: var(--roxo-escuro);
+  margin-bottom: 12px;
+}
+
+.linha-nova {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.campo { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 200px; }
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--roxo-escuro);
+}
+
+.campo input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #DDD;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.campo input:focus {
+  border-color: var(--roxo-escuro);
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+.btn-adicionar,
+.btn-cancelar {
+  padding: 0.65rem 1.8rem;
+  border: 2px solid var(--roxo-escuro);
+  border-radius: 20px;
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-cancelar { background: var(--branco); color: var(--roxo-escuro); }
+
+.btn-adicionar:hover,
+.btn-cancelar:hover { opacity: 0.9; }
+
+.mensagem {
+  min-height: 1.2em;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--roxo-escuro);
+}
+
+.mensagem.erro { color: #8A0F32; }
+
+dialog {
+  margin: auto;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  padding: 24px;
+  border: none;
+  border-radius: 20px;
+}
+
+dialog::backdrop { background: rgba(30, 15, 50, 0.6); }
+
+dialog h2 {
+  font-size: 1.1rem;
+  color: var(--roxo-escuro);
+  margin-bottom: 12px;
+}
+
+.dialogo-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-editar:focus-visible,
+.btn-excluir:focus-visible,
+.switch:focus-visible,
+.btn-adicionar:focus-visible,
+.btn-cancelar:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}

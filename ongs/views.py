@@ -62,3 +62,18 @@ def dashboard_instituicao_contato_view(request):
 
 def dashboard_instituicao_configuracoes_view(request):
     return render(request, 'dashboard-instituicao-configuracoes.html')
+
+def dashboard_admin_view(request):
+    return render(request, 'dashboard-admin.html')
+
+def dashboard_admin_gerenciar_view(request):
+    return render(request, 'dashboard-admin-gerenciar.html')
+
+def dashboard_admin_categoria_view(request):
+    return render(request, 'dashboard-admin-categoria.html')
+
+def dashboard_admin_configuracoes_view(request):
+    return render(request, 'dashboard-admin-configuracoes.html')
+
+
+

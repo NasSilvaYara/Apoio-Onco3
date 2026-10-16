@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ApoioOnco - Gerenciar instituições</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
+    <script src="{% static 'js/gerenciar.js' %}" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
+        </div>
+        <nav class="menu" aria-label="Menu principal">
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item" target="_blank">Dashboard</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item active" aria-current="page">Gerenciar</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" target="_blank">Categorias</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
+           
+        </nav>
+        <div class="sidebar-perfil">
+            <i class="ti ti-user-circle" aria-hidden="true"></i>
+            <div>
+                <strong>Administrador</strong>
+                <a href="#">Sair</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 class="welcome-title">Gerenciar instituições</h1>
+                <p class="welcome-subtitle">Aprove, edite e inative as instituições cadastradas.</p>
+            </div>
+        </header>
+
+        <div class="filtros">
+            <div class="campo-busca">
+                <label for="busca" class="so-leitor">Buscar por nome, CNPJ ou cidade</label>
+                <input type="search" id="busca" placeholder="Buscar por nome ou cidade">
+                <i class="ti ti-search" aria-hidden="true"></i>
+            </div>
+            <div class="campo-select">
+                <label for="filtro-status" class="so-leitor">Filtrar por status</label>
+                <select id="filtro-status">
+                    <option value="">Todos os status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="desativado">Desativado</option>
+                </select>
+            </div>
+            <div class="campo-select">
+                <label for="filtro-cidade" class="so-leitor">Filtrar por cidade</label>
+                <select id="filtro-cidade">
+                    <option value="">Todas as cidades</option>
+                </select>
+            </div>
+        </div>
+
+        <p class="contagem" id="contagem" aria-live="polite"></p>
+
+        <div class="tabela-wrap">
+            <table class="tabela" id="tabela">
+                <caption class="so-leitor">Lista de instituições cadastradas</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Instituição</th>
+                        <th scope="col">CNPJ</th>
+                        <th scope="col">Cidade</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {# Dados de exemplo. Depois troque por {% for inst in instituicoes %}, usando data-status="{{ inst.status }}" e data-cidade="{{ inst.cidade }}" #}
+                    <tr data-status="ativo" data-cidade="São Paulo">
+                        <td>Cabelegria</td><td>00.000.000/0001-00</td><td>São Paulo</td>
+                        <td><span class="badge">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Inativar" aria-label="Inativar Cabelegria"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Ativar" aria-label="Ativar Cabelegria"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-status="pendente" data-cidade="São Paulo">
+                        <td>Rede Laço Rosa</td><td>00.000.000/0002-81</td><td>São Paulo</td>
+                        <td><span class="badge">Pendente</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Recusar" aria-label="Recusar Rede Laço Rosa"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Aprovar" aria-label="Aprovar Rede Laço Rosa"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-status="ativo" data-cidade="Campinas">
+                        <td>Casa de Apoio Esperança</td><td>00.000.000/0003-62</td><td>Campinas</td>
+                        <td><span class="badge">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Inativar" aria-label="Inativar Casa de Apoio Esperança"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Ativar" aria-label="Ativar Casa de Apoio Esperança"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-status="desativado" data-cidade="Santos">
+                        <td>Instituto Vida Nova</td><td>00.000.000/0004-43</td><td>Santos</td>
+                        <td><span class="badge">Desativado</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Inativar" aria-label="Inativar Instituto Vida Nova"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Reativar" aria-label="Reativar Instituto Vida Nova"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-status="ativo" data-cidade="São Paulo">
+                        <td>ONG Renascer</td><td>00.000.000/0005-24</td><td>São Paulo</td>
+                        <td><span class="badge">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Inativar" aria-label="Inativar ONG Renascer"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Ativar" aria-label="Ativar ONG Renascer"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                    <tr data-status="ativo" data-cidade="Osasco">
+                        <td>Hospital Esperança</td><td>00.000.000/0006-05</td><td>Osasco</td>
+                        <td><span class="badge">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao btn-inativar" data-acao="inativar" title="Inativar" aria-label="Inativar Hospital Esperança"><i class="ti ti-ban" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-acao btn-aprovar" data-acao="aprovar" title="Ativar" aria-label="Ativar Hospital Esperança"><i class="ti ti-check" aria-hidden="true"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="sem-resultado" id="sem-resultado" hidden>Nenhuma instituição encontrada com esses filtros.</p>
+        </div>
+    </main>
+
+</body>
+</html>
