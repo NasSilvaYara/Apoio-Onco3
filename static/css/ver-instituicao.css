@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 :root {
 	color-scheme: light;
 	--brand-purple: #684390;
@@ -6,7 +7,7 @@
 	--text: #29252d;
 	--muted: #605b62;
 	--line: #ece9ed;
-	--surface: #fff0f4;
+	--surface: #ffffff;
 	--success: #39b51e;
 	--success-bg: #d5f4cb;
 }
@@ -19,10 +20,9 @@ body {
 	min-width: 320px;
 	min-height: 100vh;
 	margin: 0;
-	background: #fff9fb;
+	background-color:var(--surface);
 	color: var(--text);
-	font-family: "Poppins", system-ui, sans-serif;
-	-webkit-font-smoothing: antialiased;
+	font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 a {

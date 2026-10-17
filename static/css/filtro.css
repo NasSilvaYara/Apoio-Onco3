@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 :root {
   --roxo-900: #4a2a7a;
   --roxo-700: #5b3a93;
@@ -11,7 +13,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
  
 body {
-  font-family: "Poppins", system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
   background: var(--branco);
   color: var(--texto);
   min-height: 100vh;

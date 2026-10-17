@@ -16,6 +16,7 @@
 
     <!-- Conexão com o CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
+    <script src="{% static 'js/home.js' %}" defer></script>
 </head>
 
 <script>
@@ -129,17 +130,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Botões de Filtro/Pills -->
                 <div class="search-filters">
-                    <button type="button" class="filter-btn">
-                        <i class="fa-solid fa-location-dot pin-icon"></i> Localização
-                    </button>
-                    <button type="button" class="filter-btn">
-                        <i class="fa-solid fa-hospital pin-icon"></i> Tipo de instituição
-                    </button>
-                    <button type="button" class="filter-btn">
-                        <i class="fa-solid fa-hand-holding-heart pin-icon"></i> Tipo de apoio
-                    </button>
-                </div>
+        <!-- Filtro de Localização -->
+        <div class="filtro-dropdown-container">
+            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-localizacao">
+                <i class="fa-solid fa-location-dot pin-icon"></i> Localização
+            </button>
+            <ul id="menu-localizacao" class="dropdown-filtro" hidden>
+                <li><button type="button">São Paulo - SP</button></li>
+                <li><button type="button">Rio de Janeiro - RJ</button></li>
+                <li><button type="button">Belo Horizonte - MG</button></li>
+            </ul>
+        </div>
+
+        <!-- Filtro de Tipo de Instituição -->
+        <div class="filtro-dropdown-container">
+            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-instituicao">
+                <i class="fa-solid fa-hospital pin-icon"></i> Tipo de instituição
+            </button>
+            <ul id="menu-instituicao" class="dropdown-filtro" hidden>
+                <li><button type="button">ONG/associação</button></li>
+                <li><button type="button">Hospital</button></li>
+                <li><button type="button">Clínica/Centro de tratamento</button></li>
+                <li><button type="button">Casa de apoio</button></li>
+                <li><button type="button">Instituto/fundação</button></li>
+                <li><button type="button">Voluntariado/grupo de apoio/button></li>
+                <li><button type="button">Órgão público/button></li>
+                <li><button type="button">Outros</button></li>
+                
+            </ul>
+        </div>
+
+        <!-- Filtro de Tipo de Apoio -->
+        <div class="filtro-dropdown-container">
+            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-apoio">
+                <i class="fa-solid fa-hand-holding-heart pin-icon"></i> Tipo de apoio
+            </button>
+            <ul id="menu-apoio" class="dropdown-filtro" hidden>
+                <li><button type="button">Banco de perucas</button></li>
+                <li><button type="button">Banco de lenço</button></li>
+                <li><button type="button">Apoio psicológico</button></li>
+                <li><button type="button">Assistência social</button></li>
+            </ul>
+        </div>
+    </div>
             </form>
+
 
             <!-- Chamada Principal e Ilustração -->
             <div class="hero-banner">
