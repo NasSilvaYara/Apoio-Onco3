@@ -1,53 +1,195 @@
-from django.shortcuts import render
-from django.http import Http404
-from django.db.models import Q
-from .models import Instituicao
+from functools import wraps
+
+import requests
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.validators import validate_email
+from django.db import IntegrityError, transaction
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+
+from .cnpj_api import consultar_dados_cnpj
+from .forms import (
+    CadastroInstituicaoForm,
+    ContatoInstituicaoForm,
+    PerfilInstituicaoForm,
+)
+from .models import Instituicao, TipoApoio
+from .validators import normalizar_cnpj
+
+
+def instituicao_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        instituicao = getattr(request.user, 'instituicao', None)
+        if instituicao is None:
+            raise PermissionDenied
+        request.instituicao = instituicao
+        return view(request, *args, **kwargs)
+
+    return wrapped
+
+
+def administrador_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return view(request, *args, **kwargs)
+
+    return wrapped
+
+
+def _email_disponivel(email, usuario):
+    if len(email) > 150:
+        return False
+    try:
+        validate_email(email)
+    except ValidationError:
+        return False
+    User = get_user_model()
+    return not User.objects.filter(
+        Q(username__iexact=email) | Q(email__iexact=email)
+    ).exclude(pk=usuario.pk).exists()
+
+
+def _instituicoes_publicas(params):
+    instituicoes = Instituicao.objects.filter(status='ativa').prefetch_related(
+        'servicosOferecidos'
+    )
+    termo = (params.get('busca') or params.get('q') or '').strip()
+    localizacao = (params.get('localizacao') or params.get('cidade') or '').strip()
+    estado = params.get('estado', '').strip().upper()
+    tipo = params.get('tipo', '').strip()
+    servicos = params.getlist('servicos') if hasattr(params, 'getlist') else []
+    nomes_servicos = {
+        'banco_peruca': 'Banco de perucas',
+        'banco_lenco': 'Banco de len├ºos',
+        'apoio_psicologico': 'Apoio psicol├│gico',
+        'assistencia_social': 'Assist├¬ncia social',
+    }
+
+    if termo:
+        instituicoes = instituicoes.filter(
+            Q(nomeInst__icontains=termo)
+            | Q(cidade__icontains=termo)
+            | Q(estado__icontains=termo)
+            | Q(servicosOferecidos__nome__icontains=termo)
+        )
+    if localizacao:
+        instituicoes = instituicoes.filter(
+            Q(cidade__icontains=localizacao)
+            | Q(estado__icontains=localizacao)
+            | Q(cep__icontains=localizacao)
+        )
+    if estado:
+        instituicoes = instituicoes.filter(estado__iexact=estado)
+    if tipo:
+        instituicoes = instituicoes.filter(tipo=tipo)
+    if servicos:
+        servicos_filtrados = [nomes_servicos.get(item, item) for item in servicos]
+        instituicoes = instituicoes.filter(
+            servicosOferecidos__nome__in=servicos_filtrados
+        )
+
+    return instituicoes.distinct().order_by('nomeInst')
+
+
+def _contexto_busca(request):
+    params = request.GET
+    instituicoes = _instituicoes_publicas(params)
+    localizacao = params.get('localizacao') or params.get('cidade', '')
+    return {
+        'instituicoes': instituicoes,
+        'destaques': instituicoes[:3],
+        'busca': params.get('busca') or params.get('q', ''),
+        'localizacao': localizacao,
+        'cidade': localizacao,
+        'estado_selecionado': params.get('estado', ''),
+        'tipo_selecionado': params.get('tipo', ''),
+        'servicos_selecionados': params.getlist('servicos'),
+    }
+
 
 def home_view(request):
-    """View para a página inicial"""
-    return render(request, 'index.html')
+    context = _contexto_busca(request)
+    return render(request, 'index.html', context)
+
 
 def busca_view(request):
-    """View para a página/tela de busca e filtros"""
-    busca = request.GET.get('busca', '').strip()
-    cidade = request.GET.get('cidade', '').strip()
-    
-    instituicoes = Instituicao.objects.all()
-    
-    if busca:
-        instituicoes = instituicoes.filter(
-            Q(nomeInst__icontains=busca) | 
-            Q(cidade__icontains=busca) | 
-            Q(estado__icontains=busca)
-        )
-        
-    if cidade:
-        instituicoes = instituicoes.filter(cidade__icontains=cidade)
-        
-    context = {
-        'instituicoes': instituicoes,
-        'busca': busca,
-        'cidade': cidade,
-    }
-    return render(request, 'busca.html', context)
-
-# Mantenha suas outras views aqui embaixo (login_view, cadastro_view, etc.)
+    return render(request, 'filtro.html', _contexto_busca(request))
 
 
+def filtro_view(request):
+    return render(request, 'filtro.html', _contexto_busca(request))
+
+
+@administrador_required
 def dashboard_view(request):
-    total_instituicoes = Instituicao.objects.count()
-    instituicoes_ativas = Instituicao.objects.filter(status='Ativa').count()
-    aguardando_aprovacao = Instituicao.objects.filter(status='Pendente').count()
-    
     context = {
-        'total_instituicoes': total_instituicoes,
-        'instituicoes_ativas': instituicoes_ativas,
-        'aguardando_aprovacao': aguardando_aprovacao,
+        'total_instituicoes': Instituicao.objects.count(),
+        'instituicoes_ativas': Instituicao.objects.filter(status='ativa').count(),
+        'aguardando_aprovacao': Instituicao.objects.filter(status='pendente').count(),
     }
     return render(request, 'dashboard.html', context)
 
+
 def login_view(request):
-    return render(request, 'login.html')
+    if request.user.is_authenticated:
+        return redirect('dashboard_admin' if request.user.is_staff else 'dashboard_instituicao')
+
+    erro = ''
+    if request.method == 'POST':
+        identificacao = request.POST.get('identificacao', '').strip()
+        senha = request.POST.get('senha', '')
+        user_model = get_user_model()
+        usuario = None
+
+        if '@' not in identificacao:
+            instituicao = Instituicao.objects.filter(
+                cnpj=normalizar_cnpj(identificacao)
+            ).select_related('usuario').first()
+            if instituicao:
+                usuario = instituicao.usuario
+
+        if usuario is None:
+            usuario = user_model.objects.filter(
+                Q(username__iexact=identificacao) | Q(email__iexact=identificacao)
+            ).first()
+
+        autenticado = None
+        if usuario is not None:
+            autenticado = authenticate(
+                request,
+                username=usuario.get_username(),
+                password=senha,
+            )
+
+        if autenticado is not None:
+            if not autenticado.is_staff and not hasattr(autenticado, 'instituicao'):
+                erro = 'Esta conta n├úo est├í vinculada a uma institui├º├úo.'
+            else:
+                login(request, autenticado)
+                destino = 'dashboard_admin' if autenticado.is_staff else 'dashboard_instituicao'
+                return redirect(destino)
+        else:
+            erro = 'E-mail/CNPJ ou senha inv├ílidos.'
+
+    return render(request, 'login.html', {'erro': erro})
+
+
+@require_POST
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
 
 def informacoes_view(request, tema):
     """Exibe conteúdo informativo específico para cada tema."""
@@ -213,34 +355,353 @@ def informacoes_view(request, tema):
     )
 
 def cadastro_view(request):
-    return render(request, 'cadastro.html')
+    form = CadastroInstituicaoForm(request.POST or None, request.FILES or None)
+    if request.method == 'POST' and form.is_valid():
+        cnpj = form.cleaned_data['cnpj']
+        try:
+            dados_cnpj = consultar_dados_cnpj(cnpj)
+        except requests.HTTPError as erro:
+            if erro.response is not None and erro.response.status_code == 404:
+                form.add_error('cnpj', 'CNPJ n├úo encontrado na base consultada.')
+            elif erro.response is not None and erro.response.status_code == 400:
+                form.add_error('cnpj', 'CNPJ rejeitado pela consulta cadastral.')
+            else:
+                form.add_error(None, 'N├úo foi poss├¡vel validar o CNPJ. Tente novamente.')
+        except (requests.RequestException, ValueError):
+            form.add_error(None, 'N├úo foi poss├¡vel validar o CNPJ. Tente novamente.')
+        else:
+            situacao = dados_cnpj.get('descricao_situacao_cadastral', '')
+            if situacao.strip().upper() != 'ATIVA':
+                form.add_error('cnpj', 'A institui├º├úo precisa estar ativa na Receita Federal.')
+            else:
+                User = get_user_model()
+                dados = form.cleaned_data
+                try:
+                    with transaction.atomic():
+                        usuario = User.objects.create_user(
+                            username=dados['email'],
+                            email=dados['email'],
+                            password=dados['senha'],
+                        )
+                        instituicao = Instituicao.objects.create(
+                            cnpj=cnpj,
+                            nomeInst=dados['nome'],
+                            tipo=dados['tipo'],
+                            descricao=dados['descricao'],
+                            conteudoInformativo='',
+                            logo=dados['imagem_instituicao'],
+                            telefone=dados['telefone'],
+                            telefone_whatsapp=dados['whatsapp'],
+                            email=usuario.email,
+                            email_contato=dados['email_contato'],
+                            site=dados['site'],
+                            logradouro=dados['endereco'],
+                            cep=dados['cep'],
+                            bairro=dados['bairro'],
+                            cidade=dados['cidade'],
+                            estado=dados['estado'],
+                            horarioAtendimento=dados['horario'],
+                            redes_sociais=dados['redes'],
+                            status='pendente',
+                            usuario=usuario,
+                        )
+                        instituicao.servicosOferecidos.set(dados['servicos'])
+                except IntegrityError:
+                    form.add_error(None, 'CNPJ ou e-mail j├í cadastrado. Confira os dados informados.')
+                else:
+                    messages.success(
+                        request,
+                        'Cadastro enviado. A institui├º├úo ficar├í dispon├¡vel ap├│s a aprova├º├úo administrativa.',
+                    )
+                    return redirect('login')
 
+    return render(request, 'cadastro.html', {
+        'form': form,
+        'servicos_selecionados': request.POST.getlist('servicos'),
+    })
+
+
+@instituicao_required
 def dashboard_instituicao_view(request):
-    return render(request, 'dashboard-instituicao.html')
+    instituicao = request.instituicao
+    return render(request, 'dashboard-instituicao.html', {
+        'instituicao': instituicao,
+        'total_servicos': instituicao.servicosOferecidos.count(),
+    })
 
+
+@instituicao_required
 def dashboard_instituicao_perfil_view(request):
-    return render(request, 'dashboard-instituicao-perfil.html')
+    instituicao = request.instituicao
+    if request.method == 'POST':
+        form = PerfilInstituicaoForm(request.POST, request.FILES)
+        if form.is_valid():
+            dados = form.cleaned_data
+            instituicao.nomeInst = dados['nome']
+            instituicao.tipo = dados['tipo']
+            instituicao.descricao = dados['descricao']
+            instituicao.cep = dados['cep']
+            instituicao.logradouro = dados['logradouro']
+            instituicao.bairro = dados['bairro']
+            instituicao.cidade = dados['cidade']
+            instituicao.estado = dados['estado']
+            instituicao.horarioAtendimento = dados['horario']
+            if dados.get('logo'):
+                instituicao.logo = dados['logo']
+            try:
+                with transaction.atomic():
+                    instituicao.full_clean()
+                    instituicao.save()
+                    instituicao.servicosOferecidos.set(dados['servicos'])
+            except ValidationError as erro:
+                form.add_error(None, erro.messages)
+            else:
+                messages.success(request, 'Perfil atualizado com sucesso.')
+                return redirect('dashboard_instituicao_perfil')
+        else:
+            messages.error(request, 'Revise os campos destacados e tente novamente.')
+    else:
+        form = PerfilInstituicaoForm(initial={
+            'nome': instituicao.nomeInst,
+            'tipo': instituicao.tipo,
+            'descricao': instituicao.descricao,
+            'cep': instituicao.cep,
+            'logradouro': instituicao.logradouro,
+            'bairro': instituicao.bairro,
+            'cidade': instituicao.cidade,
+            'estado': instituicao.estado,
+            'horario': instituicao.horarioAtendimento,
+            'servicos': instituicao.servicosOferecidos.values_list('nome', flat=True),
+        })
+    return render(request, 'dashboard-instituicao-perfil.html', {
+        'instituicao': instituicao,
+        'form': form,
+        'tipos_apoio': TipoApoio.objects.filter(ativo=True),
+    })
 
+
+@instituicao_required
 def dashboard_instituicao_contato_view(request):
-    return render(request, 'dashboard-instituicao-contato.html')
+    instituicao = request.instituicao
+    if request.method == 'POST':
+        form = ContatoInstituicaoForm(request.POST)
+        if form.is_valid():
+            dados = form.cleaned_data
+            instituicao.telefone = dados['telefone']
+            instituicao.telefone_whatsapp = dados['whatsapp']
+            instituicao.email_contato = dados['email_atendimento']
+            instituicao.site = dados['site']
+            instituicao.instagram = dados['instagram']
+            instituicao.facebook = dados['facebook']
+            try:
+                instituicao.full_clean()
+                instituicao.save()
+            except ValidationError as erro:
+                form.add_error(None, erro)
+            else:
+                messages.success(request, 'Dados de contato atualizados com sucesso.')
+                return redirect('dashboard_instituicao_contato')
+        else:
+            messages.error(request, 'Revise os dados de contato e tente novamente.')
+    else:
+        form = ContatoInstituicaoForm(initial={
+            'telefone': instituicao.telefone,
+            'whatsapp': instituicao.telefone_whatsapp,
+            'email_atendimento': instituicao.email_contato,
+            'site': instituicao.site,
+            'instagram': instituicao.instagram,
+            'facebook': instituicao.facebook,
+        })
+    return render(request, 'dashboard-instituicao-contato.html', {
+        'instituicao': instituicao,
+        'form': form,
+    })
 
+
+@instituicao_required
 def dashboard_instituicao_configuracoes_view(request):
-    return render(request, 'dashboard-instituicao-configuracoes.html')
+    instituicao = request.instituicao
+    if request.method == 'POST' and request.POST.get('acao') != 'excluir_conta':
+        email = request.POST.get('email', '').strip().lower()
+        User = get_user_model()
+        if not _email_disponivel(email, request.user):
+            messages.error(request, 'Informe um e-mail v├ílido e ainda n├úo utilizado.')
+        else:
+            request.user.email = email
+            request.user.username = email
+            instituicao.email = email
+            if request.POST.get('visivel') and instituicao.status == 'inativa':
+                instituicao.status = 'ativa'
+            elif not request.POST.get('visivel') and instituicao.status == 'ativa':
+                instituicao.status = 'inativa'
+            try:
+                with transaction.atomic():
+                    request.user.save(update_fields=['email', 'username'])
+                    instituicao.full_clean()
+                    instituicao.save()
+            except (IntegrityError, ValidationError):
+                messages.error(request, 'N├úo foi poss├¡vel salvar as configura├º├Áes. Verifique o e-mail.')
+            else:
+                messages.success(request, 'Configura├º├Áes salvas com sucesso.')
+                return redirect('dashboard_instituicao_configuracoes')
+    return render(request, 'dashboard-instituicao-configuracoes.html', {
+        'instituicao': instituicao,
+    })
 
+
+@administrador_required
 def dashboard_admin_view(request):
-    return render(request, 'dashboard-admin.html')
+    cidades = Instituicao.objects.filter(status='ativa').values_list(
+        'cidade', flat=True
+    ).distinct()
+    dados_dashboard = {}
+    tipos = list(TipoApoio.objects.filter(ativo=True).order_by('nome'))
+    for cidade in cidades:
+        dados_dashboard[cidade] = [
+            Instituicao.objects.filter(
+                status='ativa', cidade=cidade, servicosOferecidos=tipo
+            ).distinct().count()
+            for tipo in tipos
+        ]
+    return render(request, 'dashboard-admin.html', {
+        'total_instituicoes': Instituicao.objects.count(),
+        'instituicoes_inativas': Instituicao.objects.filter(status='inativa').count(),
+        'instituicoes_ativas': Instituicao.objects.filter(status='ativa').count(),
+        'aguardando_aprovacao': Instituicao.objects.filter(status='pendente').count(),
+        'tipos_apoio': tipos,
+        'dashboard_grafico': {
+            'tipos': [tipo.nome for tipo in tipos],
+            'cidades': dados_dashboard,
+        },
+        'total_por_tipo': [
+            (tipo.nome, tipo.instituicoes.filter(status='ativa').distinct().count())
+            for tipo in tipos
+        ],
+    })
 
+
+@administrador_required
 def dashboard_admin_gerenciar_view(request):
-    return render(request, 'dashboard-admin-gerenciar.html')
+    if request.method == 'POST':
+        instituicao = get_object_or_404(Instituicao, pk=request.POST.get('instituicao_id'))
+        acao = request.POST.get('acao')
+        status_por_acao = {
+            'aprovar': 'ativa',
+            'rejeitar': 'rejeitada',
+            'inativar': 'inativa',
+            'reativar': 'ativa',
+        }
+        if acao in status_por_acao:
+            instituicao.status = status_por_acao[acao]
+            instituicao.motivo_rejeicao = (
+                request.POST.get('motivo_rejeicao', '').strip()
+                if acao == 'rejeitar' else ''
+            )
+            instituicao.avaliado_por = request.user
+            instituicao.avaliado_em = timezone.now()
+            instituicao.save(update_fields=[
+                'status', 'motivo_rejeicao', 'avaliado_por', 'avaliado_em', 'atualizado_em'
+            ])
+            messages.success(request, 'Status da institui├º├úo atualizado.')
+        return redirect('dashboard_admin_gerenciar')
 
+    instituicoes = Instituicao.objects.all().order_by('nomeInst')
+    busca = request.GET.get('busca', '').strip()
+    status = request.GET.get('status', '')
+    cidade = request.GET.get('cidade', '')
+    if busca:
+        instituicoes = instituicoes.filter(
+            Q(nomeInst__icontains=busca)
+            | Q(cnpj__icontains=busca)
+            | Q(cidade__icontains=busca)
+        )
+    if status:
+        instituicoes = instituicoes.filter(status=status)
+    if cidade:
+        instituicoes = instituicoes.filter(cidade__iexact=cidade)
+    return render(request, 'dashboard-admin-gerenciar.html', {
+        'instituicoes': instituicoes,
+        'cidades': Instituicao.objects.order_by('cidade').values_list(
+            'cidade', flat=True
+        ).distinct(),
+        'status_selecionado': status,
+        'cidade_selecionada': cidade,
+        'busca': busca,
+    })
+
+
+@administrador_required
 def dashboard_admin_categoria_view(request):
-    return render(request, 'dashboard-admin-categoria.html')
+    if request.method == 'POST':
+        acao = request.POST.get('acao')
+        nome = request.POST.get('nome', '').strip()
+        if acao in {'criar_categoria', 'editar_categoria'} and (
+            not nome or len(nome) > 100
+        ):
+            messages.error(request, 'Informe um nome de categoria com at├® 100 caracteres.')
+        elif acao == 'criar_categoria':
+            categoria, criada = TipoApoio.objects.get_or_create(nome=nome)
+            messages.success(
+                request,
+                'Categoria criada.' if criada else 'Esta categoria j├í estava cadastrada.',
+            )
+        elif acao == 'editar_categoria':
+            categoria = get_object_or_404(TipoApoio, pk=request.POST.get('categoria_id'))
+            categoria.nome = nome
+            try:
+                categoria.save(update_fields=['nome'])
+            except IntegrityError:
+                messages.error(request, 'J├í existe uma categoria com esse nome.')
+            else:
+                messages.success(request, 'Categoria atualizada.')
+        elif acao == 'alternar_categoria':
+            categoria = get_object_or_404(TipoApoio, pk=request.POST.get('categoria_id'))
+            categoria.ativo = not categoria.ativo
+            categoria.save(update_fields=['ativo'])
+            messages.success(request, 'Visibilidade da categoria atualizada.')
+        elif acao == 'excluir_categoria':
+            categoria = get_object_or_404(TipoApoio, pk=request.POST.get('categoria_id'))
+            if categoria.instituicoes.exists():
+                messages.error(request, 'Esta categoria est├í vinculada a institui├º├Áes e n├úo pode ser exclu├¡da.')
+            else:
+                categoria.delete()
+                messages.success(request, 'Categoria exclu├¡da.')
+        return redirect('dashboard_admin_categoria')
 
+    return render(request, 'dashboard-admin-categoria.html', {
+        'categorias': TipoApoio.objects.annotate(
+            total_instituicoes=Count('instituicoes', distinct=True)
+        ).order_by('nome'),
+    })
+
+
+@administrador_required
 def dashboard_admin_configuracoes_view(request):
-    return render(request, 'dashboard-admin-configuracoes.html')
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip().lower()
+        User = get_user_model()
+        if not _email_disponivel(email, request.user):
+            messages.error(request, 'Informe um e-mail v├ílido e ainda n├úo utilizado.')
+        else:
+            request.user.email = email
+            request.user.username = email
+            try:
+                request.user.save(update_fields=['email', 'username'])
+            except IntegrityError:
+                messages.error(request, 'Este e-mail j├í est├í associado a uma conta.')
+            else:
+                messages.success(request, 'E-mail administrativo atualizado.')
+                return redirect('dashboard_admin_configuracoes')
+    return render(request, 'dashboard-admin-configuracoes.html', {
+        'administradores': get_user_model().objects.filter(is_staff=True).order_by('email'),
+    })
 
-def filtro_view(request):
-    return render(request, 'filtro.html')
 
-def ver_instituicao_view(request):
-    return render(request, 'ver-instituicao.html')
+def ver_instituicao_view(request, pk=None):
+    if pk is None:
+        pk = request.GET.get('id')
+    instituicao = get_object_or_404(
+        Instituicao.objects.filter(status='ativa').prefetch_related('servicosOferecidos'),
+        pk=pk,
+    )
+    return render(request, 'ver-instituicao.html', {'instituicao': instituicao})

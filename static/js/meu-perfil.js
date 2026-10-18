@@ -1,10 +1,6 @@
 
-const TODOS_APOIOS = [
-  'Banco de perucas',
-  'Banco de lenços',
-  'Apoio psicológico',
-  'Assistência social',
-];
+const TODOS_APOIOS = [...document.querySelectorAll('#menu-apoios [data-apoio]')]
+  .map((botao) => botao.dataset.apoio);
 
 /* ---------- Trocar logo (prévia) ---------- */
 

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ instituicao.nomeInst|default:"Cabelegria" }} | ApoioOnco</title>
+	<title>{{ instituicao.nomeInst }} | ApoioOnco</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,14 +44,12 @@
 				<section class="institution-heading" aria-labelledby="institution-name">
 				<div class="institution-logo">
 					{% if instituicao.logo %}
-						<img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nomeInst|default:'Cabelegria' }}">
-					{% else %}
-						<img src="{% static 'img/instituição 1.png' %}" alt="Logo da Cabelegria">
+						<img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nomeInst }}">
 					{% endif %}
 				</div>
 				<div class="institution-heading__content">
-					<h1 id="institution-name">{{ instituicao.nomeInst|default:"Cabelegria" }}</h1>
-					<p class="institution-location">{{ instituicao.cidade|default:"São Paulo" }} - {{ instituicao.estado|default:"SP" }}</p>
+					<h1 id="institution-name">{{ instituicao.nomeInst }}</h1>
+					<p class="institution-location">{{ instituicao.cidade }} - {{ instituicao.estado }}</p>
 					<span class="registration-status">Instituição cadastrada</span>
 				</div>
 				</section>
@@ -59,7 +57,7 @@
 				<section class="institution-details" aria-label="Informações da instituição">
 					<section class="content-section" aria-labelledby="about-title">
 						<h2 id="about-title">Sobre a instituição</h2>
-						<p>{{ instituicao.descricao|default:"O Cabelegria é uma ONG criada em 2013 que arrecada doações de cabelo para confeccionar e doar perucas gratuitamente a pacientes em tratamento contra o câncer ou com alopecia. A entrega é feita em hospitais, por envio postal e pelo Banco de Perucas Móvel, um caminhão itinerante focado na distribuição e na coleta de mechas." }}</p>
+						<p>{{ instituicao.descricao }}</p>
 					</section>
 
 					<section class="content-section" aria-labelledby="services-title">
@@ -71,15 +69,13 @@
 								{% empty %}
 									<li>Nenhum serviço informado</li>
 								{% endfor %}
-							{% else %}
-								<li>Banco de perucas</li>
 							{% endif %}
 						</ul>
 					</section>
 
 					<section class="content-section" aria-labelledby="hours-title">
 						<h2 id="hours-title">Horário de funcionamento</h2>
-						<p>{{ instituicao.horarioAtendimento|default:"O atendimento presencial funciona de segunda-feira das 09h às 16h e de terça a sexta-feira das 08h às 16h, permanecendo fechado aos sábados e domingos." }}</p>
+						<p>{{ instituicao.horarioAtendimento }}</p>
 					</section>
 				</section>
 			</div>
@@ -90,11 +86,11 @@
 				<dl class="contact-list">
 					<div class="contact-list__item">
 						<dt>Telefone</dt>
-						<dd>{{ instituicao.telefone|default:"(11) 3241-5795" }}</dd>
+						<dd>{{ instituicao.telefone }}{% if instituicao.telefone_whatsapp %}<br>{{ instituicao.telefone_whatsapp }}{% endif %}</dd>
 					</div>
 					<div class="contact-list__item">
 						<dt>E-mail</dt>
-						<dd><a href="mailto:{{ instituicao.email|default:'contato@cabelegria.org' }}">{{ instituicao.email|default:"contato@cabelegria.org" }}</a></dd>
+						<dd>{% if instituicao.email_contato %}<a href="mailto:{{ instituicao.email_contato }}">{{ instituicao.email_contato }}</a>{% endif %}</dd>
 					</div>
 					<div class="contact-list__item">
 						<dt>Site</dt>
@@ -102,15 +98,14 @@
 							{% if instituicao.site %}
 								<a href="{{ instituicao.site }}" target="_blank" rel="noopener noreferrer">{{ instituicao.site }}</a>
 							{% else %}
-								<a href="https://www.cabelegria.org" target="_blank" rel="noopener noreferrer">www.cabelegria.org</a>
 							{% endif %}
 						</dd>
 					</div>
 					<div class="contact-list__item">
 						<dt>Endereço</dt>
 						<dd>
-							{{ instituicao.logradouro|default:"Avenida Luiz Dumont Villares, 1160 - Sala 86 - Jardim São Paulo" }}<br>
-							{{ instituicao.cidade|default:"São Paulo" }} - {{ instituicao.estado|default:"SP" }}
+							{{ instituicao.logradouro }}{% if instituicao.bairro %}, {{ instituicao.bairro }}{% endif %}<br>
+							{{ instituicao.cidade }} - {{ instituicao.estado }}
 						</dd>
 					</div>
 				</dl>
@@ -120,7 +115,7 @@
 				<h2 id="map-title">Localização no mapa</h2>
 				<iframe
 					title="Mapa com a localização da instituição"
-					src="https://maps.google.com/maps?q={{ instituicao.logradouro|default:'Avenida Luiz Dumont Villares, 1160 - Sala 86 - Jardim São Paulo'|urlencode }}%2C%20{{ instituicao.cidade|default:'São Paulo'|urlencode }}%2C%20{{ instituicao.estado|default:'SP'|urlencode }}&amp;output=embed"
+					src="https://maps.google.com/maps?q={{ instituicao.logradouro|urlencode }}%2C%20{{ instituicao.cidade|urlencode }}%2C%20{{ instituicao.estado|urlencode }}&amp;output=embed"
 					loading="lazy"
 					referrerpolicy="no-referrer-when-downgrade"></iframe>
 			</section>

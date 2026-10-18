@@ -1,10 +1,20 @@
 """Validadores e normalizadores usados pelos models."""
 import re
+from pathlib import Path
+
+from PIL import Image, UnidentifiedImageError
 
 from django.core.exceptions import ValidationError
 
 _PESOS_DV1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
 _PESOS_DV2 = [6] + _PESOS_DV1
+_FORMATOS_IMAGEM = {
+    '.jpg': 'JPEG',
+    '.jpeg': 'JPEG',
+    '.png': 'PNG',
+    '.webp': 'WEBP',
+}
+_TAMANHO_MAXIMO_IMAGEM = 5 * 1024 * 1024
 
 
 def normalizar_cnpj(valor):
@@ -40,5 +50,26 @@ def gerar_cnpj(base12):
 def validar_cnpj(valor):
     if not cnpj_valido(valor):
         raise ValidationError('CNPJ inválido.', code='cnpj_invalido')
+
+
+def validar_imagem_instituicao(arquivo):
+    extensao = Path(arquivo.name).suffix.lower()
+    if extensao not in _FORMATOS_IMAGEM:
+        raise ValidationError('Envie uma imagem JPG, JPEG, PNG ou WEBP.')
+    if arquivo.size > _TAMANHO_MAXIMO_IMAGEM:
+        raise ValidationError('A imagem deve ter no máximo 5 MB.')
+
+    try:
+        arquivo.seek(0)
+        with Image.open(arquivo) as imagem:
+            formato = imagem.format
+            imagem.verify()
+    except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError):
+        raise ValidationError('O arquivo enviado não é uma imagem válida.') from None
+    finally:
+        arquivo.seek(0)
+
+    if formato != _FORMATOS_IMAGEM[extensao]:
+        raise ValidationError('A extensão do arquivo não corresponde ao formato da imagem.')
 
 

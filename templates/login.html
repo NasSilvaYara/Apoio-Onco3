@@ -18,7 +18,12 @@
          <h1>Bem vindo de volta</h1>
         <p class="subtitulo">Acesse sua conta para gerenciar as informações da sua instituição.</p>
 
-        <form action="" method="POST">
+        {% if erro %}<p role="alert">{{ erro }}</p>{% endif %}
+        {% if messages %}
+            {% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}
+        {% endif %}
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
             <div class="formulario-login">
                 <label for="identificacao">E-mail ou CNPJ</label>
                 <input type="text" id="identificacao" name="identificacao" required>

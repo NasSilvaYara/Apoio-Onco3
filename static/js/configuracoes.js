@@ -1,13 +1,18 @@
 
 const dialogo = document.getElementById('dialogo-excluir');
+const abrirExclusao = document.getElementById('btn-excluir');
+const cancelarExclusao = document.getElementById('btn-cancelar-exclusao');
 
-document.getElementById('btn-excluir')
-  .addEventListener('click', () => dialogo.showModal());
+if (dialogo && abrirExclusao) {
+  abrirExclusao.addEventListener('click', () => dialogo.showModal());
+}
 
-document.getElementById('btn-cancelar-exclusao')
-  .addEventListener('click', () => dialogo.close());
+if (dialogo && cancelarExclusao) {
+  cancelarExclusao.addEventListener('click', () => dialogo.close());
+}
 
-
-dialogo.addEventListener('click', (e) => {
-  if (e.target === dialogo) dialogo.close();
-});
+if (dialogo) {
+  dialogo.addEventListener('click', (e) => {
+    if (e.target === dialogo) dialogo.close();
+  });
+}

@@ -43,15 +43,21 @@
 
             <h1 id="titulo-etapa" class="titulo-etapa">Validar o CNPJ</h1>
 
-            <form id="cadastro" action="" method="POST" novalidate>
+            <form id="cadastro" action="{% url 'cadastro' %}" method="POST" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
+                {% if form.errors %}
+                    <div class="form-erros" role="alert">
+                        <p>Não foi possível concluir o cadastro. Revise as informações abaixo.</p>
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
 
                 <!-- Etapa 1: CNPJ -->
                 <section class="etapa">
                     <div class="formulario-login">
                         <label for="cnpj">CNPJ</label>
-                        <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"
-                            maxlength="18" required>
+                        <input type="text" id="cnpj" name="cnpj" inputmode="text" placeholder="00.000.000/0000-00"
+                            maxlength="18" value="{{ form.cnpj.value|default:'' }}" required>
                     </div>
                     <div id="resultado-cnpj" role="status" aria-live="polite"></div>
 
@@ -70,45 +76,42 @@
                 <section class="etapa">
                     <div class="formulario-login">
                         <label for="nome">Nome da instituição</label>
-                        <input type="text" id="nome" name="nome" required>
+                        <input type="text" id="nome" name="nome" value="{{ form.nome.value|default:'' }}" required>
                     </div>
                     <div class="formulario-login">
                         <label for="tipo">Tipo de instituição</label>
                         <select id="tipo" name="tipo" required>
-                            <option value="" selected disabled>Selecione</option>
-                            <option>ONG / associação</option>
-                            <option>Hospital</option>
-                            <option>Clínica / centro de tratamento</option>
-                            <option>Casa de apoio</option>
-                            <option>Instituto / fundação</option>
-                            <option>Voluntariado / grupo de apoio</option>
-                            <option>Órgão público</option>
-                            <option>Outros</option>
+                            <option value="" disabled {% if not form.tipo.value %}selected{% endif %}>Selecione</option>
+                            <option value="ong_associacao" {% if form.tipo.value == 'ong_associacao' %}selected{% endif %}>ONG / associação</option>
+                            <option value="hospital" {% if form.tipo.value == 'hospital' %}selected{% endif %}>Hospital</option>
+                            <option value="clinica_centro_tratamento" {% if form.tipo.value == 'clinica_centro_tratamento' %}selected{% endif %}>Clínica / centro de tratamento</option>
+                            <option value="casa_apoio" {% if form.tipo.value == 'casa_apoio' %}selected{% endif %}>Casa de apoio</option>
+                            <option value="instituto_fundacao" {% if form.tipo.value == 'instituto_fundacao' %}selected{% endif %}>Instituto / fundação</option>
+                            <option value="voluntariado_grupo_apoio" {% if form.tipo.value == 'voluntariado_grupo_apoio' %}selected{% endif %}>Voluntariado / grupo de apoio</option>
+                            <option value="orgao_publico" {% if form.tipo.value == 'orgao_publico' %}selected{% endif %}>Órgão público</option>
+                            <option value="outros" {% if form.tipo.value == 'outros' %}selected{% endif %}>Outros</option>
                         </select>
                     </div>
                     <div class="formulario-login">
                         <label for="descricao">Descrição</label>
-                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required></textarea>
+                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ form.descricao.value|default:'' }}</textarea>
                     </div>
                     <div class="formulario-login">
                         <label for="imagem_instituicao">Foto ou logo da instituição</label>
-                        <input type="file" id="imagem_instituicao" name="imagem_instituicao" accept="image/*">
+                        <input type="file" id="imagem_instituicao" name="imagem_instituicao" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
                     </div>
                     
                     <div class="formulario-login">
                         <label for="horario">Horário de atendimento</label>
-                        <input type="text" id="horario" name="horario" placeholder="Ex.: seg a sex, 8h às 17h" required>
+                        <input type="text" id="horario" name="horario" placeholder="Ex.: seg a sex, 8h às 17h" value="{{ form.horario.value|default:'' }}" required>
                     </div>
                     <fieldset class="servicos">
                         <legend>Tipos de serviço <span style="color:#e74c3c;">*</span></legend>
-                        <label class="check"><input type="checkbox" name="servicos" value="Banco de perucas"> Banco de
-                            perucas</label>
-                        <label class="check"><input type="checkbox" name="servicos" value="Banco de lenços"> Banco de
-                            lenços</label>
-                        <label class="check"><input type="checkbox" name="servicos" value="Apoio psicológico"> Apoio
-                            psicológico</label>
-                        <label class="check"><input type="checkbox" name="servicos" value="Assistência social">
-                            Assistência social</label>
+                        {% for servico in form.fields.servicos.queryset %}
+                        <label class="check"><input type="checkbox" name="servicos" value="{{ servico.pk }}" {% if servico.pk|stringformat:'s' in servicos_selecionados %}checked{% endif %}> {{ servico.nome }}</label>
+                        {% empty %}
+                        <p>Nenhum tipo de apoio disponível no momento.</p>
+                        {% endfor %}
                     </fieldset>
                 </section>
 
@@ -119,27 +122,27 @@
                         <div class="formulario-login">
                             <label for="cep">CEP</label>
                             <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000"
-                                maxlength="9" required>
+                                maxlength="9" value="{{ form.cep.value|default:'' }}" required>
                         </div>
                         <div class="formulario-login">
                             <label for="estado">Estado (UF)</label>
-                            <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP"
+                            <input type="text" id="estado" name="estado" maxlength="2" placeholder="SP" value="{{ form.estado.value|default:'' }}"
                                 pattern="[A-Za-z]{2}" title="Use a sigla do estado, com 2 letras" required>
                         </div>
                     </div>
                     <div class="formulario-login">
                         <label for="endereco">Endereço</label>
-                        <input type="text" id="endereco" name="endereco" required>
+                        <input type="text" id="endereco" name="endereco" value="{{ form.endereco.value|default:'' }}" required>
                     </div>
                     
                     <div class="linha">
                         <div class="formulario-login">
                             <label for="bairro">Bairro</label>
-                            <input type="text" id="bairro" name="bairro" required>
+                            <input type="text" id="bairro" name="bairro" value="{{ form.bairro.value|default:'' }}" required>
                         </div>
                         <div class="formulario-login">
                             <label for="cidade">Cidade</label>
-                            <input type="text" id="cidade" name="cidade" required>
+                            <input type="text" id="cidade" name="cidade" value="{{ form.cidade.value|default:'' }}" required>
                         </div>
                     </div>
                 </section>
@@ -149,23 +152,23 @@
                     <p class="ajuda">Preencha pelo menos uma opção.</p>
                     <div class="formulario-login">
                         <label for="telefone">Telefone</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" required>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ form.telefone.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
                         <label for="whatsapp">WhatsApp</label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000">
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ form.whatsapp.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
                         <label for="email_contato">E-mail de atendimento</label>
-                        <input type="email" id="email_contato" name="email_contato">
+                        <input type="email" id="email_contato" name="email_contato" value="{{ form.email_contato.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
                         <label for="site">Site</label>
-                        <input type="url" id="site" name="site" placeholder="https://">
+                        <input type="url" id="site" name="site" placeholder="https://" value="{{ form.site.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
                         <label for="redes">Outras redes sociais <span class="opcional">(opcional)</span></label>
-                        <input type="text" id="redes" name="redes" placeholder="@suainstituicao">
+                        <input type="text" id="redes" name="redes" placeholder="@suainstituicao" value="{{ form.redes.value|default:'' }}">
                     </div>
                 </section>
 
@@ -174,7 +177,7 @@
                     <p class="ajuda">Com esses dados você entra no painel da instituição.</p>
                     <div class="formulario-login">
                         <label for="email">E-mail de acesso</label>
-                        <input type="email" id="email" name="email" autocomplete="email" required>
+                        <input type="email" id="email" name="email" autocomplete="email" value="{{ form.email.value|default:'' }}" required>
                     </div>
                     <div class="formulario-login">
                         <label for="senha">Senha</label>

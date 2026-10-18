@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 
 from ongs.views import (
@@ -18,6 +20,7 @@ from ongs.views import (
     dashboard_admin_configuracoes_view,
     filtro_view,
     ver_instituicao_view,
+    logout_view,
 )
 
 from ongs.cnpj_api import consultar_cnpj
@@ -32,6 +35,7 @@ urlpatterns = [
 
     path('login/', login_view, name='login'),
     path('cadastro/', cadastro_view, name='cadastro'),
+    path('logout/', logout_view, name='logout'),
 
     path('dashboard/', dashboard_view, name='dashboard'),
 
@@ -88,4 +92,8 @@ urlpatterns = [
 
     path('filtro/', filtro_view, name='filtro'),
     path('instituicao/', ver_instituicao_view, name='ver_instituicao'),
+    path('instituicao/<int:pk>/', ver_instituicao_view, name='ver_instituicao_detalhe'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

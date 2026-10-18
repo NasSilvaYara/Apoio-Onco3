@@ -11,8 +11,7 @@
 </head>
 <body>
  
-  <!-- BACK-END: action="" envia para a própria página. Ajuste se a URL de resultados for outra. -->
-  <form action="" method="get">
+  <form action="{% url 'busca' %}" method="get">
  
     <!-- ===== TOPO ===== -->
     <header class="topo">
@@ -21,7 +20,7 @@
       </a>
  
       <div class="busca" role="search">
-        <input class="busca__campo" type="search" name="q" placeholder="O que você procura?"
+        <input class="busca__campo" type="search" name="q" value="{{ busca }}" placeholder="O que você procura?"
                aria-label="Buscar instituições">
         <button class="busca__botao" type="submit" aria-label="Pesquisar">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -39,71 +38,71 @@
         <h2 class="filtros__titulo">Filtros</h2>
  
         <label class="filtros__label" for="localizacao">Localização</label>
-        <input class="filtros__campo" id="localizacao" type="text" name="localizacao"
-               placeholder="Cidade, estado ou CEP">
+         <input class="filtros__campo" id="localizacao" type="text" name="localizacao"
+           value="{{ localizacao }}" placeholder="Cidade, estado ou CEP">
  
  
         <label class="filtros__label" for="estado">Estado</label>
         <select class="filtros__campo" id="estado" name="estado">
           <option value="">Todos os estados</option>
-          <option value="AC">Acre</option>
-          <option value="AL">Alagoas</option>
-          <option value="AP">Amapá</option>
-          <option value="AM">Amazonas</option>
-          <option value="BA">Bahia</option>
-          <option value="CE">Ceará</option>
-          <option value="DF">Distrito Federal</option>
-          <option value="ES">Espírito Santo</option>
-          <option value="GO">Goiás</option>
-          <option value="MA">Maranhão</option>
-          <option value="MT">Mato Grosso</option>
-          <option value="MS">Mato Grosso do Sul</option>
-          <option value="MG">Minas Gerais</option>
-          <option value="PA">Pará</option>
-          <option value="PB">Paraíba</option>
-          <option value="PR">Paraná</option>
-          <option value="PE">Pernambuco</option>
-          <option value="PI">Piauí</option>
-          <option value="RJ">Rio de Janeiro</option>
-          <option value="RN">Rio Grande do Norte</option>
-          <option value="RS">Rio Grande do Sul</option>
-          <option value="RO">Rondônia</option>
-          <option value="RR">Roraima</option>
-          <option value="SC">Santa Catarina</option>
-          <option value="SP">São Paulo</option>
-          <option value="SE">Sergipe</option>
-          <option value="TO">Tocantins</option>
+          <option value="AC" {% if estado_selecionado == 'AC' %}selected{% endif %}>Acre</option>
+          <option value="AL" {% if estado_selecionado == 'AL' %}selected{% endif %}>Alagoas</option>
+          <option value="AP" {% if estado_selecionado == 'AP' %}selected{% endif %}>Amapá</option>
+          <option value="AM" {% if estado_selecionado == 'AM' %}selected{% endif %}>Amazonas</option>
+          <option value="BA" {% if estado_selecionado == 'BA' %}selected{% endif %}>Bahia</option>
+          <option value="CE" {% if estado_selecionado == 'CE' %}selected{% endif %}>Ceará</option>
+          <option value="DF" {% if estado_selecionado == 'DF' %}selected{% endif %}>Distrito Federal</option>
+          <option value="ES" {% if estado_selecionado == 'ES' %}selected{% endif %}>Espírito Santo</option>
+          <option value="GO" {% if estado_selecionado == 'GO' %}selected{% endif %}>Goiás</option>
+          <option value="MA" {% if estado_selecionado == 'MA' %}selected{% endif %}>Maranhão</option>
+          <option value="MT" {% if estado_selecionado == 'MT' %}selected{% endif %}>Mato Grosso</option>
+          <option value="MS" {% if estado_selecionado == 'MS' %}selected{% endif %}>Mato Grosso do Sul</option>
+          <option value="MG" {% if estado_selecionado == 'MG' %}selected{% endif %}>Minas Gerais</option>
+          <option value="PA" {% if estado_selecionado == 'PA' %}selected{% endif %}>Pará</option>
+          <option value="PB" {% if estado_selecionado == 'PB' %}selected{% endif %}>Paraíba</option>
+          <option value="PR" {% if estado_selecionado == 'PR' %}selected{% endif %}>Paraná</option>
+          <option value="PE" {% if estado_selecionado == 'PE' %}selected{% endif %}>Pernambuco</option>
+          <option value="PI" {% if estado_selecionado == 'PI' %}selected{% endif %}>Piauí</option>
+          <option value="RJ" {% if estado_selecionado == 'RJ' %}selected{% endif %}>Rio de Janeiro</option>
+          <option value="RN" {% if estado_selecionado == 'RN' %}selected{% endif %}>Rio Grande do Norte</option>
+          <option value="RS" {% if estado_selecionado == 'RS' %}selected{% endif %}>Rio Grande do Sul</option>
+          <option value="RO" {% if estado_selecionado == 'RO' %}selected{% endif %}>Rondônia</option>
+          <option value="RR" {% if estado_selecionado == 'RR' %}selected{% endif %}>Roraima</option>
+          <option value="SC" {% if estado_selecionado == 'SC' %}selected{% endif %}>Santa Catarina</option>
+          <option value="SP" {% if estado_selecionado == 'SP' %}selected{% endif %}>São Paulo</option>
+          <option value="SE" {% if estado_selecionado == 'SE' %}selected{% endif %}>Sergipe</option>
+          <option value="TO" {% if estado_selecionado == 'TO' %}selected{% endif %}>Tocantins</option>
         </select>
  
         <label class="filtros__label" for="tipo">Tipo de Instituição</label>
         <select class="filtros__campo" id="tipo" name="tipo">
           <option value="">Todos</option>
-          <option value="ong_associacao">ONG/ associação</option>
-          <option value="hospital">Hospital</option>
-          <option value="clinica_centro_tratamento">Clínica/ centro de tratamento</option>
-          <option value="casa_apoio">Casa de apoio</option>
-          <option value="instituto_fundacao">Instituto/fundação</option>
-          <option value="voluntariado_grupo_apoio">Voluntariado/ grupo de apoio</option>
-          <option value="orgao_publico">Órgão público</option>
-          <option value="outros">Outros</option>
+          <option value="ong_associacao" {% if tipo_selecionado == 'ong_associacao' %}selected{% endif %}>ONG/ associação</option>
+          <option value="hospital" {% if tipo_selecionado == 'hospital' %}selected{% endif %}>Hospital</option>
+          <option value="clinica_centro_tratamento" {% if tipo_selecionado == 'clinica_centro_tratamento' %}selected{% endif %}>Clínica/ centro de tratamento</option>
+          <option value="casa_apoio" {% if tipo_selecionado == 'casa_apoio' %}selected{% endif %}>Casa de apoio</option>
+          <option value="instituto_fundacao" {% if tipo_selecionado == 'instituto_fundacao' %}selected{% endif %}>Instituto/fundação</option>
+          <option value="voluntariado_grupo_apoio" {% if tipo_selecionado == 'voluntariado_grupo_apoio' %}selected{% endif %}>Voluntariado/ grupo de apoio</option>
+          <option value="orgao_publico" {% if tipo_selecionado == 'orgao_publico' %}selected{% endif %}>Órgão público</option>
+          <option value="outros" {% if tipo_selecionado == 'outros' %}selected{% endif %}>Outros</option>
         </select>
  
         <fieldset class="filtros__servicos">
           <legend class="filtros__label">Serviços</legend>
         <label class="check">
-          <input type="checkbox" name="servicos" value="banco_peruca">
+          <input type="checkbox" name="servicos" value="banco_peruca" {% if 'banco_peruca' in servicos_selecionados %}checked{% endif %}>
           <span>Banco de Peruca</span>
         </label>
         <label class="check">
-          <input type="checkbox" name="servicos" value="banco_lenco">
+          <input type="checkbox" name="servicos" value="banco_lenco" {% if 'banco_lenco' in servicos_selecionados %}checked{% endif %}>
           <span>Banco de Lenço</span>
         </label>
         <label class="check">
-          <input type="checkbox" name="servicos" value="apoio_psicologico">
+          <input type="checkbox" name="servicos" value="apoio_psicologico" {% if 'apoio_psicologico' in servicos_selecionados %}checked{% endif %}>
           <span>Apoio Psicológico</span>
         </label>
         <label class="check">
-          <input type="checkbox" name="servicos" value="assistencia_social">
+          <input type="checkbox" name="servicos" value="assistencia_social" {% if 'assistencia_social' in servicos_selecionados %}checked{% endif %}>
           <span>Assistência Social</span>
         </label>
         </fieldset>
@@ -113,82 +112,33 @@
  
       <!-- ===== RESULTADOS ===== -->
       <section class="lista">
-        <!-- BACK-END: trocar o X pelo total de resultados -->
-        <h1 class="lista__titulo">X Instituições encontradas</h1>
+        <h1 class="lista__titulo">{{ instituicoes|length }} Instituições encontradas</h1>
  
         <!-- BACK-END: mostrar este bloco quando houver resultados; senão, mostrar o bloco "sem-resultados" abaixo -->
         <div class="com-resultados">
-          <!-- BACK-END: repetir este card para cada instituição (nome, cidade, UF, logo, serviços, link) -->
+          {% for inst in instituicoes %}
           <article class="card">
             <div class="card__logo">
-              <img src="{% static 'img/instituição 1.png' %}" alt="Instituto Mama" class="inst-logo">
+              {% if inst.logo %}<img src="{{ inst.logo.url }}" alt="Logo de {{ inst.nomeInst }}" class="inst-logo">{% endif %}
             </div>
  
             
             <div class="card__corpo">
-              <h2 class="card__nome">Casa de Apoio Esperança</h2>
+              <h2 class="card__nome">{{ inst.nomeInst }}</h2>
               <p class="card__local">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-                São Paulo - SP
+                {{ inst.cidade }} - {{ inst.estado }}
               </p>
               <ul class="tags">
-                <li class="tag">Banco de Peruca</li>
-                <li class="tag">Apoio Psicológico</li>
+                {% for servico in inst.servicosOferecidos.all %}<li class="tag">{{ servico.nome }}</li>{% endfor %}
               </ul>
             </div>
  
-            <a class="card__botao" href="#">Ver Instituição</a>
+            <a class="card__botao" href="{% url 'ver_instituicao_detalhe' inst.pk %}">Ver Instituição</a>
           </article>
- 
-          <article class="card">
-            <div class="card__logo">
-            <img src="{% static 'img/image 1.png' %}" alt="Instituto Mama" class="inst-logo">
-            </div>
- 
-            <div class="card__corpo">
-              <h2 class="card__nome">Casa de Apoio Esperança</h2>
-              <p class="card__local">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-                São Paulo - SP
-              </p>
-              <ul class="tags">
-                <li class="tag">Banco de Peruca</li>
-                <li class="tag">Banco de Lenço</li>
-                <li class="tag">Apoio Psicológico</li>
-              </ul>
-            </div>
- 
-            <a class="card__botao" href="#">Ver Instituição</a>
-          </article>
- 
-          <article class="card">
-            <div class="card__logo">
-               <img src="{% static 'img/image 2.png' %}" alt="Instituto Mama" class="inst-logo">
-            </div>
- 
-            <div class="card__corpo">
-              <h2 class="card__nome">Casa de Apoio Esperança</h2>
-              <p class="card__local">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-                São Paulo - SP
-              </p>
-              <ul class="tags">
-                <li class="tag">Banco de Lenço</li>
-                <li class="tag">Apoio Psicológico</li>
-              </ul>
-            </div>
- 
-            <a class="card__botao" href="#">Ver Instituição</a>
-          </article>
- 
-          <!-- BACK-END: paginação dinâmica (páginas, setas, link mantendo busca e filtros) -->
-          <nav class="paginacao" aria-label="Paginação">
-            <a class="paginacao__seta" href="#" aria-label="Página anterior">&#8249;</a>
-            <a class="paginacao__num is-ativa" href="#">1</a>
-            <a class="paginacao__num" href="#">2</a>
-            <a class="paginacao__num" href="#">3</a>
-            <a class="paginacao__seta" href="#" aria-label="Próxima página">&#8250;</a>
-          </nav>
+          {% empty %}
+          <p class="sem-resultado">Nenhuma instituição aprovada corresponde aos filtros.</p>
+          {% endfor %}
         </div>
  
         <!-- ===== NÃO ENCONTRADO =====

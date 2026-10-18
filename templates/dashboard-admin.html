@@ -29,7 +29,7 @@
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                <a href="#">Sair</a>
+                    <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
             </div>
         </div>
     </aside>
@@ -56,17 +56,19 @@
         <section class="cards-admin" aria-label="Indicadores">
             <article class="card card-stat">
                 <h2>Instituições cadastradas</h2>
-                <p class="numero">32</p>
+                <p class="numero">{{ total_instituicoes }}</p>
             </article>
 
             <article class="card card-stat">
                 <h2>Instituições inativas</h2>
-                <p class="numero">4</p>
+                <p class="numero">{{ instituicoes_inativas }}</p>
             </article>
 
             <article class="card card-stat">
                 <h2>Quantidade por tipo de apoio</h2>
-                <ul class="tipos" id="tipos-apoio"></ul>
+                <ul class="tipos" id="tipos-apoio">
+                    {% for nome, total in total_por_tipo %}<li><span>{{ nome }}</span><strong>{{ total }}</strong></li>{% endfor %}
+                </ul>
             </article>
         </section>
 
@@ -83,17 +85,17 @@
             <article class="summary-box">
                 <h2>Resumo geral:</h2>
                 <ul>
-                    <li><span>Instituições ativas</span><strong>24</strong></li>
-                    <li><span>Aguardando aprovação</span><strong>4</strong></li>
-                    <li><span>Sem atualização há mais de 90 dias</span><strong>3</strong></li>
+                    <li><span>Instituições ativas</span><strong>{{ instituicoes_ativas }}</strong></li>
+                    <li><span>Aguardando aprovação</span><strong>{{ aguardando_aprovacao }}</strong></li>
                 </ul>
                 <p class="alerta">
                     <i class="ti ti-alert-circle" aria-hidden="true"></i>
-                        Há cadastros esperando a sua aprovação.
+                        {% if aguardando_aprovacao %}Há cadastros esperando a sua aprovação.{% else %}Não há cadastros pendentes.{% endif %}
                 </p>
             </article>
         </section>
     </main>
 
+    {{ dashboard_grafico|json_script:"dashboard-data" }}
 </body>
 </html>

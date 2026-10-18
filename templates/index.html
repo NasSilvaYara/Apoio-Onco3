@@ -210,7 +210,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3 style="color: #6c5ce7; margin-bottom: 10px;">{{ inst.nomeInst }}</h3>
                     <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
                     {% if inst.telefone %}<p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>{% endif %}
-                    {% if inst.email %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email }}</p>{% endif %}
+                    {% if inst.email_contato %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email_contato }}</p>{% endif %}
+                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}">Ver instituição</a>
                 </div>
             {% empty %}
                 <div style="background: #fff; border: 2px dashed #6c5ce7; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; margin: 0 auto;">
@@ -345,39 +346,21 @@ document.addEventListener("DOMContentLoaded", function () {
         <section id="instituicoes" class="section-container">
             <div class="section-header">
                 <h2 class="section-title">Instituições em destaque</h2>
-                <a href="#instituicoes" class="see-all-link">Ver todas <span class="arrow">&rarr;</span></a>
+                <a href="{% url 'filtro' %}" class="see-all-link">Ver todas <span class="arrow">&rarr;</span></a>
             </div>
 
             <div class="institution-cards-container">
+                {% for inst in destaques %}
                 <div class="institution-card">
                     <div class="logo-box">
-                       <img src="{% static 'img/image 1.png' %}" alt="Instituto Mama" class="inst-logo">
+                        {% if inst.logo %}<img src="{{ inst.logo.url }}" alt="Logo de {{ inst.nomeInst }}" class="inst-logo">{% endif %}
                     </div>
-                    <h3 class="inst-title">Instituto mama</h3>
-                    <p class="inst-location">Guarulhos - SP</p>
-                    <p class="inst-description">Assistência social, banco de perucas...</p>
-                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
+                    <h3 class="inst-title">{{ inst.nomeInst }}</h3>
+                    <p class="inst-location">{{ inst.cidade }} - {{ inst.estado }}</p>
+                    <p class="inst-description">{% for servico in inst.servicosOferecidos.all %}{{ servico.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}" class="inst-btn">Ver instituição</a>
                 </div>
-
-                <div class="institution-card">
-                    <div class="logo-box">
-                        <img src="{% static 'img/instituição 1.png' %}" alt="Instituto Mama" class="inst-logo">
-                    </div>
-                    <h3 class="inst-title">Instituto mama</h3>
-                    <p class="inst-location">Guarulhos - SP</p>
-                    <p class="inst-description">Assistência social, banco de perucas...</p>
-                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
-                </div>
-
-                <div class="institution-card">
-                    <div class="logo-box">
-                        <img src="{% static 'img/image 2.png' %}" alt="Instituto Mama" class="inst-logo">
-                    </div>
-                    <h3 class="inst-title">Instituto mama</h3>
-                    <p class="inst-location">Guarulhos - SP</p>
-                    <p class="inst-description">Assistência social, banco de perucas...</p>
-                    <a href="{% url 'home' %}" class="inst-btn">Ver instituição</a>
-                </div>
+                {% empty %}<p>Nenhuma instituição aprovada para exibir.</p>{% endfor %}
             </div>
         </section>
 

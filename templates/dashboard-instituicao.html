@@ -20,14 +20,14 @@
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" target="_blank" >Meu perfil</a>
             <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">Dados de contato</a>
             <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
-            <a href="#" class="menu-item" aria-current="page">Sair</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="header">
             <div>
-                <h1 class="welcome-title">Olá, {{ instituicao.nome|default:"(nome da instituição)" }}!</h1>
+                <h1 class="welcome-title">Olá, {{ instituicao.nomeInst }}!</h1>
                 <p class="welcome-subtitle">Aqui você acompanha as informações da sua instituição.</p>
             </div>
             <button type="button" class="btn-notificacao" aria-label="Notificações">
@@ -40,7 +40,7 @@
             <article class="card card-servicos">
                 <h2>Serviços cadastrados</h2>
                 <p class="numero">{{ total_servicos|default:0 }}</p>
-                <a href="#" class="link-card">Ver serviços</a>
+                        <a href="{% url 'dashboard_instituicao_perfil' %}" class="link-card">Ver serviços</a>
             </article>
 
             <article class="card card-atualizacao">
@@ -61,9 +61,9 @@
             <article class="acoes-rapidas">
                 <h2>Ações rápidas</h2>
                 <ul>
-                    <li><a href="#"><i class="ti ti-edit" aria-hidden="true"></i> Editar perfil</a></li>
-                    <li><a href="#"><i class="ti ti-phone" aria-hidden="true"></i> Ver detalhes de contato</a></li>
-                    <li><a href="#"><i class="ti ti-settings" aria-hidden="true"></i> Configurações</a></li>
+                    <li><a href="{% url 'dashboard_instituicao_perfil' %}"><i class="ti ti-edit" aria-hidden="true"></i> Editar perfil</a></li>
+                    <li><a href="{% url 'dashboard_instituicao_contato' %}"><i class="ti ti-phone" aria-hidden="true"></i> Ver detalhes de contato</a></li>
+                    <li><a href="{% url 'dashboard_instituicao_configuracoes' %}"><i class="ti ti-settings" aria-hidden="true"></i> Configurações</a></li>
                 </ul>
             </article>
 
@@ -71,19 +71,19 @@
                 <h2 class="resumo-titulo">Resumo da sua instituição</h2>
                 <article class="card resumo-card">
                     {% if instituicao.logo %}
-                        <img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nome }}" class="resumo-logo">
+                        <img src="{{ instituicao.logo.url }}" alt="Logo de {{ instituicao.nomeInst }}" class="resumo-logo">
                     {% else %}
                         <div class="resumo-logo resumo-logo-vazio" aria-hidden="true">
                             <i class="ti ti-building-community"></i>
                         </div>
                     {% endif %}
                     <div class="resumo-info">
-                        <h3>{{ instituicao.nome|default:"Nome da instituição" }}</h3>
+                        <h3>{{ instituicao.nomeInst }}</h3>
                         <p class="local">
                             <i class="ti ti-map-pin" aria-hidden="true"></i>
                             {{ instituicao.cidade }} - {{ instituicao.estado }}
                         </p>
-                        <a href="#" class="btn-perfil">Ver perfil</a>
+                        {% if instituicao.status == 'ativa' %}<a href="{% url 'ver_instituicao_detalhe' instituicao.pk %}" class="btn-perfil">Ver perfil</a>{% endif %}
                     </div>
                 </article>
             </section>

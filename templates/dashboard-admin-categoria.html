@@ -29,7 +29,7 @@
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                <a href="#">Sair</a>
+                    <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
             </div>
         </div>
     </aside>
@@ -41,6 +41,7 @@
                 <p class="welcome-subtitle">Tipos de apoio que as instituições podem oferecer.</p>
             </div>
         </header>
+        {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
  
         <div class="tabela-wrap">
             <table class="tabela" id="tabela-categorias">
@@ -54,52 +55,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-id="1" data-instituicoes="8">
-                        <td class="nome-categoria">Banco de perucas</td>
-                        <td class="col-centro">8</td>
-                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Banco de perucas ativa"></td>
+                    {% for categoria in categorias %}
+                    <tr data-id="{{ categoria.pk }}">
+                        <td class="nome-categoria">{{ categoria.nome }}</td>
+                        <td class="col-centro">{{ categoria.total_instituicoes }}</td>
+                        <td class="col-centro"><form method="post">{% csrf_token %}<input type="hidden" name="acao" value="alternar_categoria"><input type="hidden" name="categoria_id" value="{{ categoria.pk }}"><input type="checkbox" role="switch" class="switch" {% if categoria.ativo %}checked{% endif %} aria-label="{{ categoria.nome }} ativa"></form></td>
                         <td class="acoes">
-                            <button type="button" class="btn-editar" aria-label="Editar Banco de perucas"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                            <button type="button" class="btn-excluir" aria-label="Excluir Banco de perucas" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                            <button type="button" class="btn-editar" aria-label="Editar {{ categoria.nome }}"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                            <form method="post" data-confirm="Excluir a categoria {{ categoria.nome }}?">{% csrf_token %}<input type="hidden" name="acao" value="excluir_categoria"><input type="hidden" name="categoria_id" value="{{ categoria.pk }}"><button type="submit" class="btn-excluir" aria-label="Excluir {{ categoria.nome }}" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button></form>
                         </td>
                     </tr>
-                    <tr data-id="2" data-instituicoes="12">
-                        <td class="nome-categoria">Banco de lenços</td>
-                        <td class="col-centro">12</td>
-                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Banco de lenços ativa"></td>
-                        <td class="acoes">
-                            <button type="button" class="btn-editar" aria-label="Editar Banco de lenços"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                            <button type="button" class="btn-excluir" aria-label="Excluir Banco de lenços" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
-                        </td>
-                    </tr>
-                    <tr data-id="3" data-instituicoes="15">
-                        <td class="nome-categoria">Apoio psicológico</td>
-                        <td class="col-centro">15</td>
-                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Apoio psicológico ativa"></td>
-                        <td class="acoes">
-                            <button type="button" class="btn-editar" aria-label="Editar Apoio psicológico"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                            <button type="button" class="btn-excluir" aria-label="Excluir Apoio psicológico" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
-                        </td>
-                    </tr>
-                    <tr data-id="4" data-instituicoes="10">
-                        <td class="nome-categoria">Assistência social</td>
-                        <td class="col-centro">10</td>
-                        <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked aria-label="Assistência social ativa"></td>
-                        <td class="acoes">
-                            <button type="button" class="btn-editar" aria-label="Editar Assistência social"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                            <button type="button" class="btn-excluir" aria-label="Excluir Assistência social" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
-                        </td>
-                    </tr>
+                    {% empty %}<tr><td colspan="4">Nenhuma categoria cadastrada.</td></tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
  
         <section class="nova-categoria">
             <h2>Nova categoria</h2>
-            <form id="form-nova" class="linha-nova" novalidate>
+            <form id="form-nova" class="linha-nova" method="post" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="criar_categoria">
                 <div class="campo">
                     <label for="nome-nova">Nome da categoria</label>
-                    <input type="text" id="nome-nova" maxlength="40" autocomplete="off">
+                    <input type="text" id="nome-nova" name="nome" maxlength="100" autocomplete="off" required>
                 </div>
                 <button type="submit" class="btn-adicionar">Adicionar</button>
             </form>
@@ -129,7 +108,7 @@
             <h2 id="titulo-editar">Editar categoria</h2>
             <div class="campo">
                 <label for="nome-editar">Nome da categoria</label>
-                <input type="text" id="nome-editar" name="nome" maxlength="40" autocomplete="off" required>
+                <input type="text" id="nome-editar" name="nome" maxlength="100" autocomplete="off" required>
             </div>
             <p id="mensagem-editar" class="mensagem" role="status"></p>
             <div class="dialogo-acoes">

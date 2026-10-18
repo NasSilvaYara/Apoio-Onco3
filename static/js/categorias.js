@@ -23,3 +23,12 @@ document.getElementById('btn-cancelar-edicao').addEventListener('click', () => d
 dialogo.addEventListener('click', (e) => {
   if (e.target === dialogo) dialogo.close();
 });
+
+document.querySelector('#tabela-categorias tbody').addEventListener('change', (e) => {
+  if (e.target.matches('.switch')) e.target.form.requestSubmit();
+});
+
+document.addEventListener('submit', (e) => {
+  const form = e.target.closest('form[data-confirm]');
+  if (form && !confirm(form.dataset.confirm)) e.preventDefault();
+});

@@ -1,6 +1,6 @@
 // true  = não envia ao servidor e mostra a tela "Cadastro enviado!"
 // false = envia o formulário por POST para a view do Django
-const SO_FRONT = true;
+const SO_FRONT = false;
 
 const form = document.getElementById('cadastro');
 const etapas = [...document.querySelectorAll('.etapa')];
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultado = document.getElementById('resultado-cnpj');
 
     campoCnpj.addEventListener('blur', async () => {
-        const cnpj = campoCnpj.value.replace(/\D/g, '');
+        const cnpj = campoCnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase();
 
         razaoSocial.value = '';
         nomeFantasia.value = '';
@@ -98,6 +98,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             razaoSocial.value = dados.razao_social || '';
             nomeFantasia.value = dados.nome_fantasia || '';
+            const preencherSeVazio = (id, valor) => {
+              const campo = document.getElementById(id);
+              if (campo && !campo.value.trim() && valor) campo.value = valor;
+            };
+            preencherSeVazio('nome', dados.nome_fantasia || dados.razao_social);
+            preencherSeVazio('cep', dados.cep);
+            preencherSeVazio('estado', dados.uf);
+            preencherSeVazio('cidade', dados.municipio);
+            preencherSeVazio('endereco', dados.logradouro);
+            preencherSeVazio('bairro', dados.bairro);
+            preencherSeVazio('telefone', dados.telefone);
+            preencherSeVazio('email_contato', dados.email);
             resultado.textContent = 'CNPJ válido e empresa ativa.';
         } catch (erro) {
             resultado.textContent =
@@ -111,8 +123,10 @@ function validar(i) {
 
   if (i === 1) {
     const marcados = etapa.querySelectorAll('input[name="servicos"]:checked').length;
-    etapa.querySelector('input[name="servicos"]')
-      .setCustomValidity(marcados ? '' : 'Marque pelo menos um tipo de serviço.');
+    const primeiroServico = etapa.querySelector('input[name="servicos"]');
+    if (primeiroServico) {
+      primeiroServico.setCustomValidity(marcados ? '' : 'Marque pelo menos um tipo de serviço.');
+    }
   }
   if (i === 3) {
     const algum = ['telefone', 'whatsapp', 'email_contato', 'site']
@@ -139,11 +153,14 @@ function mascara(campo, formatar) {
   });
 }
 
-mascara(form.cnpj, (d) => d.slice(0, 14)
-  .replace(/^(\d{2})(\d)/, '$1.$2')
-  .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-  .replace(/\.(\d{3})(\d)/, '.$1/$2')
-  .replace(/(\d{4})(\d)/, '$1-$2'));
+form.cnpj.addEventListener('input', () => {
+  const cnpj = form.cnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase().slice(0, 14);
+  form.cnpj.value = cnpj
+    .replace(/^([0-9A-Z]{2})([0-9A-Z])/, '$1.$2')
+    .replace(/^([0-9A-Z]{2})\.([0-9A-Z]{3})([0-9A-Z])/, '$1.$2.$3')
+    .replace(/^([0-9A-Z]{2})\.([0-9A-Z]{3})\.([0-9A-Z]{3})([0-9A-Z])/, '$1.$2.$3/$4')
+    .replace(/([0-9A-Z]{4})([0-9]{1,2})$/, '$1-$2');
+});
 
 mascara(form.cep, (d) => d.slice(0, 8).replace(/^(\d{5})(\d)/, '$1-$2'));
 
@@ -180,7 +197,7 @@ if (inputArquivo && textoArquivo) {
 function montarRevisao() {
   const valor = (nome) => form[nome].value.trim() || '—';
   const servicos = [...form.querySelectorAll('input[name="servicos"]:checked')]
-    .map((c) => c.value).join(', ');
+    .map((c) => c.closest('label').textContent.trim()).join(', ');
 
   const inputImagem = form.querySelector('#imagem_instituicao');
   let nomeImagem = 'Nenhuma imagem selecionada';

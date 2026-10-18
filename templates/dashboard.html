@@ -15,9 +15,9 @@
 	</div>
         <div class="menu">
             <span class="menu-title">MENU</span>
-            <a href="#" class="menu-item active">Dashboard</a>
-            <a href="#" class="menu-item">Instituições</a>
-            <a href="#" class="menu-item">Relatórios</a>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item active">Dashboard</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Instituições</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
         </div>
     </div>
 

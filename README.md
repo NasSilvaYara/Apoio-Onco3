@@ -8,7 +8,6 @@ Plataforma web que centraliza instituições, ONGs e hospitais de apoio a mulher
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ## Destaques
@@ -21,15 +20,19 @@ Plataforma web que centraliza instituições, ONGs e hospitais de apoio a mulher
 
 ## Como rodar o projeto
 
-\`\`\`bash
-git clone https://github.com/seu-usuario/seu-repo.git
-cd seu-repo
-python -m venv venv
-source venv/bin/activate
+O projeto usa exclusivamente MySQL. Crie o banco e configure as variáveis de ambiente conforme [docs/BANCO_DE_DADOS.md](docs/BANCO_DE_DADOS.md).
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+Copy-Item .env.example .env
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
-\`\`\`
+```
+
+Execute os testes com `python manage.py test`. A suíte exige um serviço MySQL acessível com as credenciais configuradas no `.env`.
 
 ## Equipe
 

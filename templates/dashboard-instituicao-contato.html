@@ -22,7 +22,7 @@
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" target="_blank">Meu perfil</a>
             <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item active" aria-current="page" target="_blank">Dados de contato</a>
             <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
-            <a href="#" class="menu-item" aria-current="page">Sair</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
         </nav>
     </aside>
 
@@ -39,17 +39,19 @@
 
         <form action="" method="POST" class="perfil-form">
             {% csrf_token %}
+            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
+            {% if form.errors %}<div role="alert">{{ form.errors }}</div>{% endif %}
 
             <section class="card-perfil">
                 <h2>Telefones</h2>
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="telefone">Telefone principal</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ instituicao.telefone }}" required>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ instituicao.telefone }}">
                     </div>
                     <div class="campo">
                         <label for="whatsapp">WhatsApp <span class="opcional">(opcional)</span></label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ instituicao.whatsapp }}">
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ instituicao.telefone_whatsapp }}">
                     </div>
                 </div>
             </section>
@@ -59,7 +61,7 @@
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="email_atendimento">E-mail de atendimento</label>
-                        <input type="email" id="email_atendimento" name="email_atendimento" value="{{ instituicao.email_atendimento }}" required>
+                        <input type="email" id="email_atendimento" name="email_atendimento" value="{{ instituicao.email_contato }}">
                     </div>
                     <div class="campo">
                         <label for="site">Site <span class="opcional">(opcional)</span></label>

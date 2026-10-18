@@ -22,7 +22,7 @@
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" target="_blank">Meu perfil</a>
             <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">Dados de contato</a>
             <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
-            <a href="#" class="menu-item" aria-current="page">Sair</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
         </nav>
     </aside>
 
@@ -39,6 +39,8 @@
 
         <form action="" method="POST" enctype="multipart/form-data" class="perfil-form">
             {% csrf_token %}
+            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
+            {% if form.errors %}<div role="alert">{{ form.errors }}</div>{% endif %}
 
             <section class="card-perfil">
                 <h2>Identidade da instituição</h2>
@@ -64,14 +66,7 @@
                         <label for="tipo">Tipo de instituição</label>
                         <select id="tipo" name="tipo" required>
                             <option value="" disabled>Selecione</option>
-                            <option>ONG / associação</option>
-                            <option>Hospital</option>
-                            <option>Clínica / centro de tratamento</option>
-                            <option>Casa de apoio</option>
-                            <option>Instituto / fundação</option>
-                            <option>Voluntariado / grupo de apoio</option>
-                            <option>Órgão público</option>
-                            <option>Outros</option>
+                            {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if instituicao.tipo == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
                         </select>
                     </div>
                     <div class="campo span-todos">
@@ -120,22 +115,19 @@
                 <h2>Tipos de apoio oferecidos</h2>
 
                 <div class="chips" id="chips">
-                    {# Troque estes dois chips de exemplo por um {% for %} com os serviços da instituição #}
-                    <span class="chip">Assistência social
-                        <button type="button" class="chip-remover" aria-label="Remover Assistência social"><i class="ti ti-x" aria-hidden="true"></i></button>
-                        <input type="hidden" name="servicos" value="Assistência social">
-                    </span>
-                    <span class="chip">Banco de perucas
-                        <button type="button" class="chip-remover" aria-label="Remover Banco de perucas"><i class="ti ti-x" aria-hidden="true"></i></button>
-                        <input type="hidden" name="servicos" value="Banco de perucas">
-                    </span>
+                    {% for servico in instituicao.servicosOferecidos.all %}<span class="chip">{{ servico.nome }}
+                        <button type="button" class="chip-remover" aria-label="Remover {{ servico.nome }}"><i class="ti ti-x" aria-hidden="true"></i></button>
+                        <input type="hidden" name="servicos" value="{{ servico.nome }}">
+                    </span>{% endfor %}
                 </div>
 
                 <div class="adicionar-apoio">
                     <button type="button" id="btn-add-apoio" class="btn btn-primario" aria-expanded="false" aria-controls="menu-apoios">
                         <i class="ti ti-circle-plus" aria-hidden="true"></i> Adicionar apoio
                     </button>
-                    <ul id="menu-apoios" class="menu-apoios" hidden></ul>
+                    <ul id="menu-apoios" class="menu-apoios" hidden>
+                        {% for tipo_apoio in tipos_apoio %}<li><button type="button" data-apoio="{{ tipo_apoio.nome }}">{{ tipo_apoio.nome }}</button></li>{% endfor %}
+                    </ul>
                 </div>
             </section>
 

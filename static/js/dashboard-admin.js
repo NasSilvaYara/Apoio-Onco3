@@ -1,14 +1,9 @@
 // Dashboard administrativo - ApoioOnco (somente front-end)
 // Os dados abaixo são de exemplo: número de instituições por tipo de apoio em cada cidade.
 
-const TIPOS = ['Banco de perucas', 'Banco de lenços', 'Apoio psicológico', 'Assistência social'];
-
-const DADOS = {
-  'São Paulo': [5, 6, 8, 6],
-  'Campinas': [1, 2, 3, 2],
-  'Santos': [1, 2, 2, 1],
-  'Osasco': [1, 2, 2, 1],
-};
+const DADOS_DASHBOARD = JSON.parse(document.getElementById('dashboard-data').textContent);
+const TIPOS = DADOS_DASHBOARD.tipos;
+const DADOS = DADOS_DASHBOARD.cidades;
 
 const cidades = Object.keys(DADOS).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 

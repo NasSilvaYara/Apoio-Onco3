@@ -1,97 +1,65 @@
 # Banco de dados — ApoioOnco
 
-SQLite por padrão (arquivo `db.sqlite3`). MySQL opcional via variáveis de ambiente (ver `core/settings.py`).
-As tabelas são criadas pelas migrações do Django: `python manage.py migrate`.
+O único backend configurado é `django.db.backends.mysql`. O schema é controlado pelas migrations; não crie tabelas manualmente nem importe `docs/schema.sql`.
 
-## Diagrama ER
+## Preparar MySQL
+
+Instale MySQL 8 ou superior, copie `.env.example` para `.env` e preencha as credenciais locais. Crie banco e usuário com suporte a `utf8mb4`:
+
+```sql
+CREATE DATABASE apoioonco CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'apoioonco'@'localhost' IDENTIFIED BY 'defina-uma-senha-local';
+GRANT ALL PRIVILEGES ON apoioonco.* TO 'apoioonco'@'localhost';
+```
+
+Configure `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_HOST` e `MYSQL_PORT` no `.env`. `MYSQL_SSL_CA` aceita opcionalmente o caminho do certificado CA para conexões remotas que exigem TLS. Nunca versione esse arquivo. Gere um segredo Django próprio com `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` e configure-o em `DJANGO_SECRET_KEY`. Em produção, configure `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS` e um storage S3 compatível (`DJANGO_MEDIA_STORAGE=storages.backends.s3.S3Storage`, `AWS_STORAGE_BUCKET_NAME` e `AWS_S3_REGION_NAME`); o backend local de arquivos é recusado quando `DEBUG=False`.
+
+```powershell
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+python manage.py test
+```
+
+O usuário MySQL usado pelos testes precisa poder criar e remover o banco de teste (`test_apoioonco`). Use credenciais de desenvolvimento/teste, nunca as de produção, ao executar a suíte.
+
+## Migrations e dados legados
+
+As migrations `0004` e `0005` são aditivas. CNPJ e imagem aceitam `NULL` para preservar instituições antigas; o formulário exige ambos os dados novos e atribui `pendente`. Os valores de status existentes `ativo` e `inativo` são convertidos para `ativa` e `inativa`. Nenhuma migration apaga tabelas, registros ou arquivos.
+
+A migration `0003` preserva serviços textuais ao criar as relações N:N em instalações novas. Se ela já foi executada por uma versão anterior que apagou o campo original, editar a migration não a executa novamente; recupere esses valores do backup PostgreSQL se ainda forem necessários.
+
+Antes de trocar uma instalação PostgreSQL existente, faça e guarde um backup físico/lógico e uma exportação de dados **no ambiente anterior**, antes de implantar esta configuração MySQL:
+
+```powershell
+pg_dump --format=custom --file=apoioonco-postgres.dump NOME_DO_BANCO
+python manage.py dumpdata --natural-foreign --natural-primary --exclude=contenttypes --exclude=auth.permission --output=apoioonco-data.json
+```
+
+Arquive também os arquivos referenciados pelos campos de imagem. Depois, crie o schema MySQL com `migrate`, importe a fixture com `python manage.py loaddata apoioonco-data.json` em ambiente de homologação, e confira contagens, relações e login antes de promover. Para fixtures exportadas do schema antigo, normalize os valores de status carregados:
+
+```sql
+UPDATE ongs_instituicao
+SET status = CASE status WHEN 'ativo' THEN 'ativa' WHEN 'inativo' THEN 'inativa' ELSE status END
+WHERE status IN ('ativo', 'inativo');
+```
+
+Mantenha o backup PostgreSQL intacto até confirmar a restauração. A aplicação neste workspace não tem credenciais nem conexão com o PostgreSQL de origem, então não foi possível inspecionar ou migrar dados reais.
+
+## Relacionamentos e regras
 
 ```mermaid
 erDiagram
-    AUTH_USER ||--o| INSTITUICAO : "conta de acesso (1:1)"
-    AUTH_USER ||--o{ INSTITUICAO : "avaliou (aprova/rejeita)"
-    AUTH_USER ||--o{ CONTEUDO_INFORMATIVO : "autor"
-    INSTITUICAO }o--o{ TIPO_APOIO : "oferece (N:N)"
-
-    INSTITUICAO {
-        int id PK
-        int usuario_id FK "UNIQUE"
-        varchar cnpj "UNIQUE, 14, sem máscara"
-        varchar nome
-        varchar tipo "ong, hospital, clinica..."
-        varchar descricao "max 300"
-        text horario_atendimento
-        varchar logo "caminho do arquivo"
-        varchar cep
-        varchar logradouro
-        varchar numero
-        varchar complemento
-        varchar bairro
-        varchar cidade
-        char estado "UF"
-        varchar telefone
-        varchar whatsapp
-        varchar email_contato
-        varchar site
-        varchar redes_sociais
-        varchar status "pendente, ativa, rejeitada, inativa"
-        text motivo_rejeicao
-        int avaliado_por_id FK "null"
-        datetime avaliado_em
-        datetime criado_em
-        datetime atualizado_em
-    }
-    TIPO_APOIO {
-        int id PK
-        varchar nome "UNIQUE"
-        varchar descricao
-        bool ativo
-    }
-    CONTEUDO_INFORMATIVO {
-        int id PK
-        varchar categoria
-        varchar titulo
-        varchar slug "UNIQUE"
-        varchar resumo
-        text corpo
-        bool publicado
-        int autor_id FK "null"
-        datetime criado_em
-        datetime atualizado_em
-    }
+    AUTH_USER ||--o| INSTITUICAO : possui
+    AUTH_USER ||--o{ INSTITUICAO : avaliou
+    ADMINISTRADOR ||--o{ INSTITUICAO : legado
+    INSTITUICAO }o--o{ TIPO_APOIO : oferece
 ```
 
-A tabela de ligação N:N (`ongs_instituicao_servicos`) é criada automaticamente pelo Django.
-
-## Tabelas
-
-| Tabela | Para que serve | Origem no front-end |
-|---|---|---|
-| `auth_user` (do Django) | E-mail (username) e **senha com hash** de cada instituição; também os administradores (`is_staff`) | Etapa "Acesso" do cadastro; tela de login |
-| `ongs_instituicao` | Cadastro completo da instituição + status de aprovação | Cadastro (etapas 1–4), "Meu perfil", dashboards, busca |
-| `ongs_tipoapoio` | Banco de perucas, Banco de lenços, Apoio psicológico, Assistência social (novos podem ser criados no admin) | Checkboxes do cadastro e chips do perfil |
-| `ongs_instituicao_servicos` | Quais apoios cada instituição oferece | idem |
-| `ongs_conteudoinformativo` | Textos de "Entenda o câncer", "Saúde emocional", "Autoestima" | Seção "Informações para você" |
-
-## Ciclo de vida do cadastro (`status`)
-
-`pendente` (cadastro enviado) → `ativa` (aprovada, aparece na busca) ou `rejeitada` (com `motivo_rejeicao`).
-Uma instituição ativa pode ser colocada como `inativa` (some da busca sem perder os dados).
-Quem avaliou e quando ficam em `avaliado_por` / `avaliado_em`.
-
-## Regras garantidas pelo banco / models
-
-- CNPJ único, salvo sem máscara, com validação de dígito verificador (**numérico e alfanumérico**, formato em uso desde jul/2026).
-- Um usuário ↔ uma instituição (`OneToOne`); apagar o usuário apaga a instituição.
-- Pelo menos um contato (telefone, WhatsApp, e-mail ou site) é obrigatório.
-- UF restrita às 27 siglas; CEP no formato `00000-000`.
-- Se um administrador for excluído, as instituições que ele avaliou **não** são apagadas (`SET_NULL`).
-- Índice composto `(status, estado, cidade)` acelera a busca pública.
-
-## Comandos úteis
-
-```bash
-python manage.py migrate                 # cria/atualiza o banco
-python manage.py createsuperuser         # cria o administrador do painel /admin/
-python manage.py popular_exemplo         # (opcional) instituições FICTÍCIAS para testar a busca
-python manage.py test                    # roda os testes
-```
+- `auth_user`: autenticação Django, com senha armazenada por hash; contas administrativas usam `is_staff`.
+- `ongs_instituicao`: cadastro, CNPJ único, status, caminho `ImageField`, contatos e vínculo 1:1 opcional a um usuário (nulo para legado).
+- `ongs_tipoapoio` e a tabela N:N criada pelo Django: categorias e apoios selecionados.
+- `status`: `pendente`, `ativa`, `rejeitada` ou `inativa`; a busca pública consulta somente `ativa`.
+- `logo` salva no banco apenas o caminho relativo. O arquivo é escrito pelo storage configurado.
+- Visitantes podem pesquisar sem autenticação. Apenas usuários autenticados acessam painéis; a instituição é obtida da sessão, não de um ID enviado pelo cliente.

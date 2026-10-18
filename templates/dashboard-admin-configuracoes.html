@@ -30,7 +30,7 @@
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                <a href="#">Sair</a>
+                <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
             </div>
         </div>
     </aside>
@@ -45,11 +45,13 @@
 
         <form action="" method="POST" class="perfil-form">
             {% csrf_token %}
+            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
+            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
             <section class="card-perfil">
                 <h2>Conta</h2>
                 <div class="campo">
                     <label for="email">E-mail de acesso</label>
-                    <input type="email" id="email" name="email" autocomplete="email" value="{{ instituicao.email }}" required>
+                    <input type="email" id="email" name="email" autocomplete="email" value="{{ request.user.email }}" required>
                 </div>
 
                 <div class="linha-senha">
@@ -63,13 +65,13 @@
              <section class="card-config">
                 <h2>Administradoras</h2>
                 <ul class="lista-admins">
-                    <li class="admin-item">
+                    {% for administrador in administradores %}<li class="admin-item">
                         <span class="avatar" aria-hidden="true"><i class="ti ti-user"></i></span>
                         <div>
-                            <strong>apoioonco</strong>
-                            <span>adminapoioonco@gmail.com</span>
+                            <strong>{{ administrador.get_full_name|default:administrador.username }}</strong>
+                            <span>{{ administrador.email }}</span>
                         </div>
-                    </li>
+                    </li>{% empty %}<li class="admin-item">Nenhum administrador cadastrado.</li>{% endfor %}
                 </ul>
             </section>
             

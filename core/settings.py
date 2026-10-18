@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 """
 from pathlib import Path
 import os
-import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 
@@ -19,18 +19,18 @@ load_dotenv(BASE_DIR / ".env")
 
 
 # SECURITY
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-udste#dd&*2(*oywmnt3i)!e*dm8*0-pp@nhvikli@sxu8*'
-)
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured('Configure DJANGO_SECRET_KEY no ambiente.')
 
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
 
 ALLOWED_HOSTS = [
-    'apoioonco.vercel.app',
-    '.vercel.app',
-    'localhost',
-    '127.0.0.1',
+    host.strip()
+    for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1'
+    ).split(',')
+    if host.strip()
 ]
 
 
@@ -81,12 +81,24 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 
 DATABASES = {
-    'default': dj_database_url.config(
-        conn_max_age=0,
-        conn_health_checks=True,
-        ssl_require=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQL_DATABASE', 'apoioonco'),
+        'USER': os.environ.get('MYSQL_USER', 'root'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('MYSQL_PORT', '3306'),
+        'CONN_MAX_AGE': 60,
+        'CONN_HEALTH_CHECKS': True,
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
 }
+MYSQL_SSL_CA = os.environ.get('MYSQL_SSL_CA')
+if MYSQL_SSL_CA:
+    DATABASES['default']['OPTIONS']['ssl'] = {'ca': MYSQL_SSL_CA}
 
 # Password validation
 
@@ -127,14 +139,34 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_STORAGE = os.environ.get(
+    'DJANGO_MEDIA_STORAGE', 'django.core.files.storage.FileSystemStorage'
+)
+if not DEBUG and MEDIA_STORAGE == 'django.core.files.storage.FileSystemStorage':
+    raise ImproperlyConfigured(
+        'Configure um storage de mídia persistente em produção via DJANGO_MEDIA_STORAGE.'
+    )
+
+if MEDIA_STORAGE == 'storages.backends.s3.S3Storage':
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+    AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL') or None
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN') or None
+    AWS_DEFAULT_ACL = None
+    if not AWS_STORAGE_BUCKET_NAME:
+        raise ImproperlyConfigured('Configure AWS_STORAGE_BUCKET_NAME para o storage de mídia S3.')
+
+STORAGES = {
+    'default': {'BACKEND': MEDIA_STORAGE},
+    'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+}
+
 
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
-
-import dj_database_url
-from dotenv import load_dotenv
-
-load_dotenv(BASE_DIR / ".env")
