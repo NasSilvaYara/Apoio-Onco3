@@ -41,3 +41,25 @@ document.addEventListener('keydown', (e) => {
         fecharTodosFiltros();
     }
 });
+
+/* ---------- Aviso de acesso exclusivo para instituições ---------- */
+const loginGate = document.querySelector('#login-gate');
+const loginGateOpeners = document.querySelectorAll('[data-login-gate-open]');
+const loginGateCloseButton = document.querySelector('[data-login-gate-close]');
+
+loginGateOpeners.forEach((opener) => {
+    opener.addEventListener('click', (event) => {
+        event.preventDefault();
+        loginGate.showModal();
+    });
+});
+
+loginGateCloseButton.addEventListener('click', () => {
+    loginGate.close();
+});
+
+loginGate.addEventListener('click', (event) => {
+    if (event.target === loginGate) {
+        loginGate.close();
+    }
+});

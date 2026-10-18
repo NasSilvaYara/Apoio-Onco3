@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Conexão com o CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=3">
-    <script src="{% static 'js/home.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
+    <script src="{% static 'js/home.js' %}?v=2" defer></script>
 </head>
 
 <script>
@@ -108,9 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
                  class="moon-icon-img">
         </button>
 
-        <a href="{% url 'login' %}" class="btn-login">
+        <button type="button"
+                class="btn-login"
+                data-login-gate-open
+                aria-haspopup="dialog"
+                aria-controls="login-gate">
             Fazer login/cadastro
-        </a>
+        </button>
     </div>
 </nav>
         <!-- Conteúdo Principal do Banner Hero -->
@@ -182,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p class="hero-description">
                         Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer.
                     </p>
-                    <a href="#sobre" class="btn-hero-more">Saiba mais</a>
+                    <a href="#cultura" class="btn-hero-more">Saiba mais</a>
                 </div>
                 <div class="hero-image-side">
                     <img src="{% static 'img/ilustracao.png' %}" alt="Ilustração ApoioOnco" class="hero-img">
@@ -249,7 +253,68 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         </section>
 
-        <!-- 3. SEÇÃO: QUEM SOMOS? -->
+        <!-- 3. SEÇÃO: NOSSA CULTURA -->
+        <section id="cultura" class="section-container culture-section" aria-labelledby="culture-title">
+            <div class="culture-panel">
+                <header class="culture-header">
+                    <div class="culture-title-row">
+                        <span class="culture-badge">Nossa cultura -</span>
+                        <h2 id="culture-title">ApoioOnco</h2>
+                    </div>
+                    <p>Acolhimento que chega perto de quem precisa</p>
+                </header>
+
+                <div class="culture-pillars">
+                    <article class="culture-pillar">
+                        <div class="culture-pillar-heading">
+                            <span class="culture-icon" aria-hidden="true">
+                                <i class="fa-solid fa-heart"></i>
+                            </span>
+                            <h3>Missão</h3>
+                        </div>
+                        <p>Conectar pacientes oncológicos e familiares a uma rede de apoio acessível e humanizada.</p>
+                    </article>
+
+                    <article class="culture-pillar">
+                        <div class="culture-pillar-heading">
+                            <span class="culture-icon" aria-hidden="true">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                            <h3>Visão</h3>
+                        </div>
+                        <p>Ser a principal referência em acolhimento e localização de apoio oncológico no Brasil.</p>
+                    </article>
+                </div>
+
+                <div class="culture-values">
+                    <h3 class="culture-values-title">Nossos valores</h3>
+                    <div class="culture-values-grid">
+                        <article class="culture-value">
+                            <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
+                            <h4>Acolhimento e empatia</h4>
+                            <p>O ser humano no centro de tudo.</p>
+                        </article>
+                        <article class="culture-value">
+                            <i class="fa-solid fa-people-group" aria-hidden="true"></i>
+                            <h4>Solidariedade</h4>
+                            <p>Rede forte entre ONGs, voluntários e pacientes.</p>
+                        </article>
+                        <article class="culture-value">
+                            <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+                            <h4>Inovação social</h4>
+                            <p>Tecnologia simples e intuitiva.</p>
+                        </article>
+                        <article class="culture-value">
+                            <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+                            <h4>Confiabilidade</h4>
+                            <p>Dados de instituições verificadas.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SEÇÃO: QUEM SOMOS? -->
         <section class="section-container team-section">
             <h2 class="section-title">Quem somos?</h2>
             <p class="team-intro">
@@ -346,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h3 class="card-text">Entenda o câncer</h3>
                         <p class="card-subdescription">Informações para conhecer a doença, o tratamento e suas diferentes fases.</p>
                     </div>
-                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='entenda-o-cancer' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
                 </div>
 
                 <div class="card">
@@ -354,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h3 class="card-text">Saúde emocional</h3>
                         <p class="card-subdescription">Conteúdos para cuidar das emoções e lidar com os desafios do tratamento.</p>
                     </div>
-                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='saude-emocional' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
                 </div>
 
                 <div class="card">
@@ -362,45 +427,67 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h3 class="card-text">Autoestima durante o tratamento</h3>
                         <p class="card-subdescription">Cuidados e informações para se sentir bem consigo mesma durante essa fase.</p>
                     </div>
-                    <a href="{% url 'home' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='autoestima-no-tratamento' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
                 </div>
             </div>
         </section>
 
     </main>
 
+    <dialog class="login-gate" id="login-gate" aria-labelledby="login-gate-title">
+        <div class="login-gate-content">
+            <span class="login-gate-icon" aria-hidden="true">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <h2 id="login-gate-title">Área exclusiva para instituições</h2>
+            <p class="login-gate-description">
+                O login e cadastro são só para instituições, ONGs e hospitais que querem divulgar seus serviços na plataforma.
+            </p>
+            <p class="login-gate-note">
+                Se você está buscando apoio, não precisa criar conta. É só pesquisar na página inicial.
+            </p>
+            <a href="{% url 'login' %}" class="login-gate-primary">Sou uma instituição</a>
+            <button type="button" class="login-gate-secondary" data-login-gate-close>
+                Voltar a buscar apoio
+            </button>
+        </div>
+    </dialog>
+
     <!-- RODAPÉ -->
     <footer class="footer">
         <div class="footer-top">
-            <div class="footer-column logo-column">
-                <div class="logo-group">
-                    <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
+            <div class="footer-top-inner">
+                <div class="footer-column logo-column">
+                    <div class="logo-group">
+                        <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
+                    </div>
+                    <p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
                 </div>
-            </div>
 
-            <div class="footer-column">
-                <h3>Navegação</h3>
-                <ul>
-                    <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
-                    <li><a href="#instituicoes">Instituições</a></li>
-                    <li><a href="#informacoes">Informações</a></li>
-                    <li><a href="#sobre">Sobre</a></li>
-                </ul>
-            </div>
+                <div class="footer-column">
+                    <h3>Navegação</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
+                        <li><a href="#instituicoes">Instituições</a></li>
+                        <li><a href="#informacoes">Informações</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                    </ul>
+                </div>
 
-            <div class="footer-column">
-                <h3>Para Instituições</h3>
-                <ul>
-                    <li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
-                    <li><a href="{% url 'login' %}">Entrar</a></li>
-                </ul>
-            </div>
+                <div class="footer-column">
+                    <h3>Para Instituições</h3>
+                    <ul>
+                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">Cadastre sua instituição</a></li>
+                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">Entrar</a></li>
+                    </ul>
+                </div>
 
-            <div class="footer-column">
-                <h3>Fale conosco</h3>
-                <ul>
-                    <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
-                </ul>
+                <div class="footer-column">
+                    <h3>Fale conosco</h3>
+                    <ul>
+                        <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 

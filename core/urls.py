@@ -4,6 +4,7 @@ from django.urls import path
 from ongs.views import (
     home_view,
     busca_view,
+    informacoes_view,
     login_view,
     cadastro_view,
     dashboard_view,
@@ -27,6 +28,7 @@ urlpatterns = [
 
     path('', home_view, name='home'),
     path('busca/', busca_view, name='busca'),
+    path('informacoes/<slug:tema>/', informacoes_view, name='informacoes_detalhe'),
 
     path('login/', login_view, name='login'),
     path('cadastro/', cadastro_view, name='cadastro'),

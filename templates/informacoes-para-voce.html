@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ tema.resumo }}">
+    <title>{{ tema.titulo }} | ApoioOnco</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sail&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/informacoes-para-voce.css' %}?v=2">
+    <script src="{% static 'js/home.js' %}?v=2" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar" aria-label="Navegação principal">
+            <div class="brand">
+                <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco">
+            </div>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Início</a>
+                <a href="{% url 'home' %}#sobre">Sobre</a>
+                <a href="{% url 'home' %}#instituicoes">Instituições</a>
+                <a href="{% url 'home' %}#informacoes">Informações</a>
+            </div>
+            <button class="login-button"
+                    type="button"
+                    data-login-gate-open
+                    aria-haspopup="dialog"
+                    aria-controls="login-gate">
+                Fazer login/cadastro
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <header class="page-heading">
+            <div class="page-heading-inner">
+                <a class="back-link" href="{% url 'home' %}#informacoes">
+                    <span aria-hidden="true">&larr;</span> Voltar
+                </a>
+                <h1>{{ tema.titulo }}</h1>
+                <p>{{ tema.resumo }}</p>
+            </div>
+        </header>
+
+        <div class="page-content">
+            <section class="topic-section" aria-labelledby="topic-heading">
+                <h2 class="section-heading" id="topic-heading">{{ tema.secao_cartoes }}</h2>
+                <div class="topic-grid">
+                    {% for cartao in tema.cartoes %}
+                        <article class="topic-card">
+                            <span class="topic-icon" aria-hidden="true">
+                                <i class="fa-solid {{ cartao.icone }}"></i>
+                            </span>
+                            <h3>{{ cartao.titulo }}</h3>
+                            <p>{{ cartao.texto }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="help-section" aria-labelledby="help-heading">
+                <h2 class="section-heading" id="help-heading">{{ tema.ajuda_titulo }}</h2>
+                <ul class="help-list">
+                    {% for item in tema.ajuda_itens %}
+                        <li>
+                            <i class="fa-solid {{ item.icone }}" aria-hidden="true"></i>
+                            <span>{{ item.texto }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <aside class="support-banner">
+                <div>
+                    <h2>{{ tema.cta_titulo }}</h2>
+                    <p>{{ tema.cta_texto }}</p>
+                </div>
+                <a href="{% url 'filtro' %}" class="institutions-button">
+                    <i class="fa-solid fa-hospital" aria-hidden="true"></i>
+                    Ver instituições
+                </a>
+            </aside>
+
+            <section class="faq-section" aria-labelledby="faq-heading">
+                <h2 class="section-heading" id="faq-heading">Perguntas frequentes</h2>
+                <div class="faq-list">
+                    {% for pergunta in tema.perguntas %}
+                        <details class="faq-item" {% if forloop.first %}open{% endif %}>
+                            <summary>
+                                <span>{{ pergunta.pergunta }}</span>
+                                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                            </summary>
+                            <p>{{ pergunta.resposta }}</p>
+                        </details>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <aside class="source-note">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                <p>Este conteúdo é informativo e não substitui a orientação da sua equipe de saúde. Fontes: {{ tema.fontes }}</p>
+            </aside>
+
+            <section class="read-more" aria-labelledby="read-more-heading">
+                <h2 class="section-heading" id="read-more-heading">Continue lendo</h2>
+                <div class="read-more-links">
+                    {% for outro_tema in outros_temas %}
+                        <a href="{% url 'informacoes_detalhe' tema=outro_tema.slug %}">
+                            {{ outro_tema.titulo }} <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <dialog class="login-gate" id="login-gate" aria-labelledby="login-gate-title">
+        <div class="login-gate-content">
+            <span class="login-gate-icon" aria-hidden="true">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <h2 id="login-gate-title">Área exclusiva para instituições</h2>
+            <p class="login-gate-description">
+                O login e o cadastro são só para instituições, ONGs e hospitais que querem divulgar seus serviços na plataforma.
+            </p>
+            <p class="login-gate-note">
+                Se você está buscando apoio, não precisa criar conta. É só pesquisar na página inicial.
+            </p>
+            <a href="{% url 'login' %}" class="login-gate-primary">Sou uma instituição</a>
+            <button type="button" class="login-gate-secondary" data-login-gate-close>
+                Voltar a buscar apoio
+            </button>
+        </div>
+    </dialog>
+</body>
+</html>
