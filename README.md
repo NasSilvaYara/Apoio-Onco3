@@ -49,7 +49,6 @@ Siga o passo a passo detalhado abaixo para configurar e executar o projeto em su
 
 ### Passo 1: Clonar o Repositório
 Abra o seu terminal (PowerShell, Git Bash ou terminal Linux/macOS) e execute:
-
 ```bash
 git clone [https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git](https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git)
 cd SEU-REPOSITORIO
@@ -62,6 +61,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 ## Passo 3: Instalar as Dependências
+Com o ambiente virtual ativado, instale as bibliotecas necessárias listadas no arquivo
 ```powershell
 pip install -r requirements.txt
 ```
@@ -85,6 +85,18 @@ python manage.py runserver
 Abra o seu navegador e acesse: http://127.0.0.1:8000/
 
 Execute os testes com `python manage.py test`. A suíte exige um serviço MySQL acessível com as credenciais configuradas no `.env`.
+
+---
+
+## 4. Exemplos de Uso
+
+1. **Busca de Apoio Psicológico:**
+   > A usuária acessa a página pública, filtra por sua cidade e seleciona a categoria *"Apoio Psicológico"*. O sistema exibe instantaneamente as ONGs e hospitais disponíveis com telefone, endereço e horário.
+
+2. **Cadastro de Nova Instituição:**
+   > Uma organização preenche o formulário de cadastro com seu endereço e serviços. O registro fica pendente até ser aprovado pela administração no painel de controle.
+
+---
 
 ## Equipe
 
