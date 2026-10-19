@@ -61,12 +61,6 @@ O ambiente virtual isola as dependências do projeto. Execute os comandos de aco
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
-
-Copy-Item .env.example .env
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
-
 ## Passo 3: Instalar as Dependências
 ```powershell
 pip install -r requirements.txt
