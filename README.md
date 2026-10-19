@@ -5,7 +5,6 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 ---
@@ -31,7 +30,7 @@ O projeto foi construído utilizando as seguintes tecnologias e ferramentas:
 * **Linguagem:** `Python 3.x`
 * **Framework Web:** `Django` (MVT - Model-View-Template / ORM)
 * **Banco de Dados Relacional:** `MySQL`
-* **Front-end:** `HTML5`, `CSS3`, `JavaScript` e `Bootstrap` (para componentes responsivos e design limpo)
+* **Front-end:** `HTML5`, `CSS3`, `JavaScript`
 * **Controle de Versão:** `Git` e `GitHub`
 
 ---
