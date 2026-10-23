@@ -79,13 +79,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('PGDATABASE', 'apoio_onco'),
         'USER': os.environ.get('PGUSER', 'apoio_onco_owner'),
-        'PASSWORD': os.environ.get('PGPASSWORD', 'IndigoYN27%'),
-        'HOST': os.environ.get('PGHOST', 'postgresql://apoio_onco_owner:npg_9MvwqCykTcz4@ep-lively-queen-b5z0ly6w-pooler.c-7.us-east-2.aws.neon.tech/apoio_onco?sslmode=require&channel_binding=require'),
+        'PASSWORD': os.environ.get('PGPASSWORD', ''),
+        'HOST': os.environ.get('PGHOST', ''),
         'PORT': os.environ.get('PGPORT', '5432'),
         'CONN_MAX_AGE': 0,
         'CONN_HEALTH_CHECKS': True,
@@ -94,6 +96,7 @@ DATABASES = {
         },
     }
 }
+
 
 # Password validation
 
