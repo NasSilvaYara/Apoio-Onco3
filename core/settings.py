@@ -79,26 +79,21 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_DATABASE', 'apoioonco'),
-        'USER': os.environ.get('MYSQL_USER', 'root'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
-        'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('MYSQL_PORT', '3306'),
-        'CONN_MAX_AGE': 60,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('PGDATABASE', 'apoio_onco'),
+        'USER': os.environ.get('PGUSER', 'apoio_onco_owner'),
+        'PASSWORD': os.environ.get('PGPASSWORD', 'IndigoYN27%'),
+        'HOST': os.environ.get('PGHOST', 'postgresql://apoio_onco_owner:npg_9MvwqCykTcz4@ep-lively-queen-b5z0ly6w-pooler.c-7.us-east-2.aws.neon.tech/apoio_onco?sslmode=require&channel_binding=require'),
+        'PORT': os.environ.get('PGPORT', '5432'),
+        'CONN_MAX_AGE': 0,
         'CONN_HEALTH_CHECKS': True,
         'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'sslmode': 'require',
         },
     }
 }
-MYSQL_SSL_CA = os.environ.get('MYSQL_SSL_CA')
-if MYSQL_SSL_CA:
-    DATABASES['default']['OPTIONS']['ssl'] = {'ca': MYSQL_SSL_CA}
 
 # Password validation
 
