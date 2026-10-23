@@ -1,6 +1,6 @@
 Django>=6.1
 Pillow>=10.0
-mysqlclient>=2.2.7
+PyMySQL>=1.1.1
 python-dotenv
 requests
 django-storages[s3]>=1.14
