@@ -1,0 +1,120 @@
+
+from functools import wraps
+
+import requests
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.validators import validate_email
+from django.db import IntegrityError, transaction
+from django.db.models import Count, Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+
+from .cnpj_api import consultar_dados_cnpj
+from .forms import (
+    CadastroInstituicaoForm,
+    ContatoInstituicaoForm,
+    PerfilInstituicaoForm,
+)
+from .models import Instituicao, TipoApoio
+from .validators import normalizar_cnpj
+
+
+def instituicao_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        instituicao = getattr(request.user, 'instituicao', None)
+        if instituicao is None:
+            raise PermissionDenied
+        request.instituicao = instituicao
+        return view(request, *args, **kwargs)
+
+    return wrapped
+
+
+def administrador_required(view):
+    @wraps(view)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if not request.user.is_staff:
+            raise PermissionDenied
+        return view(request, *args, **kwargs)
+
+    return wrapped
+
+
+def _email_disponivel(email, usuario):
+    if len(email) > 150:
+        return False
+    try:
+        validate_email(email)
+    except ValidationError:
+        return False
+    User = get_user_model()
+    return not User.objects.filter(
+        Q(username__iexact=email) | Q(email__iexact=email)
+    ).exclude(pk=usuario.pk).exists()
+
+
+def _instituicoes_publicas(params):
+    instituicoes = Instituicao.objects.filter(status='ativa').prefetch_related(
+        'servicosOferecidos'
+    )
+    termo = (params.get('busca') or params.get('q') or '').strip()
+    localizacao = (params.get('localizacao') or params.get('cidade') or '').strip()
+    estado = params.get('estado', '').strip().upper()
+    tipo = params.get('tipo', '').strip()
+    servicos = params.getlist('servicos') if hasattr(params, 'getlist') else []
+    nomes_servicos = {
+        'banco_peruca': 'Banco de perucas',
+        'banco_lenco': 'Banco de lenços',
+        'apoio_psicologico': 'Apoio psicológico',
+        'assistencia_social': 'Assistência social',
+    }
+
+    if termo:
+        instituicoes = instituicoes.filter(
+            Q(nomeInst__icontains=termo)
+            | Q(cidade__icontains=termo)
+            | Q(estado__icontains=termo)
+            | Q(servicosOferecidos__nome__icontains=termo)
+        )
+    if localizacao:
+        instituicoes = instituicoes.filter(
+            Q(cidade__icontains=localizacao)
+            | Q(estado__icontains=localizacao)
+            | Q(cep__icontains=localizacao)
+        )
+    if estado:
+        instituicoes = instituicoes.filter(estado__iexact=estado)
+    if tipo:
+        instituicoes = instituicoes.filter(tipo=tipo)
+    if servicos:
+        servicos_filtrados = [nomes_servicos.get(item, item) for item in servicos]
+        instituicoes = instituicoes.filter(
+            servicosOferecidos__nome__in=servicos_filtrados
+        )
+
+    return instituicoes.distinct().order_by('nomeInst')
+
+
+def _contexto_busca(request):
+    params = request.GET
+    instituicoes = _instituicoes_publicas(params)
+    localizacao = params.get('localizacao') or params.get('cidade', '')
+    return {
+        'instituicoes': instituicoes,
+        'destaques': instituicoes[:3],
+        'busca': params.get('busca') or params.get('q', ''),
+        'localizacao': localizacao,
+        'cidade': localizacao,
+        'estado_selecionado': params.get('estado', ''),
+        'tipo_selecionado': params.get('tipo', ''),
+        'servicos_selecionados': params.getlist('servicos'),
+    }
