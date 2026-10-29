@@ -5,3 +5,5 @@ gunicorn==26.2.0
 python-dotenv
 Pillow
 requests
+django-storages
+boto3
