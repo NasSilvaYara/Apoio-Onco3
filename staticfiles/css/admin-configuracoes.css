@@ -1,0 +1,170 @@
+
+.so-leitor {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.sidebar-perfil {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: var(--roxo-escuro);
+  color: var(--branco);
+}
+
+.sidebar-perfil .ti { font-size: 2rem; }
+.sidebar-perfil strong { display: block; font-size: 0.9rem; }
+.sidebar-perfil a { color: var(--lilas); font-size: 0.8rem; text-decoration: none; }
+.sidebar-perfil a:hover { text-decoration: underline; }
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 900px;
+}
+
+.card-config {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  padding: 20px 24px;
+}
+
+.card-config h2 {
+  font-size: 0.95rem;
+  color: var(--roxo-escuro);
+  margin-bottom: 12px;
+}
+
+.grid-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px 16px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--roxo-escuro);
+}
+
+.campo input {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #DDD;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--preto);
+}
+
+.campo input:focus {
+  border-color: var(--roxo-escuro);
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+/* ===== Senha ===== */
+.linha-senha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.item-titulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--roxo-escuro);
+}
+
+.item-desc {
+  font-size: 0.85rem;
+  color: var(--cinza);
+}
+
+.lista-admins {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #DDD;
+  color: #777;
+  font-size: 1.1rem;
+}
+
+.admin-item strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--preto);
+}
+
+.admin-item span:not(.avatar) {
+  font-size: 0.85rem;
+  color: var(--cinza);
+  overflow-wrap: anywhere;
+}
+
+/* ===== Botões ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.4rem;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.9; }
+.btn-primario { background: var(--roxo-escuro); color: var(--branco); }
+
+.btn:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+.acoes-form {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+}
+
+@media (max-width: 900px) {
+  .sidebar-perfil { margin-top: 0; }
+  .linha-senha { flex-direction: column; align-items: flex-start; }
+  .acoes-form .btn { width: 100%; }
+}
