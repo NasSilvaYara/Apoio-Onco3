@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - ApoioOnco</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/senha.css' %}">
+    <script src="{% static 'js/senha.js' %}" defer></script>
 </head>
 <body>
     <main>
@@ -28,9 +31,14 @@
                 <label for="identificacao">E-mail ou CNPJ</label>
                 <input type="text" id="identificacao" name="identificacao" required>
             </div>
-            <div class="formulario-login">
+           <div class="formulario-login">
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required>
+                <div class="campo-senha">
+                    <input type="password" id="senha" name="senha" required>
+                    <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
+                        <i class="ti ti-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
             <button type="submit">Entrar</button>
         </form>

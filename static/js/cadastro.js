@@ -62,61 +62,63 @@ btnAvancar.addEventListener('click', avancar);
 btnVoltar.addEventListener('click', () => atual > 0 && mostrar(atual - 1));
 form.addEventListener('submit', (e) => { e.preventDefault(); avancar(); });
 
-/* ---------- Validação por etapa ---------- */
+/* ---------- Consulta de CNPJ ---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const campoCnpj = document.getElementById('cnpj');
-    const razaoSocial = document.getElementById('razao_social');
-    const nomeFantasia = document.getElementById('nome_fantasia');
-    const resultado = document.getElementById('resultado-cnpj');
+  const campoCnpj = document.getElementById('cnpj');
+  const razaoSocial = document.getElementById('razao_social');
+  const nomeFantasia = document.getElementById('nome_fantasia');
+  const resultado = document.getElementById('resultado-cnpj');
 
-    campoCnpj.addEventListener('blur', async () => {
-        const cnpj = campoCnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase();
+  campoCnpj.addEventListener('blur', async () => {
+    const cnpj = campoCnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase();
 
-        razaoSocial.value = '';
-        nomeFantasia.value = '';
-        resultado.textContent = '';
+    razaoSocial.value = '';
+    nomeFantasia.value = '';
+    resultado.textContent = '';
 
-        if (cnpj.length !== 14) {
-            if (cnpj.length > 0) {
-                resultado.textContent = 'Informe um CNPJ com 14 dígitos.';
-            }
-            return;
-        }
+    if (cnpj.length !== 14) {
+      if (cnpj.length > 0) {
+        resultado.textContent = 'Informe um CNPJ com 14 dígitos.';
+      }
+      return;
+    }
 
-        resultado.textContent = 'Consultando CNPJ...';
+    resultado.textContent = 'Consultando CNPJ...';
 
-        try {
-            const resposta = await fetch(`/api/cnpj/${cnpj}/`);
-            const dados = await resposta.json();
+    try {
+      const resposta = await fetch(`/api/cnpj/${cnpj}/`);
+      const dados = await resposta.json();
 
-            if (!resposta.ok || dados.valido !== true || dados.ativo !== true) {
-                resultado.textContent =
-                    dados.mensagem || 'CNPJ inválido ou empresa inativa.';
-                return;
-            }
+      if (!resposta.ok || dados.valido !== true || dados.ativo !== true) {
+        resultado.textContent =
+          dados.mensagem || 'CNPJ inválido ou empresa inativa.';
+        return;
+      }
 
-            razaoSocial.value = dados.razao_social || '';
-            nomeFantasia.value = dados.nome_fantasia || '';
-            const preencherSeVazio = (id, valor) => {
-              const campo = document.getElementById(id);
-              if (campo && !campo.value.trim() && valor) campo.value = valor;
-            };
-            preencherSeVazio('nome', dados.nome_fantasia || dados.razao_social);
-            preencherSeVazio('cep', dados.cep);
-            preencherSeVazio('estado', dados.uf);
-            preencherSeVazio('cidade', dados.municipio);
-            preencherSeVazio('endereco', dados.logradouro);
-            preencherSeVazio('bairro', dados.bairro);
-            preencherSeVazio('telefone', dados.telefone);
-            preencherSeVazio('email_contato', dados.email);
-            resultado.textContent = 'CNPJ válido e empresa ativa.';
-        } catch (erro) {
-            resultado.textContent =
-                'Não foi possível consultar o CNPJ. Tente novamente.';
-        }
-    });
+      razaoSocial.value = dados.razao_social || '';
+      nomeFantasia.value = dados.nome_fantasia || '';
+      const preencherSeVazio = (id, valor) => {
+        const campo = document.getElementById(id);
+        if (campo && !campo.value.trim() && valor) campo.value = valor;
+      };
+      preencherSeVazio('nome', dados.nome_fantasia || dados.razao_social);
+      preencherSeVazio('cep', dados.cep);
+      preencherSeVazio('estado', dados.uf);
+      preencherSeVazio('cidade', dados.municipio);
+      preencherSeVazio('endereco', dados.logradouro);
+      preencherSeVazio('bairro', dados.bairro);
+      preencherSeVazio('telefone', dados.telefone);
+      preencherSeVazio('email_contato', dados.email);
+      resultado.textContent = 'CNPJ válido e empresa ativa.';
+    } catch (erro) {
+      resultado.textContent =
+        'Não foi possível consultar o CNPJ. Tente novamente.';
+    }
+  });
 });
+
+/* ---------- Validação por etapa ---------- */
 
 function validar(i) {
   const etapa = etapas[i];
@@ -174,25 +176,24 @@ form.estado.addEventListener('input', () => {
   form.estado.value = form.estado.value.toUpperCase();
 });
 
-/* ---------- Manipulação do Input de Arquivo Customizado ---------- */
+/* ---------- Input de arquivo customizado ---------- */
+
 const inputArquivo = document.getElementById('imagem_instituicao');
 const textoArquivo = document.getElementById('nome-arquivo-selecionado');
 
 if (inputArquivo && textoArquivo) {
-    inputArquivo.addEventListener('change', function(e) {
-        if (e.target.files.length > 0) {
-            textoArquivo.textContent = e.target.files[0].name;
-            textoArquivo.style.color = 'var(--roxo-escuro)';
-            textoArquivo.style.fontWeight = '600';
-        } else {
-            textoArquivo.textContent = 'Escolher arquivo...';
-        }
-    });
+  inputArquivo.addEventListener('change', function (e) {
+    if (e.target.files.length > 0) {
+      textoArquivo.textContent = e.target.files[0].name;
+      textoArquivo.style.color = 'var(--roxo-escuro)';
+      textoArquivo.style.fontWeight = '600';
+    } else {
+      textoArquivo.textContent = 'Escolher arquivo...';
+    }
+  });
 }
 
 /* ---------- Revisão ---------- */
-
-
 
 function montarRevisao() {
   const valor = (nome) => form[nome].value.trim() || '—';
@@ -211,10 +212,12 @@ function montarRevisao() {
     ['Instituição', valor('nome')],
     ['Tipo', valor('tipo')],
     ['Descrição', valor('descricao')],
-    ['Imagem/Logo', nomeImagem], 
+    ['Imagem/Logo', nomeImagem],
     ['Horário', valor('horario')],
     ['Serviços', servicos || '—'],
-    ['Endereço', `${valor('endereco')}, ${valor('bairro')}, ${valor('cidade')}/${valor('estado')} (${valor('cep')})`], // <--- Ajustado aqui!
+    ['Endereço', `${valor('endereco')}, ${valor('bairro')}, ${valor('cidade')}/${valor('estado')} (${valor('cep')})`],
+    ['Número', valor('numero')],
+    ['Complemento', valor('complemento')],
     ['Telefone', valor('telefone')],
     ['WhatsApp', valor('whatsapp')],
     ['E-mail', valor('email_contato')],

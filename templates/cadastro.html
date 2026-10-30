@@ -9,7 +9,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
     <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}">
+    <link rel="stylesheet" href="{% static 'css/senha.css' %}">
+    <script src="{% static 'js/senha.js' %}" defer></script>
     <script src="{% static 'js/cadastro.js' %}" defer></script>
+    
 </head>
 
 <body>
@@ -145,6 +148,16 @@
                             <input type="text" id="cidade" name="cidade" value="{{ form.cidade.value|default:'' }}" required>
                         </div>
                     </div>
+                    <div class="linha">
+                        <div class="formulario-login">
+                            <label for="numero">Número</label>
+                            <input type="text" id="numero" name="numero" value="{{ form.numero.value|default:'' }}" required>
+                        </div>
+                        <div class="formulario-login">
+                            <label for="complemento">Complemento <span class="opcional">(opcional)</span></label>
+                            <input type="text" id="complemento" name="complemento" placeholder="Sala, bloco, andar..." value="{{ form.complemento.value|default:'' }}">
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Etapa 4: Contato -->
@@ -180,15 +193,24 @@
                         <input type="email" id="email" name="email" autocomplete="email" value="{{ form.email.value|default:'' }}" required>
                     </div>
                     <div class="formulario-login">
-                        <label for="senha">Senha</label>
-                        <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password"
-                            required>
-                        <span class="ajuda">Mínimo de 8 caracteres.</span>
-                    </div>
-                    <div class="formulario-login">
-                        <label for="senha2">Confirmar senha</label>
-                        <input type="password" id="senha2" name="senha2" autocomplete="new-password" required>
-                    </div>
+    <label for="senha">Senha</label>
+    <div class="campo-senha">
+        <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password" required>
+        <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
+            <i class="ti ti-eye" aria-hidden="true"></i>
+        </button>
+    </div>
+    <span class="ajuda">Mínimo de 8 caracteres.</span>
+</div>
+<div class="formulario-login">
+    <label for="senha2">Confirmar senha</label>
+    <div class="campo-senha">
+        <input type="password" id="senha2" name="senha2" autocomplete="new-password" required>
+        <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
+            <i class="ti ti-eye" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
                 </section>
 
                 <!-- Etapa 6: Revisão -->
