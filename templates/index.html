@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Conexão com o CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=7">
+    <script src="{% static 'js/theme.js' %}?v=2" defer></script>
     <script src="{% static 'js/home.js' %}?v=2" defer></script>
 </head>
 
@@ -102,10 +104,14 @@ document.addEventListener("DOMContentLoaded", function () {
     </ul>
 
     <div class="nav-actions">
-        <button class="theme-toggle-btn" aria-label="Alternar tema">
-            <img src="{% static 'img/moon.png' %}"
-                 alt="Tema"
-                 class="moon-icon-img">
+        <button class="theme-toggle-btn" type="button" aria-label="Ativar tema escuro" aria-pressed="false">
+            <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+            </svg>
+            <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"></path>
+            </svg>
         </button>
 
         <button type="button"

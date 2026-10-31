@@ -7,7 +7,9 @@
   <title>Resultados da busca – ApoioOnco</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/filtro.css' %}">
+  <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=6">
+  <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=10">
+  <script src="{% static 'js/theme.js' %}?v=2" defer></script>
 </head>
 <body>
  
@@ -15,7 +17,7 @@
  
     <!-- ===== TOPO ===== -->
     <header class="topo">
-      <a class="topo__logo" href="#"> <!-- BACK-END: href da home -->
+      <a class="topo__logo" href="{% url 'home' %}">
         <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco">
       </a>
  
@@ -140,6 +142,7 @@
           <p class="sem-resultado">Nenhuma instituição aprovada corresponde aos filtros.</p>
           {% endfor %}
         </div>
+        <nav class="paginacao" id="paginacao-instituicoes" aria-label="Páginas de instituições" hidden></nav>
  
         <!-- ===== NÃO ENCONTRADO =====
              BACK-END: quando não houver resultados, remover o atributo "hidden" deste bloco
@@ -163,17 +166,118 @@
     (function () {
       var lista = document.querySelector(".com-resultados");
       var vazio = document.querySelector(".sem-resultados");
-      if (!lista || !vazio) return;
+        var paginacao = document.getElementById("paginacao-instituicoes");
+        if (!lista || !vazio || !paginacao) return;
 
-      var semCards = !lista.querySelector(".card");
-      var testeVazio = new URLSearchParams(window.location.search).get("teste") === "vazio";
+        var cards = Array.from(lista.querySelectorAll(".card"));
+        var itensPorPagina = 3;
+        var paginaAtual = 1;
+        var testeVazio = new URLSearchParams(window.location.search).get("teste") === "vazio";
 
-      if (semCards || testeVazio) {
-        lista.hidden = true;
-        vazio.hidden = false;
-      }
-    })();
-  </script>
+        if (!cards.length || testeVazio) {
+          lista.hidden = true;
+          vazio.hidden = false;
+          return;
+        }
+
+        var totalPaginas = Math.ceil(cards.length / itensPorPagina);
+        if (totalPaginas < 2) return;
+
+        paginacao.hidden = false;
+
+        function mudarPagina(novaPagina, direcao) {
+          paginaAtual = novaPagina;
+          var primeiroIndice = (paginaAtual - 1) * itensPorPagina;
+
+          cards.forEach(function (card, indice) {
+            var visivel = indice >= primeiroIndice && indice < primeiroIndice + itensPorPagina;
+            card.hidden = !visivel;
+            card.classList.toggle("card--entrando", visivel);
+            if (visivel) {
+              card.dataset.direcao = direcao;
+            } else {
+              delete card.dataset.direcao;
+            }
+          });
+
+          paginacao.replaceChildren();
+
+          function adicionarBotao(texto, rotulo, pagina, desabilitado, ativo, seta) {
+            var botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = seta ? "paginacao__seta" : "paginacao__num";
+            if (ativo) botao.classList.add("is-ativa");
+            botao.textContent = texto;
+            botao.setAttribute("aria-label", rotulo);
+            if (ativo) botao.setAttribute("aria-current", "page");
+            botao.disabled = desabilitado;
+            botao.addEventListener("click", function () {
+              mudarPagina(pagina, pagina > paginaAtual ? "direita" : "esquerda");
+            });
+            paginacao.appendChild(botao);
+          }
+
+          adicionarBotao("‹", "Página anterior", Math.max(1, paginaAtual - 1), paginaAtual === 1, false, true);
+
+          for (var pagina = 1; pagina <= totalPaginas; pagina += 1) {
+            adicionarBotao(
+              String(pagina),
+              "Página " + pagina,
+              pagina,
+              pagina === paginaAtual,
+              pagina === paginaAtual,
+              false
+            );
+          }
+
+          adicionarBotao("›", "Próxima página", Math.min(totalPaginas, paginaAtual + 1), paginaAtual === totalPaginas, false, true);
+        }
+
+        mudarPagina(1, "direita");
+      })();
+    </script>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-top-inner">
+        <div class="footer-column logo-column">
+          <div class="logo-group">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
+          </div>
+          <p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
+        </div>
+
+        <div class="footer-column">
+          <h3>Navegação</h3>
+          <ul>
+            <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
+            <li><a href="{% url 'home' %}#instituicoes">Instituições</a></li>
+            <li><a href="{% url 'home' %}#informacoes">Informações</a></li>
+            <li><a href="{% url 'home' %}#sobre">Sobre</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Para Instituições</h3>
+          <ul>
+            <li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
+            <li><a href="{% url 'login' %}">Entrar</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Fale conosco</h3>
+          <ul>
+            <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
+    </div>
+  </footer>
  
 </body>
 </html>

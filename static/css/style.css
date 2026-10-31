@@ -75,13 +75,19 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
 }
 
-/* Ícone da Lua mais pequeno */
-.moon-icon-img {
-    width: 50px;
-    height: 80px;
-    object-fit: contain;
+.theme-icon {
+    width: 34px;
+    height: 34px;
+    fill: none;
+    stroke: #5A3D7F;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
 }
 
 .btn-login {

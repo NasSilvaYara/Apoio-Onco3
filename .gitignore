@@ -1,3 +1,4 @@
+cat << 'EOF' > .gitignore
 venv/
 __pycache__/
 *.pyc
@@ -7,3 +8,4 @@ db.sqlite3
 !.env.example
 *.log
 media/
+EOF

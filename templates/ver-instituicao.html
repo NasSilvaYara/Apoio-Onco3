@@ -8,7 +8,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}">
+	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}?v=4">
+	<link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=11">
+	<script src="{% static 'js/theme.js' %}?v=2" defer></script>
 </head>
 <body>
 	<header class="site-header">
@@ -121,5 +123,46 @@
 			</section>
 		</div>
 	</main>
+	<footer class="footer">
+		<div class="footer-top">
+			<div class="footer-top-inner">
+				<div class="footer-column logo-column">
+					<div class="logo-group">
+						<img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
+					</div>
+					<p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
+				</div>
+
+				<div class="footer-column">
+					<h3>Navegação</h3>
+					<ul>
+						<li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
+						<li><a href="{% url 'home' %}#instituicoes">Instituições</a></li>
+						<li><a href="{% url 'home' %}#informacoes">Informações</a></li>
+						<li><a href="{% url 'home' %}#sobre">Sobre</a></li>
+					</ul>
+				</div>
+
+				<div class="footer-column">
+					<h3>Para Instituições</h3>
+					<ul>
+						<li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
+						<li><a href="{% url 'login' %}">Entrar</a></li>
+					</ul>
+				</div>
+
+				<div class="footer-column">
+					<h3>Fale conosco</h3>
+					<ul>
+						<li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
+		</div>
+	</footer>
 </body>
 </html>
