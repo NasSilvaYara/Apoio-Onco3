@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir senha - ApoioOnco</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/senha.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <script src="{% static 'js/theme.js' %}?v=1" defer></script>
+    <script src="{% static 'js/senha.js' %}" defer></script>
+    <script src="{% static 'js/redefinir-senha.js' %}" defer></script>
+</head>
+<body>
+    <main>
+        <div class="banner-login" aria-hidden="true">
+            <h2>Quase lá!</h2>
+            <img src="{% static 'img/Login-pana.png' %}" alt="">
+        </div>
+        <div class="corpo-login-form">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco">
+            <h1>Crie uma nova senha</h1>
+            <p class="subtitulo">Escolha uma senha com pelo menos 8 caracteres.</p>
+
+            {% if erro %}<p role="alert">{{ erro }}</p>{% endif %}
+
+            <form id="form-redefinir" action="" method="POST" novalidate>
+                {% csrf_token %}
+                <div class="formulario-login">
+                    <label for="senha">Nova senha</label>
+                    <div class="campo-senha">
+                        <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password" required>
+                        <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
+                            <i class="ti ti-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="formulario-login">
+                    <label for="senha2">Confirmar nova senha</label>
+                    <div class="campo-senha">
+                        <input type="password" id="senha2" name="senha2" autocomplete="new-password" required>
+                        <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
+                            <i class="ti ti-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit">Salvar nova senha</button>
+            </form>
+
+            <p class="signup-text">
+                <a href="{% url 'login' %}">Voltar para o login</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

@@ -172,6 +172,8 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+
+
 @media (max-width: 768px) {
   main {
     flex-direction: column;

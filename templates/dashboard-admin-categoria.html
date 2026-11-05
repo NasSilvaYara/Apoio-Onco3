@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
     <link rel="stylesheet" href="{% static 'css/categorias.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/categorias.js' %}" defer></script>
+    <script src="{% static 'js/sair.js' %}" defer></script>
 </head>
 <body>
 
@@ -20,21 +22,26 @@
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
         <nav class="menu" aria-label="Menu principal">
-             <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item" aria-current="page" target="_blank">Dashboard</a>
-            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item" target="_blank">Gerenciar</a>
-            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item active" >Categorias</a>
-            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
+            <span class="menu-title">MENU</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item">Dashboard</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Gerenciar</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item active" aria-current="page">Categorias</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item">Configurações</a>
         </nav>
-                <div class="sidebar-perfil">
+        <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                    <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
+                <form id="form-logout" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn-sair" id="abrir-sair">
+                        <i class="ti ti-logout" aria-hidden="true"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </aside>
- 
+
     <main class="main-content">
         <header class="header">
             <div>
@@ -43,7 +50,7 @@
             </div>
         </header>
         {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
- 
+
         <div class="tabela-wrap">
             <table class="tabela" id="tabela-categorias">
                 <caption class="so-leitor">Lista de categorias de apoio</caption>
@@ -71,7 +78,7 @@
                 </tbody>
             </table>
         </div>
- 
+
         <section class="nova-categoria">
             <h2>Nova categoria</h2>
             <form id="form-nova" class="linha-nova" method="post" novalidate>
@@ -86,7 +93,7 @@
             <p id="mensagem-form" class="mensagem" role="status"></p>
         </section>
     </main>
- 
+
     <!-- Modelo de linha para as categorias novas -->
     <template id="linha-modelo">
         <tr data-instituicoes="0">
@@ -99,7 +106,7 @@
             </td>
         </tr>
     </template>
- 
+
     <!-- Janela de edição -->
     <dialog id="dialogo-editar" aria-labelledby="titulo-editar">
         <form id="form-editar" action="" method="POST" novalidate>
@@ -117,6 +124,17 @@
                 <button type="submit" class="btn-adicionar">Salvar</button>
             </div>
         </form>
+    </dialog>
+
+    <!-- Confirmação de saída -->
+    <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">
+        <i class="ti ti-logout modal-icone" aria-hidden="true"></i>
+        <h2 id="titulo-sair">Tem certeza que deseja sair?</h2>
+        <p>Você precisará entrar novamente para acessar a área administrativa.</p>
+        <div class="modal-acoes">
+            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>Cancelar</button>
+            <button type="submit" class="btn-confirmar" form="form-logout">Sim, sair</button>
+        </div>
     </dialog>
 
 </body>

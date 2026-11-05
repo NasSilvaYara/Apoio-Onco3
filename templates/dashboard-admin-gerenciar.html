@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/gerenciar.js' %}" defer></script>
+    <script src="{% static 'js/sair.js' %}" defer></script>
 </head>
 <body>
 
@@ -20,17 +22,22 @@
         </div>
         <nav class="menu" aria-label="Menu principal">
             <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item" target="_blank">Dashboard</a>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item" >Dashboard</a>
             <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item active" aria-current="page">Gerenciar</a>
-            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" target="_blank">Categorias</a>
-            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" >Categorias</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" >Configurações</a>
            
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
+                <form id="form-logout" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn-sair" id="abrir-sair">
+                        <i class="ti ti-logout" aria-hidden="true"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </aside>
@@ -107,6 +114,15 @@
             <p class="sem-resultado" id="sem-resultado" hidden>Nenhuma instituição encontrada com esses filtros.</p>
         </div>
     </main>
-
+    <!-- Confirmação de saída -->
+    <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">
+        <i class="ti ti-logout modal-icone" aria-hidden="true"></i>
+        <h2 id="titulo-sair">Tem certeza que deseja sair?</h2>
+        <p>Você precisará entrar novamente para acessar a área administrativa.</p>
+        <div class="modal-acoes">
+            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>Cancelar</button>
+            <button type="submit" class="btn-confirmar" form="form-logout">Sim, sair</button>
+        </div>
+    </dialog>
 </body>
 </html>

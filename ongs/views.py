@@ -705,3 +705,9 @@ def ver_instituicao_view(request, pk=None):
         pk=pk,
     )
     return render(request, 'ver-instituicao.html', {'instituicao': instituicao})
+
+def esqueci_senha_view(request):
+    return render(request, 'esqueci-senha.html')
+
+def redefinir_senha_view(request):
+    return render(request, 'redefinir-senha.html')

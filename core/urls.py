@@ -21,6 +21,8 @@ from ongs.views import (
     filtro_view,
     ver_instituicao_view,
     logout_view,
+    esqueci_senha_view,
+    redefinir_senha_view,
 )
 
 from ongs.cnpj_api import consultar_cnpj
@@ -93,6 +95,18 @@ urlpatterns = [
     path('filtro/', filtro_view, name='filtro'),
     path('instituicao/', ver_instituicao_view, name='ver_instituicao'),
     path('instituicao/<int:pk>/', ver_instituicao_view, name='ver_instituicao_detalhe'),
+
+    path(
+    'esqueci-senha/',
+    esqueci_senha_view,
+    name='esqueci_senha'
+    ),
+
+    path(
+    'redefinir-senha/',
+    redefinir_senha_view,
+    name='redefinir_senha'
+),
 ]
 
 if settings.DEBUG:

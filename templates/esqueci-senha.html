@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueci minha senha - ApoioOnco</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <script src="{% static 'js/theme.js' %}?v=1" defer></script>
+</head>
+<body>
+    <main>
+        <div class="banner-login" aria-hidden="true">
+            <h2>Vamos te ajudar a voltar.</h2>
+            <img src="{% static 'img/esqueceu-senha.png' %}" alt="">
+        </div>
+        <div class="corpo-login-form">
+            <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco">
+            <h1>Esqueceu a senha?</h1>
+            <p class="subtitulo">Informe o e-mail de acesso e enviaremos um link para você criar uma nova senha.</p>
+
+            {% if erro %}<p role="alert">{{ erro }}</p>{% endif %}
+            {% if messages %}
+                {% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}
+            {% endif %}
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="formulario-login">
+                    <label for="email">E-mail de acesso</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required>
+                </div>
+                <button type="submit">Enviar link</button>
+            </form>
+
+            <p class="signup-text">
+                Lembrou a senha? <a href="{% url 'login' %}">voltar para o login</a>
+            </p>
+        </div>
+    </main>
+</body>
+</html>

@@ -36,3 +36,21 @@
 .campo-senha .ver-senha:focus-visible {
   opacity: 1;
 }
+
+.formulario-login .link-esqueci {
+  align-self: flex-start;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--roxo-medio);
+  text-decoration: none;
+}
+
+.formulario-login .link-esqueci:hover {
+  text-decoration: underline;
+}
+
+.formulario-login .link-esqueci:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

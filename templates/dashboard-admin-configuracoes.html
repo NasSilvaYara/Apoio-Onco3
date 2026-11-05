@@ -10,29 +10,36 @@
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
     <link rel="stylesheet" href="{% static 'css/configuracoes.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
-     <link rel="stylesheet" href="{% static 'css/admin-configuracoes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin-configuracoes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/configuracoes.js' %}" defer></script>
+    <script src="{% static 'js/sair.js' %}" defer></script>
 </head>
 <body>
 
-        <aside class="sidebar">
+    <aside class="sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
         <nav class="menu" aria-label="Menu principal">
             <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item" aria-current="page" target="_blank">Dashboard</a>
-            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item" target="_blank">Gerenciar</a>
-            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" target="_blank">Categorias</a>
-            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item active" >Configurações</a>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item">Dashboard</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Gerenciar</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item">Categorias</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item active" aria-current="page">Configurações</a>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
                 <strong>Administrador</strong>
-                <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
+                <form id="form-logout" action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn-sair" id="abrir-sair">
+                        <i class="ti ti-logout" aria-hidden="true"></i> Sair
+                    </button>
+                </form>
             </div>
         </div>
     </aside>
@@ -47,7 +54,6 @@
 
         <form action="" method="POST" class="perfil-form">
             {% csrf_token %}
-            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
             {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
             <section class="card-perfil">
                 <h2>Conta</h2>
@@ -64,7 +70,7 @@
                     <a href="#" class="btn btn-primario">Alterar senha</a>
                 </div>
             </section>
-             <section class="card-config">
+            <section class="card-config">
                 <h2>Administradoras</h2>
                 <ul class="lista-admins">
                     {% for administrador in administradores %}<li class="admin-item">
@@ -76,9 +82,6 @@
                     </li>{% empty %}<li class="admin-item">Nenhum administrador cadastrado.</li>{% endfor %}
                 </ul>
             </section>
-            
-
-           
 
             <div class="acoes-form">
                 <a href="#" class="btn btn-secundario">Cancelar</a>
@@ -98,6 +101,17 @@
                 <button type="submit" class="btn btn-perigo">Sim, excluir</button>
             </div>
         </form>
+    </dialog>
+
+    <!-- Confirmação de saída -->
+    <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">
+        <i class="ti ti-logout modal-icone" aria-hidden="true"></i>
+        <h2 id="titulo-sair">Tem certeza que deseja sair?</h2>
+        <p>Você precisará entrar novamente para acessar a área administrativa.</p>
+        <div class="modal-acoes">
+            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>Cancelar</button>
+            <button type="submit" class="btn-confirmar" form="form-logout">Sim, sair</button>
+        </div>
     </dialog>
 
 </body>

@@ -62,6 +62,75 @@ btnAvancar.addEventListener('click', avancar);
 btnVoltar.addEventListener('click', () => atual > 0 && mostrar(atual - 1));
 form.addEventListener('submit', (e) => { e.preventDefault(); avancar(); });
 
+/* ---------- Estado e cidade (select) ---------- */
+
+const UFS = [
+  ['AC', 'Acre'], ['AL', 'Alagoas'], ['AP', 'Amapá'], ['AM', 'Amazonas'],
+  ['BA', 'Bahia'], ['CE', 'Ceará'], ['DF', 'Distrito Federal'],
+  ['ES', 'Espírito Santo'], ['GO', 'Goiás'], ['MA', 'Maranhão'],
+  ['MT', 'Mato Grosso'], ['MS', 'Mato Grosso do Sul'], ['MG', 'Minas Gerais'],
+  ['PA', 'Pará'], ['PB', 'Paraíba'], ['PR', 'Paraná'], ['PE', 'Pernambuco'],
+  ['PI', 'Piauí'], ['RJ', 'Rio de Janeiro'], ['RN', 'Rio Grande do Norte'],
+  ['RS', 'Rio Grande do Sul'], ['RO', 'Rondônia'], ['RR', 'Roraima'],
+  ['SC', 'Santa Catarina'], ['SP', 'São Paulo'], ['SE', 'Sergipe'],
+  ['TO', 'Tocantins'],
+];
+
+const selEstado = form.estado;
+const selCidade = form.cidade;
+const cacheCidades = {};
+
+const normalizar = (t) =>
+  t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+UFS.forEach(([sigla, nome]) => selEstado.append(new Option(nome, sigla)));
+
+function definirCidade(nome) {
+  const alvo = normalizar(nome);
+  const opcao = [...selCidade.options].find((o) => normalizar(o.value) === alvo);
+  if (opcao) selCidade.value = opcao.value;
+}
+
+async function carregarCidades(uf, cidadeSelecionada = '') {
+  selCidade.disabled = true;
+
+  if (!uf) {
+    selCidade.replaceChildren(new Option('Selecione o estado primeiro', ''));
+    return;
+  }
+
+  selCidade.replaceChildren(new Option('Carregando cidades...', ''));
+
+  try {
+    if (!cacheCidades[uf]) {
+      const resp = await fetch(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`
+      );
+      if (!resp.ok) throw new Error('Falha ao buscar cidades');
+      cacheCidades[uf] = (await resp.json()).map((m) => m.nome);
+    }
+
+    // se a pessoa trocou de estado enquanto carregava, ignora
+    if (selEstado.value !== uf) return;
+
+    selCidade.replaceChildren(new Option('Selecione a cidade', ''));
+    cacheCidades[uf].forEach((nome) => selCidade.append(new Option(nome, nome)));
+    selCidade.disabled = false;
+
+    if (cidadeSelecionada) definirCidade(cidadeSelecionada);
+  } catch (erro) {
+    selCidade.replaceChildren(new Option('Erro ao carregar cidades', ''));
+  }
+}
+
+selEstado.addEventListener('change', () => carregarCidades(selEstado.value));
+
+// restaura os valores se o formulário voltar do servidor com erro
+if (selEstado.dataset.valor) {
+  selEstado.value = selEstado.dataset.valor;
+  carregarCidades(selEstado.value, selCidade.dataset.valor);
+}
+
 /* ---------- Consulta de CNPJ ---------- */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -98,18 +167,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       razaoSocial.value = dados.razao_social || '';
       nomeFantasia.value = dados.nome_fantasia || '';
+
       const preencherSeVazio = (id, valor) => {
         const campo = document.getElementById(id);
         if (campo && !campo.value.trim() && valor) campo.value = valor;
       };
       preencherSeVazio('nome', dados.nome_fantasia || dados.razao_social);
       preencherSeVazio('cep', dados.cep);
-      preencherSeVazio('estado', dados.uf);
-      preencherSeVazio('cidade', dados.municipio);
       preencherSeVazio('endereco', dados.logradouro);
       preencherSeVazio('bairro', dados.bairro);
       preencherSeVazio('telefone', dados.telefone);
       preencherSeVazio('email_contato', dados.email);
+
+      // estado e cidade agora são select
+      if (dados.uf && !selEstado.value) {
+        selEstado.value = dados.uf.toUpperCase();
+        await carregarCidades(selEstado.value, dados.municipio);
+      }
+
       resultado.textContent = 'CNPJ válido e empresa ativa.';
     } catch (erro) {
       resultado.textContent =
@@ -171,10 +246,6 @@ const telefone = (d) => d.slice(0, 11)
   .replace(d.length > 10 ? /(\d{5})(\d)/ : /(\d{4})(\d)/, '$1-$2');
 mascara(form.telefone, telefone);
 mascara(form.whatsapp, telefone);
-
-form.estado.addEventListener('input', () => {
-  form.estado.value = form.estado.value.toUpperCase();
-});
 
 /* ---------- Input de arquivo customizado ---------- */
 
