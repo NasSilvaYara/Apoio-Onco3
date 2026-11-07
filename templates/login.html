@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - ApoioOnco</title>
+    <title>{% trans "Login" %} - ApoioOnco</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
@@ -15,13 +15,13 @@
 <body>
     <main>
         <div class="banner-login" aria-hidden="true">
-            <h2>Juntos, ampliamos o acesso ao apoio.</h2>
+            <h2>{% trans "Juntos, ampliamos o acesso ao apoio." %}</h2>
             <img src="{% static 'img/Login-pana.png' %}" alt="Figura Login Apoio Onco">
         </div>
         <div class="corpo-login-form">
          <img src="{% static 'img/logo-inteira.png' %}" alt="Logo">
-         <h1>Bem vindo de volta</h1>
-        <p class="subtitulo">Acesse sua conta para gerenciar as informações da sua instituição.</p>
+         <h1>{% trans "Bem vindo de volta" %}</h1>
+        <p class="subtitulo">{% trans "Acesse sua conta para gerenciar as informações da sua instituição." %}</p>
 
         {% if erro %}<p role="alert">{{ erro }}</p>{% endif %}
         {% if messages %}
@@ -30,23 +30,23 @@
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             <div class="formulario-login">
-                <label for="identificacao">E-mail ou CNPJ</label>
+                <label for="identificacao">{% trans "E-mail ou CNPJ" %}</label>
                 <input type="text" id="identificacao" name="identificacao" required>
             </div>
            <div class="formulario-login">
-                <label for="senha">Senha</label>
+                <label for="senha">{% trans "Senha" %}</label>
                 <div class="campo-senha">
                     <input type="password" id="senha" name="senha" required>
                     <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
                         <i class="ti ti-eye" aria-hidden="true"></i>
                     </button>
                 </div>
-                 <a href="{% url 'esqueci_senha' %}" class="link-esqueci">Esqueci minha senha</a>
+                 <a href="{% url 'esqueci_senha' %}" class="link-esqueci">{% trans "Esqueci minha senha" %}</a>
             </div>
-            <button type="submit">Entrar</button>
+            <button type="submit">{% trans "Entrar" %}</button>
         </form>
         <p class="signup-text">
-      Ainda não possui conta? <a href="{% url 'cadastro' %}">cadastre-se aqui</a>
+      {% trans "Ainda não possui conta?" %} <a href="{% url 'cadastro' %}">{% trans "cadastre-se aqui" %}</a>
         </p>
         </div>
     </main>

@@ -1,11 +1,14 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="{{ CURRENT_LANGUAGE }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - ApoioOnco</title>
+    <title>{% trans "Cadastro" %} - {% trans "ApoioOnco" %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
     <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}">
@@ -20,39 +23,38 @@
 <body>
     <main>
         <div class="banner-login" aria-hidden="true">
-            <h2 id="titulo-banner">Validar o CNPJ</h2>
+            <h2 id="titulo-banner">{% trans "Validar o CNPJ" %}</h2>
 
-            <p class="texto-banner">Cadastre sua organização e ajude mais pessoas a encontrarem os serviços que vocês
-                oferecem.</p>
+            <p class="texto-banner">{% trans "Cadastre sua organização e ajude mais pessoas a encontrarem os serviços que vocês oferecem." %}</p>
         </div>
 
         <div class="corpo-login-form">
             <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco">
-            <p class="subtitulo">Faça parte da nossa rede</p>
+            <p class="subtitulo">{% trans "Faça parte da nossa rede" %}</p>
 
             <!-- Indicador de etapas -->
             <ol class="passos" id="passos" aria-label="Etapas do cadastro">
                 <li class="passo" title="CNPJ"><i class="ti ti-building" aria-hidden="true"></i><span
-                        class="so-leitor">CNPJ</span></li>
+                        class="so-leitor">{% trans "CNPJ" %}</span></li>
                 <li class="passo" title="Dados da instituição"><i class="ti ti-clipboard-text"
-                        aria-hidden="true"></i><span class="so-leitor">Dados da instituição</span></li>
+                        aria-hidden="true"></i><span class="so-leitor">{% trans "Dados da instituição" %}</span></li>
                 <li class="passo" title="Endereço"><i class="ti ti-map-pin" aria-hidden="true"></i><span
-                        class="so-leitor">Endereço</span></li>
+                        class="so-leitor">{% trans "Endereço" %}</span></li>
                 <li class="passo" title="Contato"><i class="ti ti-phone" aria-hidden="true"></i><span
-                        class="so-leitor">Contato</span></li>
+                        class="so-leitor">{% trans "Contato" %}</span></li>
                 <li class="passo" title="Acesso"><i class="ti ti-lock" aria-hidden="true"></i><span
-                        class="so-leitor">Acesso</span></li>
+                        class="so-leitor">{% trans "Acesso" %}</span></li>
                 <li class="passo" title="Revisão"><i class="ti ti-checklist" aria-hidden="true"></i><span
-                        class="so-leitor">Revisão</span></li>
+                        class="so-leitor">{% trans "Revisão" %}</span></li>
             </ol>
 
-            <h1 id="titulo-etapa" class="titulo-etapa">Validar o CNPJ</h1>
+            <h1 id="titulo-etapa" class="titulo-etapa">{% trans "Validar o CNPJ" %}</h1>
 
             <form id="cadastro" action="{% url 'cadastro' %}" method="POST" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {% if form.errors %}
                     <div class="form-erros" role="alert">
-                        <p>Não foi possível concluir o cadastro. Revise as informações abaixo.</p>
+                        <p>{% trans "Não foi possível concluir o cadastro. Revise as informações abaixo." %}</p>
                         {{ form.errors }}
                     </div>
                 {% endif %}
@@ -60,19 +62,19 @@
                 <!-- Etapa 1: CNPJ -->
                 <section class="etapa">
                     <div class="formulario-login">
-                        <label for="cnpj">CNPJ</label>
+                        <label for="cnpj">{% trans "CNPJ" %}</label>
                         <input type="text" id="cnpj" name="cnpj" inputmode="text" placeholder="00.000.000/0000-00"
                             maxlength="18" value="{{ form.cnpj.value|default:'' }}" required>
                     </div>
                     <div id="resultado-cnpj" role="status" aria-live="polite"></div>
 
                     <div class="formulario-login">
-                        <label for="razao_social">Razão social</label>
+                        <label for="razao_social">{% trans "Razão social" %}</label>
                         <input type="text" id="razao_social" name="razao_social" readonly>
                     </div>
 
                     <div class="formulario-login">
-                        <label for="nome_fantasia">Nome fantasia</label>
+                        <label for="nome_fantasia">{% trans "Nome fantasia" %}</label>
                         <input type="text" id="nome_fantasia" name="nome_fantasia" readonly>
                     </div>
                 </section>
@@ -80,42 +82,42 @@
                 <!-- Etapa 2: Dados da instituição -->
                 <section class="etapa">
                     <div class="formulario-login">
-                        <label for="nome">Nome da instituição</label>
+                        <label for="nome">{% trans "Nome da instituição" %}</label>
                         <input type="text" id="nome" name="nome" value="{{ form.nome.value|default:'' }}" required>
                     </div>
                     <div class="formulario-login">
-                        <label for="tipo">Tipo de instituição</label>
+                        <label for="tipo">{% trans "Tipo de instituição" %}</label>
                         <select id="tipo" name="tipo" required>
-                            <option value="" disabled {% if not form.tipo.value %}selected{% endif %}>Selecione</option>
-                            <option value="ong_associacao" {% if form.tipo.value == 'ong_associacao' %}selected{% endif %}>ONG / associação</option>
-                            <option value="hospital" {% if form.tipo.value == 'hospital' %}selected{% endif %}>Hospital</option>
-                            <option value="clinica_centro_tratamento" {% if form.tipo.value == 'clinica_centro_tratamento' %}selected{% endif %}>Clínica / centro de tratamento</option>
-                            <option value="casa_apoio" {% if form.tipo.value == 'casa_apoio' %}selected{% endif %}>Casa de apoio</option>
-                            <option value="instituto_fundacao" {% if form.tipo.value == 'instituto_fundacao' %}selected{% endif %}>Instituto / fundação</option>
-                            <option value="voluntariado_grupo_apoio" {% if form.tipo.value == 'voluntariado_grupo_apoio' %}selected{% endif %}>Voluntariado / grupo de apoio</option>
-                            <option value="orgao_publico" {% if form.tipo.value == 'orgao_publico' %}selected{% endif %}>Órgão público</option>
-                            <option value="outros" {% if form.tipo.value == 'outros' %}selected{% endif %}>Outros</option>
+                            <option value="" disabled {% if not form.tipo.value %}selected{% endif %}>{% trans "Selecione" %}</option>
+                            <option value="ong_associacao" {% if form.tipo.value == 'ong_associacao' %}selected{% endif %}>{% trans "ONG / associação" %}</option>
+                            <option value="hospital" {% if form.tipo.value == 'hospital' %}selected{% endif %}>{% trans "Hospital" %}</option>
+                            <option value="clinica_centro_tratamento" {% if form.tipo.value == 'clinica_centro_tratamento' %}selected{% endif %}>{% trans "Clínica / centro de tratamento" %}</option>
+                            <option value="casa_apoio" {% if form.tipo.value == 'casa_apoio' %}selected{% endif %}>{% trans "Casa de apoio" %}</option>
+                            <option value="instituto_fundacao" {% if form.tipo.value == 'instituto_fundacao' %}selected{% endif %}>{% trans "Instituto / fundação" %}</option>
+                            <option value="voluntariado_grupo_apoio" {% if form.tipo.value == 'voluntariado_grupo_apoio' %}selected{% endif %}>{% trans "Voluntariado / grupo de apoio" %}</option>
+                            <option value="orgao_publico" {% if form.tipo.value == 'orgao_publico' %}selected{% endif %}>{% trans "Órgão público" %}</option>
+                            <option value="outros" {% if form.tipo.value == 'outros' %}selected{% endif %}>{% trans "Outros" %}</option>
                         </select>
                     </div>
                     <div class="formulario-login">
-                        <label for="descricao">Descrição</label>
+                        <label for="descricao">{% trans "Descrição" %}</label>
                         <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ form.descricao.value|default:'' }}</textarea>
                     </div>
                     <div class="formulario-login">
-                        <label for="imagem_instituicao">Foto ou logo da instituição</label>
+                        <label for="imagem_instituicao">{% trans "Foto ou logo da instituição" %}</label>
                         <input type="file" id="imagem_instituicao" name="imagem_instituicao" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
                     </div>
                     
                     <div class="formulario-login">
-                        <label for="horario">Horário de atendimento</label>
+                        <label for="horario">{% trans "Horário de atendimento" %}</label>
                         <input type="text" id="horario" name="horario" placeholder="Ex.: seg a sex, 8h às 17h" value="{{ form.horario.value|default:'' }}" required>
                     </div>
                     <fieldset class="servicos">
-                        <legend>Tipos de serviço <span style="color:#e74c3c;">*</span></legend>
+                        <legend>{% trans "Tipos de serviço" %} <span style="color:#e74c3c;">*</span></legend>
                         {% for servico in form.fields.servicos.queryset %}
                         <label class="check"><input type="checkbox" name="servicos" value="{{ servico.pk }}" {% if servico.pk|stringformat:'s' in servicos_selecionados %}checked{% endif %}> {{ servico.nome }}</label>
                         {% empty %}
-                        <p>Nenhum tipo de apoio disponível no momento.</p>
+                        <p>{% trans "Nenhum tipo de apoio disponível no momento." %}</p>
                         {% endfor %}
                     </fieldset>
                 </section>
@@ -125,50 +127,50 @@
 <section class="etapa">
     <div class="linha">
         <div class="formulario-login">
-            <label for="cep">CEP</label>
+            <label for="cep">{% trans "CEP" %}</label>
             <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000"
                 maxlength="9" value="{{ form.cep.value|default:'' }}" required>
         </div>
         <div class="formulario-login">
-            <label for="estado">Estado (UF)</label>
+            <label for="estado">{% trans "Estado (UF)" %}</label>
             <select id="estado" name="estado" required data-valor="{{ form.estado.value|default:'' }}">
-                <option value="">Selecione</option>
+                <option value="">{% trans "Selecione" %}</option>
             </select>
         </div>
     </div>
     <div class="formulario-login">
-        <label for="endereco">Endereço</label>
+        <label for="endereco">{% trans "Endereço" %}</label>
         <input type="text" id="endereco" name="endereco" value="{{ form.endereco.value|default:'' }}" required>
     </div>
 
     <div class="linha">
         <div class="formulario-login">
-            <label for="bairro">Bairro</label>
+            <label for="bairro">{% trans "Bairro" %}</label>
             <input type="text" id="bairro" name="bairro" value="{{ form.bairro.value|default:'' }}" required>
         </div>
         <div class="formulario-login">
-            <label for="cidade">Cidade</label>
+            <label for="cidade">{% trans "Cidade" %}</label>
             <select id="cidade" name="cidade" required disabled data-valor="{{ form.cidade.value|default:'' }}">
-                <option value="">Selecione o estado primeiro</option>
+                <option value="">{% trans "Selecione o estado primeiro" %}</option>
             </select>
         </div>
     </div>
     <div class="linha">
         <div class="formulario-login">
-            <label for="numero">Número</label>
+            <label for="numero">{% trans "Número" %}</label>
             <input type="text" id="numero" name="numero" value="{{ form.numero.value|default:'' }}" required>
         </div>
         <div class="formulario-login">
-            <label for="complemento">Complemento <span class="opcional">(opcional)</span></label>
-            <input type="text" id="complemento" name="complemento" placeholder="Sala, bloco, andar..." value="{{ form.complemento.value|default:'' }}">
+            <label for="complemento">{% trans "Complemento" %} <span class="opcional">{% trans "(opcional)" %}</span></label>
+            <input type="text" id="complemento" name="complemento" placeholder="{% trans "Sala, bloco, andar..." %}" value="{{ form.complemento.value|default:'' }}">
         </div>
     </div>
 </section>
                 <!-- Etapa 4: Contato -->
                 <section class="etapa">
-                    <p class="ajuda">Preencha pelo menos uma opção.</p>
+                    <p class="ajuda">{% trans "Preencha pelo menos uma opção." %}</p>
                     <div class="formulario-login">
-                        <label for="telefone">Telefone</label>
+                        <label for="telefone">{% trans "Telefone" %}</label>
                         <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ form.telefone.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
@@ -176,38 +178,38 @@
                         <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ form.whatsapp.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
-                        <label for="email_contato">E-mail de atendimento</label>
+                        <label for="email_contato">{% trans "E-mail de atendimento" %}</label>
                         <input type="email" id="email_contato" name="email_contato" value="{{ form.email_contato.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
-                        <label for="site">Site</label>
+                        <label for="site">{% trans "Site" %}</label>
                         <input type="url" id="site" name="site" placeholder="https://" value="{{ form.site.value|default:'' }}">
                     </div>
                     <div class="formulario-login">
-                        <label for="redes">Outras redes sociais <span class="opcional">(opcional)</span></label>
-                        <input type="text" id="redes" name="redes" placeholder="@suainstituicao" value="{{ form.redes.value|default:'' }}">
+                        <label for="redes">{% trans "Outras redes sociais" %} <span class="opcional">{% trans "(opcional)" %}</span></label>
+                        <input type="text" id="redes" name="redes" placeholder="{% trans "@suainstituicao" %}" value="{{ form.redes.value|default:'' }}">
                     </div>
                 </section>
 
                 <!-- Etapa 5: Acesso -->
                 <section class="etapa">
-                    <p class="ajuda">Com esses dados você entra no painel da instituição.</p>
+                    <p class="ajuda">{% trans "Com esses dados você entra no painel da instituição." %}</p>
                     <div class="formulario-login">
-                        <label for="email">E-mail de acesso</label>
+                        <label for="email">{% trans "E-mail de acesso" %}</label>
                         <input type="email" id="email" name="email" autocomplete="email" value="{{ form.email.value|default:'' }}" required>
                     </div>
                     <div class="formulario-login">
-    <label for="senha">Senha</label>
+    <label for="senha">{% trans "Senha" %}</label>
     <div class="campo-senha">
         <input type="password" id="senha" name="senha" minlength="8" autocomplete="new-password" required>
         <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
             <i class="ti ti-eye" aria-hidden="true"></i>
         </button>
     </div>
-    <span class="ajuda">Mínimo de 8 caracteres.</span>
+    <span class="ajuda">{% trans "Mínimo de 8 caracteres." %}</span>
 </div>
 <div class="formulario-login">
-    <label for="senha2">Confirmar senha</label>
+    <label for="senha2">{% trans "Confirmar senha" %}</label>
     <div class="campo-senha">
         <input type="password" id="senha2" name="senha2" autocomplete="new-password" required>
         <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
@@ -223,8 +225,8 @@
                 </section>
 
                 <div class="acoes">
-                    <button type="button" id="voltar" class="secundario">Voltar</button>
-                    <button type="button" id="avancar">Avançar</button>
+                    <button type="button" id="voltar" class="secundario">{% trans "Voltar" %}</button>
+                    <button type="button" id="avancar">{% trans "Avançar" %}</button>
                 </div>
             </form>
 
@@ -235,13 +237,13 @@
                     <path d="M28 50l14 14 27-30" fill="none" stroke="#5A3D7F" stroke-width="7" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <h1>Cadastro enviado!</h1>
-                <p>Sua instituição será analisada pela equipe de administração.</p>
-                <p class="signup-text"><a href="{% url 'login' %}">Voltar para o login</a></p>
+                <h1>{% trans "Cadastro enviado!" %}</h1>
+                <p>{% trans "Sua instituição será analisada pela equipe de administração." %}</p>
+                <p class="signup-text"><a href="{% url 'login' %}">{% trans "Voltar para o login" %}</a></p>
             </div>
 
             <p class="signup-text" id="rodape-login">
-                Já possui conta? <a href="{% url 'login' %}">entre aqui</a>
+                {% trans "Já possui conta?" %} <a href="{% url 'login' %}">{% trans "entre aqui" %}</a>
             </p>
         </div>
     </main>

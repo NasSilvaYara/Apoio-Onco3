@@ -1,0 +1,999 @@
+# English translation for ApoioOnco.
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ApoioOnco\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-07 09:49-0300\n"
+"PO-Revision-Date: 2026-11-07 10:00-0300\n"
+"Last-Translator: \n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Português"
+msgstr "Português"
+
+msgid "English"
+msgstr "English"
+
+msgid "Español"
+msgstr "Español"
+
+msgid "Deutsch"
+msgstr "Deutsch"
+
+msgid "Italiano"
+msgstr "Italiano"
+
+msgid "日本語"
+msgstr "日本語"
+
+msgid "Cadastro"
+msgstr "Registration"
+
+msgid "ApoioOnco"
+msgstr "ApoioOnco"
+
+msgid "Validar o CNPJ"
+msgstr "Validate CNPJ"
+
+msgid ""
+"Cadastre sua organização e ajude mais pessoas a encontrarem os serviços que "
+"vocês oferecem."
+msgstr "Register your organization and help more people find the services you offer."
+
+msgid "Faça parte da nossa rede"
+msgstr "Join our network"
+
+msgid "CNPJ"
+msgstr "CNPJ"
+
+msgid "Dados da instituição"
+msgstr "Institution details"
+
+msgid "Endereço"
+msgstr "Address"
+
+msgid "Contato"
+msgstr "Contact"
+
+msgid "Acesso"
+msgstr "Access"
+
+msgid "Revisão"
+msgstr "Review"
+
+msgid "Não foi possível concluir o cadastro. Revise as informações abaixo."
+msgstr "The registration could not be completed. Please review the information below."
+
+msgid "Razão social"
+msgstr "Legal name"
+
+msgid "Nome fantasia"
+msgstr "Trade name"
+
+msgid "Nome da instituição"
+msgstr "Institution name"
+
+msgid "Tipo de instituição"
+msgstr "Type of institution"
+
+msgid "Selecione"
+msgstr "Select"
+
+msgid "ONG / associação"
+msgstr "NGO / association"
+
+msgid "Hospital"
+msgstr "Hospital"
+
+msgid "Clínica / centro de tratamento"
+msgstr "Clinic / treatment center"
+
+msgid "Casa de apoio"
+msgstr "Support house"
+
+msgid "Instituto / fundação"
+msgstr "Institute / foundation"
+
+msgid "Voluntariado / grupo de apoio"
+msgstr "Volunteer / support group"
+
+msgid "Órgão público"
+msgstr "Public agency"
+
+msgid "Outros"
+msgstr "Other"
+
+msgid "Descrição"
+msgstr "Description"
+
+msgid "Foto ou logo da instituição"
+msgstr "Photo or logo of the institution"
+
+msgid "Horário de atendimento"
+msgstr "Opening hours"
+
+msgid "Tipos de serviço"
+msgstr "Types of service"
+
+msgid "Nenhum tipo de apoio disponível no momento."
+msgstr "No type of support is available at the moment."
+
+msgid "CEP"
+msgstr "Postal code (CEP)"
+
+msgid "Estado (UF)"
+msgstr "State (UF)"
+
+msgid "Bairro"
+msgstr "Neighborhood"
+
+msgid "Cidade"
+msgstr "City"
+
+msgid "Selecione o estado primeiro"
+msgstr "Select the state first"
+
+msgid "Número"
+msgstr "Number"
+
+msgid "Complemento"
+msgstr "Address line 2"
+
+msgid "(opcional)"
+msgstr "(optional)"
+
+msgid "Sala, bloco, andar..."
+msgstr "Room, block, floor..."
+
+msgid "Preencha pelo menos uma opção."
+msgstr "Fill in at least one option."
+
+msgid "Telefone"
+msgstr "Phone"
+
+msgid "E-mail de atendimento"
+msgstr "Contact email"
+
+msgid "Site"
+msgstr "Website"
+
+msgid "Outras redes sociais"
+msgstr "Other social networks"
+
+msgid "@suainstituicao"
+msgstr "@yourinstitution"
+
+msgid "Com esses dados você entra no painel da instituição."
+msgstr "With these details you can sign in to the institution's dashboard."
+
+msgid "E-mail de acesso"
+msgstr "Login email"
+
+msgid "Senha"
+msgstr "Password"
+
+msgid "Mínimo de 8 caracteres."
+msgstr "Minimum of 8 characters."
+
+msgid "Confirmar senha"
+msgstr "Confirm password"
+
+msgid "Voltar"
+msgstr "Back"
+
+msgid "Avançar"
+msgstr "Next"
+
+msgid "Cadastro enviado!"
+msgstr "Registration submitted!"
+
+msgid "Sua instituição será analisada pela equipe de administração."
+msgstr "Your institution will be reviewed by the administration team."
+
+msgid "Voltar para o login"
+msgstr "Back to login"
+
+msgid "Já possui conta?"
+msgstr "Already have an account?"
+
+msgid "entre aqui"
+msgstr "sign in here"
+
+msgid "Categorias"
+msgstr "Categories"
+
+msgid "MENU"
+msgstr "MENU"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Gerenciar"
+msgstr "Manage"
+
+msgid "Configurações"
+msgstr "Settings"
+
+msgid "Administrador"
+msgstr "Administrator"
+
+msgid "Sair"
+msgstr "Log out"
+
+msgid "Tipos de apoio que as instituições podem oferecer."
+msgstr "Types of support that institutions can offer."
+
+msgid "Lista de categorias de apoio"
+msgstr "List of support categories"
+
+msgid "Categoria"
+msgstr "Category"
+
+msgid "Instituições"
+msgstr "Institutions"
+
+msgid "Ativa"
+msgstr "Active"
+
+msgid "Ações"
+msgstr "Actions"
+
+msgid "Excluir a categoria"
+msgstr "Delete the category"
+
+msgid "Nenhuma categoria cadastrada."
+msgstr "No categories registered."
+
+msgid "Nova categoria"
+msgstr "New category"
+
+msgid "Nome da categoria"
+msgstr "Category name"
+
+msgid "Adicionar"
+msgstr "Add"
+
+msgid "Excluir"
+msgstr "Delete"
+
+msgid "Editar categoria"
+msgstr "Edit category"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Salvar"
+msgstr "Save"
+
+msgid "Tem certeza que deseja sair?"
+msgstr "Are you sure you want to log out?"
+
+msgid "Você precisará entrar novamente para acessar a área administrativa."
+msgstr "You will need to sign in again to access the administrative area."
+
+msgid "Sim, sair"
+msgstr "Yes, log out"
+
+msgid "Gerencie sua conta, veja os administradores e as regras da plataforma."
+msgstr "Manage your account, view the administrators and the platform rules."
+
+msgid "Conta"
+msgstr "Account"
+
+msgid "Alterada há"
+msgstr "Changed"
+
+msgid "Alterar senha"
+msgstr "Change password"
+
+msgid "Administradoras"
+msgstr "Administrators"
+
+msgid "Nenhum administrador cadastrado."
+msgstr "No administrators registered."
+
+msgid "Salvar alterações"
+msgstr "Save changes"
+
+msgid "Excluir a conta?"
+msgstr "Delete the account?"
+
+msgid ""
+"Todos os dados da instituição serão removidos e ela deixará de aparecer na "
+"plataforma. Essa ação não pode ser desfeita."
+msgstr "All of the institution's data will be removed and it will no longer appear on the platform. This action cannot be undone."
+
+msgid "Sim, excluir"
+msgstr "Yes, delete"
+
+msgid "Gerenciar instituições"
+msgstr "Manage institutions"
+
+msgid "Aprove, edite e inative as instituições cadastradas."
+msgstr "Approve, edit and deactivate registered institutions."
+
+msgid "Buscar por nome, CNPJ ou cidade"
+msgstr "Search by name, CNPJ or city"
+
+msgid "Filtrar por status"
+msgstr "Filter by status"
+
+msgid "Todos os status"
+msgstr "All statuses"
+
+msgid "Pendente"
+msgstr "Pending"
+
+msgid "Rejeitada"
+msgstr "Rejected"
+
+msgid "Inativa"
+msgstr "Inactive"
+
+msgid "Filtrar por cidade"
+msgstr "Filter by city"
+
+msgid "Todas as cidades"
+msgstr "All cities"
+
+msgid "Filtrar"
+msgstr "Filter"
+
+msgid "instituições"
+msgstr "institutions"
+
+msgid "Lista de instituições cadastradas"
+msgstr "List of registered institutions"
+
+msgid "Instituição"
+msgstr "Institution"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Nenhuma instituição encontrada."
+msgstr "No institutions found."
+
+msgid "Nenhuma instituição encontrada com esses filtros."
+msgstr "No institutions found with these filters."
+
+msgid "Área Administrativa"
+msgstr "Administrative Area"
+
+msgid "Bem-vindo à área administrativa"
+msgstr "Welcome to the administrative area"
+
+msgid ""
+"Acompanhe o impacto da rede de apoio e garanta que as informações para as "
+"pacientes estejam sempre atualizadas."
+msgstr "Track the impact of the support network and make sure the information for patients is always up to date."
+
+msgid "Buscar cidade cadastrada"
+msgstr "Search registered city"
+
+msgid "Buscar cidade"
+msgstr "Search city"
+
+msgid "Notificações"
+msgstr "Notifications"
+
+msgid "Instituições cadastradas"
+msgstr "Registered institutions"
+
+msgid "Instituições inativas"
+msgstr "Inactive institutions"
+
+msgid "Quantidade por tipo de apoio"
+msgstr "Number by type of support"
+
+msgid "Instituições por tipo de apoio"
+msgstr "Institutions by type of support"
+
+msgid "Gráfico de barras com a quantidade de instituições por tipo de apoio"
+msgstr "Bar chart with the number of institutions by type of support"
+
+msgid "Nenhuma cidade cadastrada com esse nome."
+msgstr "No city registered with that name."
+
+msgid "Resumo geral:"
+msgstr "Overall summary:"
+
+msgid "Instituições ativas"
+msgstr "Active institutions"
+
+msgid "Aguardando aprovação"
+msgstr "Awaiting approval"
+
+msgid "Há cadastros esperando a sua aprovação."
+msgstr "There are registrations awaiting your approval."
+
+msgid "Não há cadastros pendentes."
+msgstr "There are no pending registrations."
+
+msgid "Início"
+msgstr "Home"
+
+msgid "Meu perfil"
+msgstr "My profile"
+
+msgid "Dados de contato"
+msgstr "Contact details"
+
+msgid "Gerencie sua conta e como seu perfil aparece na plataforma."
+msgstr "Manage your account and how your profile appears on the platform."
+
+msgid "Visibilidade do perfil"
+msgstr "Profile visibility"
+
+msgid "Perfil visível nas buscas"
+msgstr "Profile visible in searches"
+
+msgid "Desative para pausar sua instituição sem excluir os dados."
+msgstr "Turn off to pause your institution without deleting the data."
+
+msgid "Excluir conta"
+msgstr "Delete account"
+
+msgid ""
+"A instituição deixa de aparecer na plataforma e os dados são removidos. Essa "
+"ação não pode ser desfeita."
+msgstr "The institution will no longer appear on the platform and the data will be removed. This action cannot be undone."
+
+msgid "É por aqui que as pacientes vão falar com a sua instituição."
+msgstr "This is where patients will get in touch with your institution."
+
+msgid "Telefones"
+msgstr "Phone numbers"
+
+msgid "Telefone principal"
+msgstr "Main phone"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "opcional"
+msgstr "optional"
+
+msgid "E-mail e site"
+msgstr "Email and website"
+
+msgid "Redes sociais"
+msgstr "Social networks"
+
+msgid "Ver como a usuária vê"
+msgstr "See how users see it"
+
+msgid "Estas informações aparecem para as pacientes na busca."
+msgstr "This information is shown to patients in the search."
+
+msgid "Identidade da instituição"
+msgstr "Institution identity"
+
+msgid "Trocar logo"
+msgstr "Change logo"
+
+msgid "Localização"
+msgstr "Location"
+
+msgid "Logradouro"
+msgstr "Street"
+
+msgid "Use a sigla do estado, com 2 letras"
+msgstr "Use the two-letter state abbreviation"
+
+msgid "Tipos de apoio oferecidos"
+msgstr "Types of support offered"
+
+msgid "Adicionar apoio"
+msgstr "Add support"
+
+msgid "Funcionamento"
+msgstr "Operating hours"
+
+msgid "Área da Instituição"
+msgstr "Institution Area"
+
+msgid "Olá, "
+msgstr "Hello, "
+
+msgid "Aqui você acompanha as informações da sua instituição."
+msgstr "Here you can keep track of your institution's information."
+
+msgid "Serviços cadastrados"
+msgstr "Registered services"
+
+msgid "Ver serviços"
+msgstr "View services"
+
+msgid "Última atualização"
+msgstr "Last update"
+
+msgid "Ações rápidas"
+msgstr "Quick actions"
+
+msgid "Editar perfil"
+msgstr "Edit profile"
+
+msgid "Ver detalhes de contato"
+msgstr "View contact details"
+
+msgid "Resumo da sua instituição"
+msgstr "Summary of your institution"
+
+msgid "Bem vindo a área administrativa"
+msgstr "Welcome to the administrative area"
+
+msgid ""
+"Acompanhe o impacto da rede de apoio e garanta que as informações para os "
+"pacientes estejam sempre atualizadas."
+msgstr "Track the impact of the support network and make sure the information for patients is always up to date."
+
+msgid "GRÁFICO"
+msgstr "CHART"
+
+msgid "Nenhum alerta recente no sistema."
+msgstr "No recent alerts in the system."
+
+msgid "Esqueci minha senha"
+msgstr "I forgot my password"
+
+msgid "Vamos te ajudar a voltar."
+msgstr "We'll help you get back in."
+
+msgid "Esqueceu a senha?"
+msgstr "Forgot your password?"
+
+msgid ""
+"Informe o e-mail de acesso e enviaremos um link para você criar uma nova "
+"senha."
+msgstr "Enter your login email and we'll send you a link to create a new password."
+
+msgid "Enviar link"
+msgstr "Send link"
+
+msgid "voltar para o login"
+msgstr "back to login"
+
+msgid "Resultados da busca"
+msgstr "Search results"
+
+msgid "O que você procura?"
+msgstr "What are you looking for?"
+
+msgid "Buscar instituições"
+msgstr "Search institutions"
+
+msgid "Pesquisar"
+msgstr "Search"
+
+msgid "Minha conta"
+msgstr "My account"
+
+msgid "Filtros"
+msgstr "Filters"
+
+msgid "Cidade, estado ou CEP"
+msgstr "City, state or postal code"
+
+msgid "Estado"
+msgstr "State"
+
+msgid "Todos os estados"
+msgstr "All states"
+
+msgid "Tipo de Instituição"
+msgstr "Type of Institution"
+
+msgid "Todos"
+msgstr "All"
+
+msgid "ONG/ associação"
+msgstr "NGO / association"
+
+msgid "Clínica/ centro de tratamento"
+msgstr "Clinic / treatment center"
+
+msgid "Instituto/fundação"
+msgstr "Institute/foundation"
+
+msgid "Voluntariado/ grupo de apoio"
+msgstr "Volunteer / support group"
+
+msgid "Serviços"
+msgstr "Services"
+
+msgid "Banco de Peruca"
+msgstr "Wig Bank"
+
+msgid "Banco de Lenço"
+msgstr "Headscarf Bank"
+
+msgid "Apoio Psicológico"
+msgstr "Psychological Support"
+
+msgid "Assistência Social"
+msgstr "Social Assistance"
+
+msgid "Aplicar Filtros"
+msgstr "Apply Filters"
+
+msgid "Instituições encontradas"
+msgstr "Institutions found"
+
+msgid "Ver Instituição"
+msgstr "View Institution"
+
+msgid "Nenhuma instituição aprovada corresponde aos filtros."
+msgstr "No approved institution matches the filters."
+
+msgid "Não encontrado"
+msgstr "Not found"
+
+msgid "Não encontramos nenhuma instituição para a sua busca."
+msgstr "We couldn't find any institution for your search."
+
+msgid "Tente outros termos ou remova alguns filtros."
+msgstr "Try other terms or remove some filters."
+
+msgid "Conectando mulheres a redes de apoio."
+msgstr "Connecting women to support networks."
+
+msgid "Navegação"
+msgstr "Navigation"
+
+msgid "Encontrar Apoio"
+msgstr "Find Support"
+
+msgid "Informações"
+msgstr "Information"
+
+msgid "Sobre"
+msgstr "About"
+
+msgid "Para Instituições"
+msgstr "For Institutions"
+
+msgid "Cadastre sua instituição"
+msgstr "Register your institution"
+
+msgid "Entrar"
+msgstr "Log in"
+
+msgid "Fale conosco"
+msgstr "Contact us"
+
+msgid "&copy; 2026 ApoioOnco. Todos os direitos reservados."
+msgstr "&copy; 2026 ApoioOnco. All rights reserved."
+
+msgid "Selecionar idioma"
+msgstr "Select language"
+
+msgid "Fazer login/cadastro"
+msgstr "Log in / Register"
+
+msgid "Encontre"
+msgstr "Find"
+
+msgid "apoio"
+msgstr "support"
+
+msgid "perto de você"
+msgstr "near you"
+
+msgid "Buscar"
+msgstr "Search"
+
+msgid "ONG/associação"
+msgstr "NGO/association"
+
+msgid "Clínica/Centro de tratamento"
+msgstr "Clinic/Treatment center"
+
+msgid "Voluntariado/grupo de apoio"
+msgstr "Volunteer/support group"
+
+msgid "Tipo de apoio"
+msgstr "Type of support"
+
+msgid "Banco de perucas"
+msgstr "Wig bank"
+
+msgid "Banco de lenço"
+msgstr "Headscarf bank"
+
+msgid "Apoio psicológico"
+msgstr "Psychological support"
+
+msgid "Assistência social"
+msgstr "Social assistance"
+
+msgid ""
+"Aqui você encontra instituições, hospitais e organizações que oferecem "
+"suporte durante o tratamento de câncer."
+msgstr "Here you will find institutions, hospitals and organizations that offer support during cancer treatment."
+
+msgid "Saiba mais"
+msgstr "Learn more"
+
+msgid "Ver instituição"
+msgstr "View institution"
+
+msgid "Nenhuma instituição encontrada"
+msgstr "No institutions found"
+
+msgid "Não encontramos nenhuma instituição cadastrada para o termo"
+msgstr "We couldn't find any registered institution for the term"
+
+msgid "Sobre nós"
+msgstr "About us"
+
+msgid "O"
+msgstr "The"
+
+msgid ""
+"nasceu com o objetivo de centralizar e facilitar o acesso a informações "
+"sobre instituições, ONGs, hospitais e serviços de apoio destinados a "
+"mulheres com câncer. Sabemos que a jornada do tratamento oncológico traz "
+"diversos desafios físicos e emocionais, e encontrar o suporte certo não "
+"deveria ser mais um deles. Nossa plataforma funciona como uma ponte: "
+"permitimos que a usuária"
+msgstr "was created to centralize and make it easier to access information about institutions, NGOs, hospitals and support services for women with cancer. We know that the journey of cancer treatment brings many physical and emotional challenges, and finding the right support shouldn't be one more of them. Our platform works as a bridge: we allow users"
+
+msgid "encontre redes de apoio"
+msgstr "to find support networks"
+
+msgid ""
+"de acordo com a sua localização e com o tipo de ajuda que ela precisa no "
+"momento, como:"
+msgstr "according to their location and the type of help they need at the moment, such as:"
+
+msgid "Encontre instituições que disponibilizam perucas."
+msgstr "Find institutions that provide wigs."
+
+msgid "Banco de Lenços"
+msgstr "Headscarf Banks"
+
+msgid "Encontre locais que oferecem lenços e acessórios."
+msgstr "Find places that offer headscarves and accessories."
+
+msgid "Encontre organizações que oferecem acolhimento psicológico."
+msgstr "Find organizations that offer psychological support."
+
+msgid "Nossa cultura -"
+msgstr "Our culture -"
+
+msgid "Acolhimento que chega perto de quem precisa"
+msgstr "Support that reaches those who need it"
+
+msgid "Missão"
+msgstr "Mission"
+
+msgid ""
+"Conectar pacientes oncológicos e familiares a uma rede de apoio acessível e "
+"humanizada."
+msgstr "To connect cancer patients and their families to an accessible and humane support network."
+
+msgid "Visão"
+msgstr "Vision"
+
+msgid ""
+"Ser a principal referência em acolhimento e localização de apoio oncológico "
+"no Brasil."
+msgstr "To be the leading reference in support and in finding oncology support in Brazil."
+
+msgid "Nossos valores"
+msgstr "Our values"
+
+msgid "Acolhimento e empatia"
+msgstr "Welcoming care and empathy"
+
+msgid "O ser humano no centro de tudo."
+msgstr "People at the center of everything."
+
+msgid "Solidariedade"
+msgstr "Solidarity"
+
+msgid "Rede forte entre ONGs, voluntários e pacientes."
+msgstr "A strong network among NGOs, volunteers and patients."
+
+msgid "Inovação social"
+msgstr "Social innovation"
+
+msgid "Tecnologia simples e intuitiva."
+msgstr "Simple and intuitive technology."
+
+msgid "Confiabilidade"
+msgstr "Reliability"
+
+msgid "Dados de instituições verificadas."
+msgstr "Data from verified institutions."
+
+msgid "Quem somos?"
+msgstr "Who we are"
+
+msgid ""
+"Este projeto é fruto de um trabalho interdisciplinar desenvolvido com muita "
+"dedicação por três alunas:"
+msgstr "This project is the result of interdisciplinary work developed with great dedication by three students:"
+
+msgid ""
+"Unimos a tecnologia e a programação para criar uma ferramenta de impacto "
+"social, acreditando que a informação acessível e o acolhimento comunitário "
+"são fundamentais para fortalecer mulheres na luta contra o câncer."
+msgstr "We combine technology and programming to create a tool with social impact, believing that accessible information and community support are essential to strengthen women in the fight against cancer."
+
+msgid "Instituições em destaque"
+msgstr "Featured institutions"
+
+msgid "Ver todas"
+msgstr "View all"
+
+msgid "Nenhuma instituição aprovada para exibir."
+msgstr "No approved institutions to display."
+
+msgid "Como Funciona o ApoioOnco?"
+msgstr "How does ApoioOnco work?"
+
+msgid ""
+"Encontrar o suporte que você precisa é simples e rápido. Siga os passos "
+"abaixo:"
+msgstr "Finding the support you need is simple and quick. Follow the steps below:"
+
+msgid "Busque por Categoria ou Localização"
+msgstr "Search by Category or Location"
+
+msgid ""
+"Escolha o tipo de ajuda que você precisa (como banco de perucas, apoio "
+"psicológico ou assistência social) e informe a sua região."
+msgstr "Choose the type of help you need (such as wig bank, psychological support or social assistance) and enter your region."
+
+msgid "Encontre as Instituições"
+msgstr "Find the Institutions"
+
+msgid ""
+"Navegue pelo mapa ou pela lista de ONGs, hospitais e casas de apoio "
+"cadastrados que atendem aos seus critérios."
+msgstr "Browse the map or the list of registered NGOs, hospitals and support houses that meet your criteria."
+
+msgid "Acesse as Informações de Contato"
+msgstr "Access the Contact Information"
+
+msgid ""
+"Veja os horários de funcionamento, endereço, telefone e os documentos "
+"necessários para solicitar o atendimento direto com a instituição escolhida."
+msgstr "See the opening hours, address, phone and the documents needed to request care directly from the institution you chose."
+
+msgid "Informações para você"
+msgstr "Information for you"
+
+msgid "Entenda o câncer"
+msgstr "Understand cancer"
+
+msgid ""
+"Informações para conhecer a doença, o tratamento e suas diferentes fases."
+msgstr "Information to learn about the disease, the treatment and its different phases."
+
+msgid "Saúde emocional"
+msgstr "Emotional health"
+
+msgid ""
+"Conteúdos para cuidar das emoções e lidar com os desafios do tratamento."
+msgstr "Content to take care of your emotions and deal with the challenges of treatment."
+
+msgid "Autoestima durante o tratamento"
+msgstr "Self-esteem during treatment"
+
+msgid ""
+"Cuidados e informações para se sentir bem consigo mesma durante essa fase."
+msgstr "Care and information to feel good about yourself during this phase."
+
+msgid "Área exclusiva para instituições"
+msgstr "Area exclusively for institutions"
+
+msgid ""
+"O login e cadastro são só para instituições, ONGs e hospitais que querem "
+"divulgar seus serviços na plataforma."
+msgstr "Login and registration are only for institutions, NGOs and hospitals that want to publicize their services on the platform."
+
+msgid ""
+"Se você está buscando apoio, não precisa criar conta. É só pesquisar na "
+"página inicial."
+msgstr "If you are looking for support, you don't need to create an account. Just search on the home page."
+
+msgid "Sou uma instituição"
+msgstr "I am an institution"
+
+msgid "Voltar a buscar apoio"
+msgstr "Back to searching for support"
+
+msgid "Ver instituições"
+msgstr "View institutions"
+
+msgid "Perguntas frequentes"
+msgstr "Frequently asked questions"
+
+msgid ""
+"Este conteúdo é informativo e não substitui a orientação da sua equipe de "
+"saúde. Fontes: "
+msgstr "This content is for information only and does not replace the guidance of your healthcare team. Sources: "
+
+msgid "Continue lendo"
+msgstr "Keep reading"
+
+msgid ""
+"O login e o cadastro são só para instituições, ONGs e hospitais que querem "
+"divulgar seus serviços na plataforma."
+msgstr "Login and registration are only for institutions, NGOs and hospitals that want to publicize their services on the platform."
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Juntos, ampliamos o acesso ao apoio."
+msgstr "Together, we expand access to support."
+
+msgid "Bem vindo de volta"
+msgstr "Welcome back"
+
+msgid "Acesse sua conta para gerenciar as informações da sua instituição."
+msgstr "Sign in to your account to manage your institution's information."
+
+msgid "E-mail ou CNPJ"
+msgstr "Email or CNPJ"
+
+msgid "Ainda não possui conta?"
+msgstr "Don't have an account yet?"
+
+msgid "cadastre-se aqui"
+msgstr "register here"
+
+msgid "Redefinir senha"
+msgstr "Reset password"
+
+msgid "Quase lá!"
+msgstr "Almost there!"
+
+msgid "Crie uma nova senha"
+msgstr "Create a new password"
+
+msgid "Escolha uma senha com pelo menos 8 caracteres."
+msgstr "Choose a password with at least 8 characters."
+
+msgid "Nova senha"
+msgstr "New password"
+
+msgid "Confirmar nova senha"
+msgstr "Confirm new password"
+
+msgid "Salvar nova senha"
+msgstr "Save new password"
+
+msgid "Instituição cadastrada"
+msgstr "Registered institution"
+
+msgid "Sobre a instituição"
+msgstr "About the institution"
+
+msgid "Serviços oferecidos"
+msgstr "Services offered"
+
+msgid "Nenhum serviço informado"
+msgstr "No services listed"
+
+msgid "Horário de funcionamento"
+msgstr "Opening hours"
+
+msgid "Informações de contato"
+msgstr "Contact information"
+
+msgid "E-mail"
+msgstr "Email"
+
+msgid "Localização no mapa"
+msgstr "Location on the map"

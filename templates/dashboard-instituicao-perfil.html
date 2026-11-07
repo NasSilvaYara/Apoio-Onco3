@@ -1,10 +1,13 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApoioOnco - Meu perfil</title>
+    <title>ApoioOnco - {% trans "Meu perfil" %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
@@ -19,20 +22,20 @@
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
         <nav class="menu" aria-label="Menu principal">
-            <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_instituicao' %}" class="menu-item" aria-current="page" target="_blank">Início</a>
-            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" target="_blank">Meu perfil</a>
-            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">Dados de contato</a>
-            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">Configurações</a>
-            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
+            <span class="menu-title">{% trans "MENU" %}</span>
+            <a href="{% url 'dashboard_instituicao' %}" class="menu-item" aria-current="page" target="_blank">{% trans "Início" %}</a>
+            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" target="_blank">{% trans "Meu perfil" %}</a>
+            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">{% trans "Dados de contato" %}</a>
+            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">{% trans "Configurações" %}</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">{% trans "Sair" %}</button></form>
         </nav>
     </aside>
 
     <main class="main-content">
         <header class="header">
             <div>
-                <h1 class="welcome-title">Meu perfil</h1>
-                <p class="welcome-subtitle">Estas informações aparecem para as pacientes na busca.</p>
+                <h1 class="welcome-title">{% trans "Meu perfil" %}</h1>
+                <p class="welcome-subtitle">{% trans "Estas informações aparecem para as pacientes na busca." %}</p>
             </div>
             <button type="button" class="btn-notificacao" aria-label="Notificações">
                 <i class="ti ti-bell" aria-hidden="true"></i>
@@ -45,7 +48,7 @@
             {% if form.errors %}<div role="alert">{{ form.errors }}</div>{% endif %}
 
             <section class="card-perfil">
-                <h2>Identidade da instituição</h2>
+                <h2>{% trans "Identidade da instituição" %}</h2>
 
                 <div class="logo-linha">
                     <div class="logo-preview" id="logo-preview">
@@ -56,65 +59,65 @@
                         {% endif %}
                     </div>
                     <input type="file" id="logo-arquivo" name="logo" accept="image/*" hidden>
-                    <button type="button" id="btn-trocar-logo" class="btn btn-primario">Trocar logo</button>
+                    <button type="button" id="btn-trocar-logo" class="btn btn-primario">{% trans "Trocar logo" %}</button>
                 </div>
 
                 <div class="grid-campos">
                     <div class="campo">
-                        <label for="nome">Nome da instituição</label>
+                        <label for="nome">{% trans "Nome da instituição" %}</label>
                         <input type="text" id="nome" name="nome" value="{{ instituicao.nome }}" required>
                     </div>
                     <div class="campo">
-                        <label for="tipo">Tipo de instituição</label>
+                        <label for="tipo">{% trans "Tipo de instituição" %}</label>
                         <select id="tipo" name="tipo" required>
-                            <option value="" disabled>Selecione</option>
+                            <option value="" disabled>{% trans "Selecione" %}</option>
                             {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if instituicao.tipo == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
                         </select>
                     </div>
                     <div class="campo span-todos">
-                        <label for="descricao">Descrição</label>
+                        <label for="descricao">{% trans "Descrição" %}</label>
                         <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ instituicao.descricao }}</textarea>
                     </div>
                 </div>
             </section>
 
             <section class="card-perfil">
-                <h2>Localização</h2>
+                <h2>{% trans "Localização" %}</h2>
                 <div class="grid-campos">
                     <div class="campo">
-                        <label for="cep">CEP</label>
+                        <label for="cep">{% trans "CEP" %}</label>
                         <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" value="{{ instituicao.cep }}" required>
                     </div>
                     <div class="campo span-2">
-                        <label for="logradouro">Logradouro</label>
+                        <label for="logradouro">{% trans "Logradouro" %}</label>
                         <input type="text" id="logradouro" name="logradouro" value="{{ instituicao.logradouro }}" required>
                     </div>
                     <div class="campo">
-                        <label for="numero">Número</label>
+                        <label for="numero">{% trans "Número" %}</label>
                         <input type="text" id="numero" name="numero" value="{{ instituicao.numero }}" required>
                     </div>
                     <div class="campo">
-                        <label for="complemento">Complemento</label>
+                        <label for="complemento">{% trans "Complemento" %}</label>
                         <input type="text" id="complemento" name="complemento" value="{{ instituicao.complemento }}">
                     </div>
                     <div class="campo">
-                        <label for="bairro">Bairro</label>
+                        <label for="bairro">{% trans "Bairro" %}</label>
                         <input type="text" id="bairro" name="bairro" value="{{ instituicao.bairro }}" required>
                     </div>
                     <div class="campo">
-                        <label for="cidade">Cidade</label>
+                        <label for="cidade">{% trans "Cidade" %}</label>
                         <input type="text" id="cidade" name="cidade" value="{{ instituicao.cidade }}" required>
                     </div>
                     <div class="campo">
-                        <label for="estado">Estado (UF)</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="Use a sigla do estado, com 2 letras" value="{{ instituicao.estado }}" required>
+                        <label for="estado">{% trans "Estado (UF)" %}</label>
+                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="{% trans "Use a sigla do estado, com 2 letras" %}" value="{{ instituicao.estado }}" required>
                     </div>
                 </div>
             </section>
 
             <!-- Tipos de apoio oferecidos -->
             <section class="card-perfil">
-                <h2>Tipos de apoio oferecidos</h2>
+                <h2>{% trans "Tipos de apoio oferecidos" %}</h2>
 
                 <div class="chips" id="chips">
                     {% for servico in instituicao.servicosOferecidos.all %}<span class="chip">{{ servico.nome }}
@@ -125,7 +128,7 @@
 
                 <div class="adicionar-apoio">
                     <button type="button" id="btn-add-apoio" class="btn btn-primario" aria-expanded="false" aria-controls="menu-apoios">
-                        <i class="ti ti-circle-plus" aria-hidden="true"></i> Adicionar apoio
+                        <i class="ti ti-circle-plus" aria-hidden="true"></i> {% trans "Adicionar apoio" %}
                     </button>
                     <ul id="menu-apoios" class="menu-apoios" hidden>
                         {% for tipo_apoio in tipos_apoio %}<li><button type="button" data-apoio="{{ tipo_apoio.nome }}">{{ tipo_apoio.nome }}</button></li>{% endfor %}
@@ -135,17 +138,17 @@
 
             <!-- Funcionamento -->
             <section class="card-perfil">
-                <h2>Funcionamento</h2>
+                <h2>{% trans "Funcionamento" %}</h2>
                 <div class="campo">
-                    <label for="horario">Horário de atendimento</label>
+                    <label for="horario">{% trans "Horário de atendimento" %}</label>
                     <textarea id="horario" name="horario" rows="3" placeholder="Ex.: seg a sex, das 8h às 17h" required>{{ instituicao.horario }}</textarea>
                 </div>
             </section>
 
             <div class="acoes-form">
-                <a href="#" class="btn btn-secundario">Cancelar</a>
-                <a href="#" class="btn btn-medio">Ver como a usuária vê</a>
-                <button type="submit" class="btn btn-primario">Salvar alterações</button>
+                <a href="#" class="btn btn-secundario">{% trans "Cancelar" %}</a>
+                <a href="#" class="btn btn-medio">{% trans "Ver como a usuária vê" %}</a>
+                <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
             </div>
         </form>
     </main>

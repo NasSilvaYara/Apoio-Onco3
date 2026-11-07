@@ -1,6 +1,9 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,12 +22,12 @@
 		</a>
 
 		<form class="site-search" action="{% url 'busca' %}" method="get" role="search">
-			<label class="site-search__label" for="busca-instituicoes">Buscar instituições</label>
+			<label class="site-search__label" for="busca-instituicoes">{% trans "Buscar instituições" %}</label>
 			<svg class="site-search__icon" viewBox="0 0 24 24" aria-hidden="true">
 				<circle cx="11" cy="11" r="7"></circle>
 				<path d="m16 16 4.5 4.5"></path>
 			</svg>
-			<input id="busca-instituicoes" name="busca" type="search" placeholder="Buscar instituições" value="{{ busca|default:'' }}">
+			<input id="busca-instituicoes" name="busca" type="search" placeholder="{% trans "Buscar instituições" %}" value="{{ busca|default:'' }}">
 			<button type="submit" aria-label="Pesquisar instituições">
 				<svg viewBox="0 0 24 24" aria-hidden="true">
 					<path d="m5 12 14 0M13 6l6 6-6 6"></path>
@@ -38,7 +41,7 @@
 			<svg viewBox="0 0 24 24" aria-hidden="true">
 				<path d="M19 12H5m7 7-7-7 7-7"></path>
 			</svg>
-			<span>Voltar</span>
+			<span>{% trans "Voltar" %}</span>
 		</a>
 
 		<div class="institution-layout">
@@ -52,31 +55,31 @@
 				<div class="institution-heading__content">
 					<h1 id="institution-name">{{ instituicao.nomeInst }}</h1>
 					<p class="institution-location">{{ instituicao.cidade }} - {{ instituicao.estado }}</p>
-					<span class="registration-status">Instituição cadastrada</span>
+					<span class="registration-status">{% trans "Instituição cadastrada" %}</span>
 				</div>
 				</section>
 
 				<section class="institution-details" aria-label="Informações da instituição">
 					<section class="content-section" aria-labelledby="about-title">
-						<h2 id="about-title">Sobre a instituição</h2>
+						<h2 id="about-title">{% trans "Sobre a instituição" %}</h2>
 						<p>{{ instituicao.descricao }}</p>
 					</section>
 
 					<section class="content-section" aria-labelledby="services-title">
-						<h2 id="services-title">Serviços oferecidos</h2>
+						<h2 id="services-title">{% trans "Serviços oferecidos" %}</h2>
 						<ul class="service-list">
 							{% if instituicao %}
 								{% for servico in instituicao.servicosOferecidos.all %}
 									<li>{{ servico.nome }}</li>
 								{% empty %}
-									<li>Nenhum serviço informado</li>
+									<li>{% trans "Nenhum serviço informado" %}</li>
 								{% endfor %}
 							{% endif %}
 						</ul>
 					</section>
 
 					<section class="content-section" aria-labelledby="hours-title">
-						<h2 id="hours-title">Horário de funcionamento</h2>
+						<h2 id="hours-title">{% trans "Horário de funcionamento" %}</h2>
 						<p>{{ instituicao.horarioAtendimento }}</p>
 					</section>
 				</section>
@@ -84,18 +87,18 @@
 
 			<div class="institution-aside">
 				<aside class="contact-panel" aria-labelledby="contact-title">
-				<h2 id="contact-title">Informações de contato</h2>
+				<h2 id="contact-title">{% trans "Informações de contato" %}</h2>
 				<dl class="contact-list">
 					<div class="contact-list__item">
-						<dt>Telefone</dt>
+						<dt>{% trans "Telefone" %}</dt>
 						<dd>{{ instituicao.telefone }}{% if instituicao.telefone_whatsapp %}<br>{{ instituicao.telefone_whatsapp }}{% endif %}</dd>
 					</div>
 					<div class="contact-list__item">
-						<dt>E-mail</dt>
+						<dt>{% trans "E-mail" %}</dt>
 						<dd>{% if instituicao.email_contato %}<a href="mailto:{{ instituicao.email_contato }}">{{ instituicao.email_contato }}</a>{% endif %}</dd>
 					</div>
 					<div class="contact-list__item">
-						<dt>Site</dt>
+						<dt>{% trans "Site" %}</dt>
 						<dd>
 							{% if instituicao.site %}
 								<a href="{{ instituicao.site }}" target="_blank" rel="noopener noreferrer">{{ instituicao.site }}</a>
@@ -104,7 +107,7 @@
 						</dd>
 					</div>
 					<div class="contact-list__item">
-						<dt>Endereço</dt>
+						<dt>{% trans "Endereço" %}</dt>
 						<dd>
 							{{ instituicao.logradouro }}{% if instituicao.bairro %}, {{ instituicao.bairro }}{% endif %}<br>
 							{{ instituicao.cidade }} - {{ instituicao.estado }}
@@ -114,7 +117,7 @@
 			</aside>
 
 			<section class="map-panel" aria-labelledby="map-title">
-				<h2 id="map-title">Localização no mapa</h2>
+				<h2 id="map-title">{% trans "Localização no mapa" %}</h2>
 				<iframe
 					title="Mapa com a localização da instituição"
 					src="https://maps.google.com/maps?q={{ instituicao.logradouro|urlencode }}%2C%20{{ instituicao.cidade|urlencode }}%2C%20{{ instituicao.estado|urlencode }}&amp;output=embed"
@@ -130,24 +133,24 @@
 					<div class="logo-group">
 						<img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
 					</div>
-					<p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
+					<p class="footer-tagline">{% trans "Conectando mulheres a redes de apoio." %}</p>
 				</div>
 
 				<div class="footer-column">
-					<h3>Navegação</h3>
+					<h3>{% trans "Navegação" %}</h3>
 					<ul>
-						<li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
-						<li><a href="{% url 'home' %}#instituicoes">Instituições</a></li>
-						<li><a href="{% url 'home' %}#informacoes">Informações</a></li>
-						<li><a href="{% url 'home' %}#sobre">Sobre</a></li>
+						<li><a href="{% url 'home' %}">{% trans "Encontrar Apoio" %}</a></li>
+						<li><a href="{% url 'home' %}#instituicoes">{% trans "Instituições" %}</a></li>
+						<li><a href="{% url 'home' %}#informacoes">{% trans "Informações" %}</a></li>
+						<li><a href="{% url 'home' %}#sobre">{% trans "Sobre" %}</a></li>
 					</ul>
 				</div>
 
 				<div class="footer-column">
-					<h3>Para Instituições</h3>
+					<h3>{% trans "Para Instituições" %}</h3>
 					<ul>
-						<li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
-						<li><a href="{% url 'login' %}">Entrar</a></li>
+						<li><a href="{% url 'login' %}">{% trans "Cadastre sua instituição" %}</a></li>
+						<li><a href="{% url 'login' %}">{% trans "Entrar" %}</a></li>
 					</ul>
 				</div>
 
@@ -161,8 +164,8 @@
 		</div>
 
 		<div class="footer-bottom">
-			<p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
-		</div>
+            <p>{% trans "&copy; 2026 ApoioOnco. Todos os direitos reservados." %}</p>
+        </div>
 	</footer>
 </body>
 </html>

@@ -1,6 +1,9 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,10 +100,10 @@ document.addEventListener("DOMContentLoaded", function () {
     </button>
 
     <ul class="nav-links" id="menu-principal">
-        <li><a href="{% url 'home' %}" class="active">Início</a></li>
-        <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#instituicoes">Instituições</a></li>
-        <li><a href="#informacoes">Informações</a></li>
+        <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
+        <li><a href="#sobre">{% trans "Sobre" %}</a></li>
+        <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
+        <li><a href="#informacoes">{% trans "Informações" %}</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -114,28 +117,55 @@ document.addEventListener("DOMContentLoaded", function () {
             </svg>
         </button>
 
+        <form action="{% url 'set_language' %}" method="post" class="language-form">
+            {% csrf_token %}
+
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+            <label for="language-select" class="visually-hidden">
+                {% trans "Selecionar idioma" %}
+            </label>
+
+            <select
+                name="language"
+                id="language-select"
+                class="language-select"
+                onchange="this.form.submit()"
+                aria-label="Selecionar idioma">
+
+                {% get_available_languages as AVAILABLE_LANGUAGES %}
+
+                {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
+                    <option value="{{ lang_code }}"
+                        {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
+                        {{ lang_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
         <button type="button"
                 class="btn-login"
                 data-login-gate-open
                 aria-haspopup="dialog"
                 aria-controls="login-gate">
-            Fazer login/cadastro
+            {% trans "Fazer login/cadastro" %}
         </button>
     </div>
 </nav>
         <!-- Conteúdo Principal do Banner Hero -->
         <div class="hero-content">
-            <h1 class="hero-title">Encontre <span class="highlight-apoio">apoio</span> perto de você</h1>
+            <h1 class="hero-title">{% trans "Encontre" %} <span class="highlight-apoio">{% trans "apoio" %}</span> {% trans "perto de você" %}</h1>
 
             <!-- Container de Busca Funcional do Django -->
             <form action="/busca/" method="GET" class="search-box-container">
                 <div class="search-bar">
                     <div class="input-with-icon">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" name="busca" value="{{ busca }}" placeholder="O que você procura?">
+                        <input type="text" name="busca" value="{{ busca }}" placeholder="{% trans "O que você procura?" %}">
                     </div>
                    
-                    <button type="submit" class="search-btn">Buscar</button>
+                    <button type="submit" class="search-btn">{% trans "Buscar" %}</button>
                 </div>
 
                 <!-- Botões de Filtro/Pills -->
@@ -143,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <!-- Filtro de Localização -->
         <div class="filtro-dropdown-container">
             <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-localizacao">
-                <i class="fa-solid fa-location-dot pin-icon"></i> Localização
+                <i class="fa-solid fa-location-dot pin-icon"></i> {% trans "Localização" %}
             </button>
             <ul id="menu-localizacao" class="dropdown-filtro" hidden>
                 <li><button type="button">São Paulo - SP</button></li>
@@ -155,47 +185,45 @@ document.addEventListener("DOMContentLoaded", function () {
         <!-- Filtro de Tipo de Instituição -->
         <div class="filtro-dropdown-container">
             <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-instituicao">
-                <i class="fa-solid fa-hospital pin-icon"></i> Tipo de instituição
+                <i class="fa-solid fa-hospital pin-icon"></i> {% trans "Tipo de instituição" %}
             </button>
             <ul id="menu-instituicao" class="dropdown-filtro" hidden>
-                <li><button type="button">ONG/associação</button></li>
-                <li><button type="button">Hospital</button></li>
-                <li><button type="button">Clínica/Centro de tratamento</button></li>
-                <li><button type="button">Casa de apoio</button></li>
-                <li><button type="button">Instituto/fundação</button></li>
-                <li><button type="button">Voluntariado/grupo de apoio/button></li>
-                <li><button type="button">Órgão público/button></li>
-                <li><button type="button">Outros</button></li>
-                
+                <li><button type="button">{% trans "ONG/associação" %}</button></li>
+                <li><button type="button">{% trans "Hospital" %}</button></li>
+                <li><button type="button">{% trans "Clínica/Centro de tratamento" %}</button></li>
+                <li><button type="button">{% trans "Casa de apoio" %}</button></li>
+                <li><button type="button">{% trans "Instituto/fundação" %}</button></li>
+                <li><button type="button">{% trans "Voluntariado/grupo de apoio" %}</button></li>
+                <li><button type="button">{% trans "Órgão público" %}</button></li>
+                <li><button type="button">{% trans "Outros" %}</button></li>
             </ul>
         </div>
 
         <!-- Filtro de Tipo de Apoio -->
         <div class="filtro-dropdown-container">
             <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-apoio">
-                <i class="fa-solid fa-hand-holding-heart pin-icon"></i> Tipo de apoio
+                <i class="fa-solid fa-hand-holding-heart pin-icon"></i> {% trans "Tipo de apoio" %}
             </button>
             <ul id="menu-apoio" class="dropdown-filtro" hidden>
-                <li><button type="button">Banco de perucas</button></li>
-                <li><button type="button">Banco de lenço</button></li>
-                <li><button type="button">Apoio psicológico</button></li>
-                <li><button type="button">Assistência social</button></li>
+                <li><button type="button">{% trans "Banco de perucas" %}</button></li>
+                <li><button type="button">{% trans "Banco de lenço" %}</button></li>
+                <li><button type="button">{% trans "Apoio psicológico" %}</button></li>
+                <li><button type="button">{% trans "Assistência social" %}</button></li>
             </ul>
         </div>
     </div>
-            </form>
-
+    </form>
 
             <!-- Chamada Principal e Ilustração -->
             <div class="hero-banner">
                 <div class="hero-text-side">
                     <p class="hero-description">
-                        Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer.
+                        {% trans "Aqui você encontra instituições, hospitais e organizações que oferecem suporte durante o tratamento de câncer." %}
                     </p>
-                    <a href="#cultura" class="btn-hero-more">Saiba mais</a>
+                    <a href="#cultura" class="btn-hero-more">{% trans "Saiba mais" %}</a>
                 </div>
                 <div class="hero-image-side">
-                    <img src="{% static 'img/ilustracao.png' %}" alt="Ilustração ApoioOnco" class="hero-img">
+                    <img src="{% static 'img/Boneca-tela-home.png' %}" alt="Ilustração ApoioOnco" class="hero-img">
                 </div>
             </div>
         </div>
@@ -207,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <div class="results-container" style="max-width: 1200px; margin: 0 auto;">
         
         <h2 class="results-title" style="margin-bottom: 20px; color: #333;">
-            Resultados da busca: {% if busca %}<strong>"{{ busca }}"</strong>{% endif %}
+            {% trans "Resultados da busca" %}: {% if busca %}<strong>"{{ busca }}"</strong>{% endif %}
         </h2>
 
         <div class="results-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
@@ -217,13 +245,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
                     {% if inst.telefone %}<p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>{% endif %}
                     {% if inst.email_contato %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email_contato }}</p>{% endif %}
-                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}">Ver instituição</a>
+                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}">{% trans "Ver instituição" %}</a>
                 </div>
             {% empty %}
                 <div style="background: #fff; border: 2px dashed #6c5ce7; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; margin: 0 auto;">
                     <i class="fa-solid fa-magnifying-glass" style="font-size: 36px; color: #6c5ce7; margin-bottom: 10px;"></i>
-                    <h3 style="color: #333; margin-bottom: 8px;">Nenhuma instituição encontrada</h3>
-                    <p style="color: #666;">Não encontramos nenhuma instituição cadastrada para o termo "{{ busca }}".</p>
+                    <h3 style="color: #333; margin-bottom: 8px;">{% trans "Nenhuma instituição encontrada" %}</h3>
+                    <p style="color: #666;">{% trans "Não encontramos nenhuma instituição cadastrada para o termo" %} "{{ busca }}".</p>
                 </div>
             {% endfor %}
         </div>
@@ -237,25 +265,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- 2. SEÇÃO: SOBRE NÓS -->
         <section id="sobre" class="section-container">
-            <h2 class="section-title">Sobre nós</h2>
+            <h2 class="section-title">{% trans "Sobre nós" %}</h2>
             <div class="about-text">
                 <p>
-                    O <span class="highlight-purple">ApoioOnco</span> nasceu com o objetivo de centralizar e facilitar o acesso a informações sobre instituições, ONGs, hospitais e serviços de apoio destinados a mulheres com câncer. Sabemos que a jornada do tratamento oncológico traz diversos desafios físicos e emocionais, e encontrar o suporte certo não deveria ser mais um deles. Nossa plataforma funciona como uma ponte: permitimos que a usuária <span class="highlight-purple">encontre redes de apoio</span> de acordo com a sua localização e com o tipo de ajuda que ela precisa no momento, <span class="highlight-purple">como:</span>
+                    {% trans "O" %}
+                <span class="highlight-purple">ApoioOnco</span>
+                    {% trans "nasceu com o objetivo de centralizar e facilitar o acesso a informações sobre instituições, ONGs, hospitais e serviços de apoio destinados a mulheres com câncer. Sabemos que a jornada do tratamento oncológico traz diversos desafios físicos e emocionais, e encontrar o suporte certo não deveria ser mais um deles. Nossa plataforma funciona como uma ponte: permitimos que a usuária" %}
+                <span class="highlight-purple">{% trans "encontre redes de apoio" %}</span>
+                    {% trans "de acordo com a sua localização e com o tipo de ajuda que ela precisa no momento, como:" %}
                 </p>
             </div>
 
             <div class="purple-cards-container">
                 <div class="purple-card">
-                    <h3>Banco de perucas</h3>
-                    <p>Encontre instituições que disponibilizam perucas.</p>
+                    <h3>{% trans "Banco de perucas" %}</h3>
+                    <p>{% trans "Encontre instituições que disponibilizam perucas." %}</p>
                 </div>
                 <div class="purple-card">
-                    <h3>Banco de Lenços</h3>
-                    <p>Encontre locais que oferecem lenços e acessórios.</p>
+                    <h3>{% trans "Banco de Lenços" %}</h3>
+                    <p>{% trans "Encontre locais que oferecem lenços e acessórios." %}</p>
                 </div>
                 <div class="purple-card">
-                    <h3>Apoio Psicológico</h3>
-                    <p>Encontre organizações que oferecem acolhimento psicológico.</p>
+                    <h3>{% trans "Apoio Psicológico" %}</h3>
+                    <p>{% trans "Encontre organizações que oferecem acolhimento psicológico." %}</p>
                 </div>
             </div>
         </section>
@@ -265,10 +297,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="culture-panel">
                 <header class="culture-header">
                     <div class="culture-title-row">
-                        <span class="culture-badge">Nossa cultura -</span>
-                        <h2 id="culture-title">ApoioOnco</h2>
+                        <span class="culture-badge"> {% trans "Nossa cultura -" %} </span>
+                        <h2 id="culture-title">{% trans "ApoioOnco" %}</h2>
                     </div>
-                    <p>Acolhimento que chega perto de quem precisa</p>
+                    <p>{% trans "Acolhimento que chega perto de quem precisa" %}</p>
                 </header>
 
                 <div class="culture-pillars">
@@ -277,9 +309,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             <span class="culture-icon" aria-hidden="true">
                                 <i class="fa-solid fa-heart"></i>
                             </span>
-                            <h3>Missão</h3>
+                            <h3>{% trans "Missão" %}</h3>
                         </div>
-                        <p>Conectar pacientes oncológicos e familiares a uma rede de apoio acessível e humanizada.</p>
+                        <p>{% trans "Conectar pacientes oncológicos e familiares a uma rede de apoio acessível e humanizada." %}</p>
                     </article>
 
                     <article class="culture-pillar">
@@ -287,34 +319,34 @@ document.addEventListener("DOMContentLoaded", function () {
                             <span class="culture-icon" aria-hidden="true">
                                 <i class="fa-solid fa-eye"></i>
                             </span>
-                            <h3>Visão</h3>
+                            <h3>{% trans "Visão" %}</h3>
                         </div>
-                        <p>Ser a principal referência em acolhimento e localização de apoio oncológico no Brasil.</p>
+                        <p>{% trans "Ser a principal referência em acolhimento e localização de apoio oncológico no Brasil." %}</p>
                     </article>
                 </div>
 
                 <div class="culture-values">
-                    <h3 class="culture-values-title">Nossos valores</h3>
+                    <h3 class="culture-values-title">{% trans "Nossos valores" %}</h3>
                     <div class="culture-values-grid">
                         <article class="culture-value">
                             <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i>
-                            <h4>Acolhimento e empatia</h4>
-                            <p>O ser humano no centro de tudo.</p>
+                            <h4>{% trans "Acolhimento e empatia" %}</h4>
+                            <p>{% trans "O ser humano no centro de tudo." %}</p>
                         </article>
                         <article class="culture-value">
                             <i class="fa-solid fa-people-group" aria-hidden="true"></i>
-                            <h4>Solidariedade</h4>
-                            <p>Rede forte entre ONGs, voluntários e pacientes.</p>
+                            <h4>{% trans "Solidariedade" %}</h4>
+                            <p>{% trans "Rede forte entre ONGs, voluntários e pacientes." %}</p>
                         </article>
                         <article class="culture-value">
                             <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
-                            <h4>Inovação social</h4>
-                            <p>Tecnologia simples e intuitiva.</p>
+                            <h4>{% trans "Inovação social" %}</h4>
+                            <p>{% trans "Tecnologia simples e intuitiva." %}</p>
                         </article>
                         <article class="culture-value">
                             <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
-                            <h4>Confiabilidade</h4>
-                            <p>Dados de instituições verificadas.</p>
+                            <h4>{% trans "Confiabilidade" %}</h4>
+                            <p>{% trans "Dados de instituições verificadas." %}</p>
                         </article>
                     </div>
                 </div>
@@ -323,9 +355,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- 4. SEÇÃO: QUEM SOMOS? -->
         <section class="section-container team-section">
-            <h2 class="section-title">Quem somos?</h2>
+            <h2 class="section-title">{% trans "Quem somos?" %}</h2>
             <p class="team-intro">
-                Este projeto é fruto de um trabalho interdisciplinar desenvolvido com muita dedicação por três alunas:
+                {% trans "Este projeto é fruto de um trabalho interdisciplinar desenvolvido com muita dedicação por três alunas:" %}
             </p>
 
             <div class="team-grid">
@@ -344,15 +376,15 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <p class="team-footer-text">
-                Unimos a tecnologia e a programação para criar uma ferramenta de impacto social, acreditando que a informação acessível e o acolhimento comunitário são fundamentais para fortalecer mulheres na luta contra o câncer.
+                {% trans "Unimos a tecnologia e a programação para criar uma ferramenta de impacto social, acreditando que a informação acessível e o acolhimento comunitário são fundamentais para fortalecer mulheres na luta contra o câncer." %}
             </p>
         </section>
 
         <!-- 4. SEÇÃO: INSTITUIÇÕES EM DESTAQUE -->
         <section id="instituicoes" class="section-container">
             <div class="section-header">
-                <h2 class="section-title">Instituições em destaque</h2>
-                <a href="{% url 'filtro' %}" class="see-all-link">Ver todas <span class="arrow">&rarr;</span></a>
+                <h2 class="section-title">{% trans "Instituições em destaque" %}</h2>
+                <a href="{% url 'filtro' %}" class="see-all-link">{% trans "Ver todas" %} <span class="arrow">&rarr;</span></a>
             </div>
 
             <div class="institution-cards-container">
@@ -364,59 +396,59 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3 class="inst-title">{{ inst.nomeInst }}</h3>
                     <p class="inst-location">{{ inst.cidade }} - {{ inst.estado }}</p>
                     <p class="inst-description">{% for servico in inst.servicosOferecidos.all %}{{ servico.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}" class="inst-btn">Ver instituição</a>
+                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}" class="inst-btn">{% trans "Ver instituição" %}</a>
                 </div>
-                {% empty %}<p>Nenhuma instituição aprovada para exibir.</p>{% endfor %}
+                {% empty %}<p>{% trans "Nenhuma instituição aprovada para exibir." %}</p>{% endfor %}
             </div>
         </section>
 
         <!-- 5. SEÇÃO: COMO FUNCIONA O APOIOONCO? -->
         <section class="section-container how-it-works-section">
-            <h2 class="section-title">Como Funciona o ApoioOnco?</h2>
-            <p class="subtitle-purple">Encontrar o suporte que você precisa é simples e rápido. Siga os passos abaixo:</p>
+            <h2 class="section-title">{% trans "Como Funciona o ApoioOnco?" %}</h2>
+            <p class="subtitle-purple">{% trans "Encontrar o suporte que você precisa é simples e rápido. Siga os passos abaixo:" %}</p>
 
             <ol class="steps-list">
                 <li>
-                    <strong>Busque por Categoria ou Localização</strong>
-                    <p>Escolha o tipo de ajuda que você precisa (como banco de perucas, apoio psicológico ou assistência social) e informe a sua região.</p>
+                    <strong>{% trans "Busque por Categoria ou Localização" %}</strong>
+                    <p>{% trans "Escolha o tipo de ajuda que você precisa (como banco de perucas, apoio psicológico ou assistência social) e informe a sua região." %}</p>
                 </li>
                 <li>
-                    <strong>Encontre as Instituições</strong>
-                    <p>Navegue pelo mapa ou pela lista de ONGs, hospitais e casas de apoio cadastrados que atendem aos seus critérios.</p>
+                    <strong>{% trans "Encontre as Instituições" %}</strong>
+                    <p>{% trans "Navegue pelo mapa ou pela lista de ONGs, hospitais e casas de apoio cadastrados que atendem aos seus critérios." %}</p>
                 </li>
                 <li>
-                    <strong>Acesse as Informações de Contato</strong>
-                    <p>Veja os horários de funcionamento, endereço, telefone e os documentos necessários para solicitar o atendimento direto com a instituição escolhida.</p>
+                    <strong>{% trans "Acesse as Informações de Contato" %}</strong>
+                    <p>{% trans "Veja os horários de funcionamento, endereço, telefone e os documentos necessários para solicitar o atendimento direto com a instituição escolhida." %}</p>
                 </li>
             </ol>
         </section>
 
         <!-- 6. SEÇÃO: INFORMAÇÕES PARA VOCÊ -->
         <section id="informacoes" class="section-container">
-            <h2 class="section-title">Informações para você</h2>
+            <h2 class="section-title">{% trans "Informações para você" %}</h2>
             <div class="card-container">
                 <div class="card">
                     <div>
-                        <h3 class="card-text">Entenda o câncer</h3>
-                        <p class="card-subdescription">Informações para conhecer a doença, o tratamento e suas diferentes fases.</p>
+                        <h3 class="card-text">{% trans "Entenda o câncer" %}</h3>
+                        <p class="card-subdescription">{% trans "Informações para conhecer a doença, o tratamento e suas diferentes fases." %}</p>
                     </div>
-                    <a href="{% url 'informacoes_detalhe' tema='entenda-o-cancer' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='entenda-o-cancer' %}" class="card-link">{% trans "Saiba mais" %} <span class="arrow">&rarr;</span></a>
                 </div>
 
                 <div class="card">
                     <div>
-                        <h3 class="card-text">Saúde emocional</h3>
-                        <p class="card-subdescription">Conteúdos para cuidar das emoções e lidar com os desafios do tratamento.</p>
+                        <h3 class="card-text">{% trans "Saúde emocional" %}</h3>
+                        <p class="card-subdescription">{% trans "Conteúdos para cuidar das emoções e lidar com os desafios do tratamento." %}</p>
                     </div>
-                    <a href="{% url 'informacoes_detalhe' tema='saude-emocional' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='saude-emocional' %}" class="card-link">{% trans "Saiba mais" %} <span class="arrow">&rarr;</span></a>
                 </div>
 
                 <div class="card">
                     <div>
-                        <h3 class="card-text">Autoestima durante o tratamento</h3>
-                        <p class="card-subdescription">Cuidados e informações para se sentir bem consigo mesma durante essa fase.</p>
+                        <h3 class="card-text">{% trans "Autoestima durante o tratamento" %}</h3>
+                        <p class="card-subdescription">{% trans "Cuidados e informações para se sentir bem consigo mesma durante essa fase." %}</p>
                     </div>
-                    <a href="{% url 'informacoes_detalhe' tema='autoestima-no-tratamento' %}" class="card-link">Saiba mais <span class="arrow">&rarr;</span></a>
+                    <a href="{% url 'informacoes_detalhe' tema='autoestima-no-tratamento' %}" class="card-link">{% trans "Saiba mais" %} <span class="arrow">&rarr;</span></a>
                 </div>
             </div>
         </section>
@@ -428,16 +460,16 @@ document.addEventListener("DOMContentLoaded", function () {
             <span class="login-gate-icon" aria-hidden="true">
                 <i class="fa-solid fa-users"></i>
             </span>
-            <h2 id="login-gate-title">Área exclusiva para instituições</h2>
+            <h2 id="login-gate-title">{% trans "Área exclusiva para instituições" %}</h2>
             <p class="login-gate-description">
-                O login e cadastro são só para instituições, ONGs e hospitais que querem divulgar seus serviços na plataforma.
+                {% trans "O login e cadastro são só para instituições, ONGs e hospitais que querem divulgar seus serviços na plataforma." %}
             </p>
             <p class="login-gate-note">
-                Se você está buscando apoio, não precisa criar conta. É só pesquisar na página inicial.
+                {% trans "Se você está buscando apoio, não precisa criar conta. É só pesquisar na página inicial." %}
             </p>
-            <a href="{% url 'login' %}" class="login-gate-primary">Sou uma instituição</a>
+            <a href="{% url 'login' %}" class="login-gate-primary">{% trans "Sou uma instituição" %}</a>
             <button type="button" class="login-gate-secondary" data-login-gate-close>
-                Voltar a buscar apoio
+                {% trans "Voltar a buscar apoio" %}
             </button>
         </div>
     </dialog>
@@ -450,29 +482,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="logo-group">
                         <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
                     </div>
-                    <p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
+                    <p class="footer-tagline">{% trans "Conectando mulheres a redes de apoio." %}</p>
                 </div>
 
                 <div class="footer-column">
-                    <h3>Navegação</h3>
+                    <h3>{% trans "Navegação" %}</h3>
                     <ul>
-                        <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
-                        <li><a href="#instituicoes">Instituições</a></li>
-                        <li><a href="#informacoes">Informações</a></li>
-                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="{% url 'home' %}">{% trans "Encontrar Apoio" %}</a></li>
+                        <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
+                        <li><a href="#informacoes">{% trans "Informações" %}</a></li>
+                        <li><a href="#sobre">{% trans "Sobre" %}</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
-                    <h3>Para Instituições</h3>
+                    <h3>{% trans "Para Instituições" %}</h3>
                     <ul>
-                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">Cadastre sua instituição</a></li>
-                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">Entrar</a></li>
+                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">{% trans "Cadastre sua instituição" %}</a></li>
+                        <li><a href="#login-gate" data-login-gate-open aria-haspopup="dialog" aria-controls="login-gate">{% trans "Entrar" %}</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-column">
-                    <h3>Fale conosco</h3>
+                    <h3>{% trans "Fale conosco" %}</h3>
                     <ul>
                         <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
                     </ul>
@@ -481,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
+            <p>{% trans "&copy; 2026 ApoioOnco. Todos os direitos reservados." %}</p>
         </div>
     </footer>
 

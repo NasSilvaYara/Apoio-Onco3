@@ -1,3 +1,23 @@
+:root[data-theme="dark"] .language-select {
+    background-color: var(--tema-controle);
+    color: var(--tema-texto);
+    border: 1px solid var(--tema-borda);
+}
+
+:root[data-theme="dark"] .language-select:hover {
+    border-color: var(--tema-lilas);
+}
+
+:root[data-theme="dark"] .language-select:focus-visible {
+    outline: 2px solid var(--tema-lilas);
+    outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .language-select option {
+    background-color: var(--tema-superficie);
+    color: var(--tema-texto);
+}
+
 :root[data-theme="dark"] {
     color-scheme: dark;
     --tema-fundo: #15111d;

@@ -1,10 +1,13 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Resultados da busca – ApoioOnco</title>
+  <title>{% trans "Resultados da busca" %} – ApoioOnco</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=6">
@@ -22,14 +25,14 @@
       </a>
  
       <div class="busca" role="search">
-        <input class="busca__campo" type="search" name="q" value="{{ busca }}" placeholder="O que você procura?"
-               aria-label="Buscar instituições">
-        <button class="busca__botao" type="submit" aria-label="Pesquisar">
+        <input class="busca__campo" type="search" name="q" value="{{ busca }}" placeholder="{% trans "O que você procura?" %}"
+               aria-label="{% trans "Buscar instituições" %}">
+        <button class="busca__botao" type="submit" aria-label="{% trans "Pesquisar" %}">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         </button>
       </div>
  
-      <a class="topo__perfil" href="#" aria-label="Minha conta"> <!-- BACK-END: href da conta -->
+      <a class="topo__perfil" href="#" aria-label="{% trans "Minha conta" %}"> <!-- BACK-END: href da conta -->
       </a>
     </header>
  
@@ -37,16 +40,16 @@
  
       <!-- ===== FILTROS ===== -->
       <aside class="filtros">
-        <h2 class="filtros__titulo">Filtros</h2>
+        <h2 class="filtros__titulo">{% trans "Filtros" %}</h2>
  
-        <label class="filtros__label" for="localizacao">Localização</label>
+        <label class="filtros__label" for="localizacao">{% trans "Localização" %}</label>
          <input class="filtros__campo" id="localizacao" type="text" name="localizacao"
-           value="{{ localizacao }}" placeholder="Cidade, estado ou CEP">
+           value="{{ localizacao }}" placeholder="{% trans "Cidade, estado ou CEP" %}">
  
  
-        <label class="filtros__label" for="estado">Estado</label>
+        <label class="filtros__label" for="estado">{% trans "Estado" %}</label>
         <select class="filtros__campo" id="estado" name="estado">
-          <option value="">Todos os estados</option>
+          <option value="">{% trans "Todos os estados" %}</option>
           <option value="AC" {% if estado_selecionado == 'AC' %}selected{% endif %}>Acre</option>
           <option value="AL" {% if estado_selecionado == 'AL' %}selected{% endif %}>Alagoas</option>
           <option value="AP" {% if estado_selecionado == 'AP' %}selected{% endif %}>Amapá</option>
@@ -76,45 +79,45 @@
           <option value="TO" {% if estado_selecionado == 'TO' %}selected{% endif %}>Tocantins</option>
         </select>
  
-        <label class="filtros__label" for="tipo">Tipo de Instituição</label>
+        <label class="filtros__label" for="tipo">{% trans "Tipo de Instituição" %}</label>
         <select class="filtros__campo" id="tipo" name="tipo">
-          <option value="">Todos</option>
-          <option value="ong_associacao" {% if tipo_selecionado == 'ong_associacao' %}selected{% endif %}>ONG/ associação</option>
-          <option value="hospital" {% if tipo_selecionado == 'hospital' %}selected{% endif %}>Hospital</option>
-          <option value="clinica_centro_tratamento" {% if tipo_selecionado == 'clinica_centro_tratamento' %}selected{% endif %}>Clínica/ centro de tratamento</option>
-          <option value="casa_apoio" {% if tipo_selecionado == 'casa_apoio' %}selected{% endif %}>Casa de apoio</option>
-          <option value="instituto_fundacao" {% if tipo_selecionado == 'instituto_fundacao' %}selected{% endif %}>Instituto/fundação</option>
-          <option value="voluntariado_grupo_apoio" {% if tipo_selecionado == 'voluntariado_grupo_apoio' %}selected{% endif %}>Voluntariado/ grupo de apoio</option>
-          <option value="orgao_publico" {% if tipo_selecionado == 'orgao_publico' %}selected{% endif %}>Órgão público</option>
-          <option value="outros" {% if tipo_selecionado == 'outros' %}selected{% endif %}>Outros</option>
+          <option value="">{% trans "Todos" %}</option>
+          <option value="ong_associacao" {% if tipo_selecionado == 'ong_associacao' %}selected{% endif %}>{% trans "ONG/ associação" %}</option>
+          <option value="hospital" {% if tipo_selecionado == 'hospital' %}selected{% endif %}>{% trans "Hospital" %}</option>
+          <option value="clinica_centro_tratamento" {% if tipo_selecionado == 'clinica_centro_tratamento' %}selected{% endif %}>{% trans "Clínica/ centro de tratamento" %}</option>
+          <option value="casa_apoio" {% if tipo_selecionado == 'casa_apoio' %}selected{% endif %}>{% trans "Casa de apoio" %}</option>
+          <option value="instituto_fundacao" {% if tipo_selecionado == 'instituto_fundacao' %}selected{% endif %}>{% trans "Instituto/fundação" %}</option>
+          <option value="voluntariado_grupo_apoio" {% if tipo_selecionado == 'voluntariado_grupo_apoio' %}selected{% endif %}>{% trans "Voluntariado/ grupo de apoio" %}</option>
+          <option value="orgao_publico" {% if tipo_selecionado == 'orgao_publico' %}selected{% endif %}>{% trans "Órgão público" %}</option>
+          <option value="outros" {% if tipo_selecionado == 'outros' %}selected{% endif %}>{% trans "Outros" %}</option>
         </select>
  
         <fieldset class="filtros__servicos">
-          <legend class="filtros__label">Serviços</legend>
+          <legend class="filtros__label">{% trans "Serviços" %}</legend>
         <label class="check">
           <input type="checkbox" name="servicos" value="banco_peruca" {% if 'banco_peruca' in servicos_selecionados %}checked{% endif %}>
-          <span>Banco de Peruca</span>
+          <span>{% trans "Banco de Peruca" %}</span>
         </label>
         <label class="check">
           <input type="checkbox" name="servicos" value="banco_lenco" {% if 'banco_lenco' in servicos_selecionados %}checked{% endif %}>
-          <span>Banco de Lenço</span>
+          <span>{% trans "Banco de Lenço" %}</span>
         </label>
         <label class="check">
           <input type="checkbox" name="servicos" value="apoio_psicologico" {% if 'apoio_psicologico' in servicos_selecionados %}checked{% endif %}>
-          <span>Apoio Psicológico</span>
+          <span>{% trans "Apoio Psicológico" %}</span>
         </label>
         <label class="check">
           <input type="checkbox" name="servicos" value="assistencia_social" {% if 'assistencia_social' in servicos_selecionados %}checked{% endif %}>
-          <span>Assistência Social</span>
+          <span>{% trans "Assistência Social" %}</span>
         </label>
         </fieldset>
  
-        <button class="filtros__aplicar" type="submit">Aplicar Filtros</button>
+        <button class="filtros__aplicar" type="submit">{% trans "Aplicar Filtros" %}</button>
       </aside>
  
       <!-- ===== RESULTADOS ===== -->
       <section class="lista">
-        <h1 class="lista__titulo">{{ instituicoes|length }} Instituições encontradas</h1>
+        <h1 class="lista__titulo">{{ instituicoes|length }} {% trans "Instituições encontradas" %}</h1>
  
         <!-- BACK-END: mostrar este bloco quando houver resultados; senão, mostrar o bloco "sem-resultados" abaixo -->
         <div class="com-resultados">
@@ -136,10 +139,10 @@
               </ul>
             </div>
  
-            <a class="card__botao" href="{% url 'ver_instituicao_detalhe' inst.pk %}">Ver Instituição</a>
+            <a class="card__botao" href="{% url 'ver_instituicao_detalhe' inst.pk %}">{% trans "Ver Instituição" %}</a>
           </article>
           {% empty %}
-          <p class="sem-resultado">Nenhuma instituição aprovada corresponde aos filtros.</p>
+          <p class="sem-resultado">{% trans "Nenhuma instituição aprovada corresponde aos filtros." %}</p>
           {% endfor %}
         </div>
         <nav class="paginacao" id="paginacao-instituicoes" aria-label="Páginas de instituições" hidden></nav>
@@ -148,10 +151,10 @@
              BACK-END: quando não houver resultados, remover o atributo "hidden" deste bloco
              e ocultar o bloco "com-resultados" acima. -->
         <div class="sem-resultados nao-encontrado" hidden>
-          <h2 class="nao-encontrado__titulo">Não encontrado</h2>
+          <h2 class="nao-encontrado__titulo">{% trans "Não encontrado" %}</h2>
           <p class="nao-encontrado__texto">
-            Não encontramos nenhuma instituição para a sua busca.
-            Tente outros termos ou remova alguns filtros.
+            {% trans "Não encontramos nenhuma instituição para a sua busca." %}
+            {% trans "Tente outros termos ou remova alguns filtros." %}
           </p>
  
           <!-- IMAGEM: coloque o arquivo em static/img/ e troque o nome abaixo -->
@@ -244,29 +247,29 @@
           <div class="logo-group">
             <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="footer-logo-full-img">
           </div>
-          <p class="footer-tagline">Conectando mulheres a redes de apoio.</p>
+          <p class="footer-tagline">{% trans "Conectando mulheres a redes de apoio." %}</p>
         </div>
 
         <div class="footer-column">
-          <h3>Navegação</h3>
+          <h3>{% trans "Navegação" %}</h3>
           <ul>
-            <li><a href="{% url 'home' %}">Encontrar Apoio</a></li>
-            <li><a href="{% url 'home' %}#instituicoes">Instituições</a></li>
-            <li><a href="{% url 'home' %}#informacoes">Informações</a></li>
-            <li><a href="{% url 'home' %}#sobre">Sobre</a></li>
+            <li><a href="{% url 'home' %}">{% trans "Encontrar Apoio" %}</a></li>
+            <li><a href="{% url 'home' %}#instituicoes">{% trans "Instituições" %}</a></li>
+            <li><a href="{% url 'home' %}#informacoes">{% trans "Informações" %}</a></li>
+            <li><a href="{% url 'home' %}#sobre">{% trans "Sobre" %}</a></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h3>Para Instituições</h3>
+          <h3>{% trans "Para Instituições" %}</h3>
           <ul>
-            <li><a href="{% url 'login' %}">Cadastre sua instituição</a></li>
-            <li><a href="{% url 'login' %}">Entrar</a></li>
+            <li><a href="{% url 'login' %}">{% trans "Cadastre sua instituição" %}</a></li>
+            <li><a href="{% url 'login' %}">{% trans "Entrar" %}</a></li>
           </ul>
         </div>
 
         <div class="footer-column">
-          <h3>Fale conosco</h3>
+          <h3>{% trans "Fale conosco" %}</h3>
           <ul>
             <li><a href="mailto:apoioonco@gmail.com">apoioonco@gmail.com</a></li>
           </ul>
@@ -275,7 +278,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2026 ApoioOnco. Todos os direitos reservados.</p>
+            <p>{% trans "&copy; 2026 ApoioOnco. Todos os direitos reservados." %}</p>
     </div>
   </footer>
  

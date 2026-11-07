@@ -1,10 +1,13 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApoioOnco - Área Administrativa</title>
+    <title>ApoioOnco - {% trans "Área Administrativa" %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
@@ -22,20 +25,20 @@
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
         <nav class="menu" aria-label="Menu principal">
-            <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item active" aria-current="page">Dashboard</a>
-            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Gerenciar</a>
-            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" >Categorias</a>
-            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" >Configurações</a>
+            <span class="menu-title">{% trans "MENU" %}</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item active" aria-current="page">{% trans "Dashboard" %}</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Gerenciar" %}</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" >{% trans "Categorias" %}</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" >{% trans "Configurações" %}</a>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
-                <strong>Administrador</strong>
+                <strong>{% trans "Administrador" %}</strong>
                 <form id="form-logout" action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="button" class="btn-sair" id="abrir-sair">
-                        <i class="ti ti-logout" aria-hidden="true"></i> Sair
+                        <i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}
                     </button>
                 </form>
             </div>
@@ -45,17 +48,17 @@
     <main class="main-content">
         <header class="header">
             <div>
-                <h1 class="welcome-title">Bem-vindo à área administrativa</h1>
-                <p class="welcome-subtitle">Acompanhe o impacto da rede de apoio e garanta que as informações para as pacientes estejam sempre atualizadas.</p>
+                <h1 class="welcome-title">{% trans "Bem-vindo à área administrativa" %}</h1>
+                <p class="welcome-subtitle">{% trans "Acompanhe o impacto da rede de apoio e garanta que as informações para as pacientes estejam sempre atualizadas." %}</p>
             </div>
             <div class="header-acoes">
                 <form id="form-busca" role="search" class="busca-topo">
-                    <label for="busca-topo" class="so-leitor">Buscar cidade cadastrada</label>
+                    <label for="busca-topo" class="so-leitor">{% trans "Buscar cidade cadastrada" %}</label>
                     <i class="ti ti-search" aria-hidden="true"></i>
-                    <input type="search" id="busca-topo" list="lista-cidades" placeholder="Buscar cidade" autocomplete="off">
+                    <input type="search" id="busca-topo" list="lista-cidades" placeholder="{% trans "Buscar cidade" %}" autocomplete="off">
                     <datalist id="lista-cidades"></datalist>
                 </form>
-                <button type="button" class="btn-notificacao" aria-label="Notificações">
+                <button type="button" class="btn-notificacao" aria-label="{% trans "Notificações" %}">
                     <i class="ti ti-bell" aria-hidden="true"></i>
                 </button>
             </div>
@@ -63,17 +66,17 @@
 
         <section class="cards-admin" aria-label="Indicadores">
             <article class="card card-stat">
-                <h2>Instituições cadastradas</h2>
+                <h2>{% trans "Instituições cadastradas" %}</h2>
                 <p class="numero">{{ total_instituicoes }}</p>
             </article>
 
             <article class="card card-stat">
-                <h2>Instituições inativas</h2>
+                <h2>{% trans "Instituições inativas" %}</h2>
                 <p class="numero">{{ instituicoes_inativas }}</p>
             </article>
 
             <article class="card card-stat">
-                <h2>Quantidade por tipo de apoio</h2>
+                <h2>{% trans "Quantidade por tipo de apoio" %}</h2>
                 <ul class="tipos" id="tipos-apoio">
                     {% for nome, total in total_por_tipo %}<li><span>{{ nome }}</span><strong>{{ total }}</strong></li>{% endfor %}
                 </ul>
@@ -82,23 +85,23 @@
 
         <section class="dashboard-body">
             <article class="card chart-card">
-                <h2>Instituições por tipo de apoio</h2>
+                <h2>{% trans "Instituições por tipo de apoio" %}</h2>
                 <p class="chart-filtro" id="chart-filtro" aria-live="polite"></p>
                 <div class="chart-box">
-                    <canvas id="grafico" role="img" aria-label="Gráfico de barras com a quantidade de instituições por tipo de apoio"></canvas>
-                    <p class="chart-vazio" id="chart-vazio" hidden>Nenhuma cidade cadastrada com esse nome.</p>
+                    <canvas id="grafico" role="img" aria-label="{% trans "Gráfico de barras com a quantidade de instituições por tipo de apoio" %}"></canvas>
+                    <p class="chart-vazio" id="chart-vazio" hidden>{% trans "Nenhuma cidade cadastrada com esse nome." %}</p>
                 </div>
             </article>
 
             <article class="summary-box">
-                <h2>Resumo geral:</h2>
+                <h2>{% trans "Resumo geral:" %}</h2>
                 <ul>
-                    <li><span>Instituições ativas</span><strong>{{ instituicoes_ativas }}</strong></li>
-                    <li><span>Aguardando aprovação</span><strong>{{ aguardando_aprovacao }}</strong></li>
+                    <li><span>{% trans "Instituições ativas" %}</span><strong>{{ instituicoes_ativas }}</strong></li>
+                    <li><span>{% trans "Aguardando aprovação" %}</span><strong>{{ aguardando_aprovacao }}</strong></li>
                 </ul>
                 <p class="alerta">
                     <i class="ti ti-alert-circle" aria-hidden="true"></i>
-                        {% if aguardando_aprovacao %}Há cadastros esperando a sua aprovação.{% else %}Não há cadastros pendentes.{% endif %}
+                        {% if aguardando_aprovacao %}{% trans "Há cadastros esperando a sua aprovação." %}{% else %}{% trans "Não há cadastros pendentes." %}{% endif %}
                 </p>
             </article>
         </section>
@@ -107,11 +110,11 @@
     <!-- Confirmação de saída -->
     <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">
         <i class="ti ti-logout modal-icone" aria-hidden="true"></i>
-        <h2 id="titulo-sair">Tem certeza que deseja sair?</h2>
-        <p>Você precisará entrar novamente para acessar a área administrativa.</p>
+        <h2 id="titulo-sair">{% trans "Tem certeza que deseja sair?" %}</h2>
+        <p>{% trans "Você precisará entrar novamente para acessar a área administrativa." %}</p>
         <div class="modal-acoes">
-            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>Cancelar</button>
-            <button type="submit" class="btn-confirmar" form="form-logout">Sim, sair</button>
+            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>{% trans "Cancelar" %}</button>
+            <button type="submit" class="btn-confirmar" form="form-logout">{% trans "Sim, sair" %}</button>
         </div>
     </dialog>
 

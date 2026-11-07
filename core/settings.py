@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -110,11 +111,27 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
+# Internationalization
+from django.utils.translation import gettext_lazy as _
+
 LANGUAGE_CODE = 'pt-br'
+
+LANGUAGES = [
+    ("pt-br", _("Português")),
+    ("en", _("English")),
+    ("es", _("Español")),
+    ("de", _("Deutsch")),     
+    ("it", _("Italiano")),     
+    ("ja", _("日本語")), 
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
-
 
 # Static files
 STATIC_URL = '/static/'

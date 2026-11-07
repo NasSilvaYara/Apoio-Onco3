@@ -1,10 +1,14 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApoioOnco - Área Administrativa</title>
+    <title>ApoioOnco - {% trans "Área Administrativa" %}</title>
+
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
@@ -16,43 +20,43 @@
             <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="logo-img">
 	</div>
         <div class="menu">
-            <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item active">Dashboard</a>
-            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Instituições</a>
-            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">Sair</button></form>
+            <span class="menu-title">{% trans "MENU" %}</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item active">{% trans "Dashboard" %}</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Instituições" %}</a>
+            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">{% trans "Sair" %}</button></form>
         </div>
     </div>
 
     <div class="main-content">
         <div class="header">
             <div>
-                <h1 class="welcome-title">Bem vindo a área administrativa</h1>
-                <p class="welcome-subtitle">Acompanhe o impacto da rede de apoio e garanta que as informações para os pacientes estejam sempre atualizadas.</p>
+                <h1 class="welcome-title">{% trans "Bem vindo a área administrativa" %}</h1>
+                <p class="welcome-subtitle">{% trans "Acompanhe o impacto da rede de apoio e garanta que as informações para os pacientes estejam sempre atualizadas." %}</p>
             </div>
         </div>
 
         <div class="cards-grid">
             <div class="card">
-                <h3>Instituições cadastradas</h3>
+                <h3>{% trans "Instituições cadastradas" %}</h3>
                 <div class="number">{{ total_instituicoes }}</div>
             </div>
             <div class="card">
-                <h3>Instituições ativas</h3>
+                <h3>{% trans "Instituições ativas" %}</h3>
                 <div class="number">{{ instituicoes_ativas }}</div>
             </div>
             <div class="card">
-                <h3>Aguardando aprovação</h3>
+                <h3>{% trans "Aguardando aprovação" %}</h3>
                 <div class="number">{{ aguardando_aprovacao }}</div>
             </div>
         </div>
 
         <div class="dashboard-body">
             <div class="chart-box">
-                GRÁFICO
+                {% trans "GRÁFICO" %}
             </div>
             <div class="summary-box">
-                <h3>Resumo geral:</h3>
-                <p style="font-size: 0.85rem; opacity: 0.8;">Nenhum alerta recente no sistema.</p>
+                <h3>{% trans "Resumo geral:" %}</h3>
+                <p style="font-size: 0.85rem; opacity: 0.8;">{% trans "Nenhum alerta recente no sistema." %}</p>
             </div>
         </div>
     </div>

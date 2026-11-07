@@ -1,10 +1,13 @@
 {% load static %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApoioOnco - Categorias</title>
+    <title>ApoioOnco - {% trans "Categorias" %}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
@@ -22,20 +25,20 @@
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
         <nav class="menu" aria-label="Menu principal">
-            <span class="menu-title">MENU</span>
-            <a href="{% url 'dashboard_admin' %}" class="menu-item">Dashboard</a>
-            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">Gerenciar</a>
-            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item active" aria-current="page">Categorias</a>
-            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item">Configurações</a>
+            <span class="menu-title">{% trans "MENU" %}</span>
+            <a href="{% url 'dashboard_admin' %}" class="menu-item">{% trans "Dashboard" %}</a>
+            <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Gerenciar" %}</a>
+            <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item active" aria-current="page">{% trans "Categorias" %}</a>
+            <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item">{% trans "Configurações" %}</a>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
             <div>
-                <strong>Administrador</strong>
+                <strong>{% trans "Administrador" %}</strong>
                 <form id="form-logout" action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="button" class="btn-sair" id="abrir-sair">
-                        <i class="ti ti-logout" aria-hidden="true"></i> Sair
+                        <i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}
                     </button>
                 </form>
             </div>
@@ -45,21 +48,21 @@
     <main class="main-content">
         <header class="header">
             <div>
-                <h1 class="welcome-title">Categorias</h1>
-                <p class="welcome-subtitle">Tipos de apoio que as instituições podem oferecer.</p>
+                <h1 class="welcome-title">{% trans "Categorias" %}</h1>
+                <p class="welcome-subtitle">{% trans "Tipos de apoio que as instituições podem oferecer." %}</p>
             </div>
         </header>
         {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
 
         <div class="tabela-wrap">
             <table class="tabela" id="tabela-categorias">
-                <caption class="so-leitor">Lista de categorias de apoio</caption>
+                <caption class="so-leitor">{% trans "Lista de categorias de apoio" %}</caption>
                 <thead>
                     <tr>
-                        <th scope="col">Categoria</th>
-                        <th scope="col" class="col-centro">Instituições</th>
-                        <th scope="col" class="col-centro">Ativa</th>
-                        <th scope="col">Ações</th>
+                        <th scope="col">{% trans "Categoria" %}</th>
+                        <th scope="col" class="col-centro">{% trans "Instituições" %}</th>
+                        <th scope="col" class="col-centro">{% trans "Ativa" %}</th>
+                        <th scope="col">{% trans "Ações" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,25 +73,25 @@
                         <td class="col-centro"><form method="post">{% csrf_token %}<input type="hidden" name="acao" value="alternar_categoria"><input type="hidden" name="categoria_id" value="{{ categoria.pk }}"><input type="checkbox" role="switch" class="switch" {% if categoria.ativo %}checked{% endif %} aria-label="{{ categoria.nome }} ativa"></form></td>
                         <td class="acoes">
                             <button type="button" class="btn-editar" aria-label="Editar {{ categoria.nome }}"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                            <form method="post" data-confirm="Excluir a categoria {{ categoria.nome }}?">{% csrf_token %}<input type="hidden" name="acao" value="excluir_categoria"><input type="hidden" name="categoria_id" value="{{ categoria.pk }}"><button type="submit" class="btn-excluir" aria-label="Excluir {{ categoria.nome }}" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button></form>
+                            <form method="post" data-confirm="{% trans "Excluir a categoria" %} {{ categoria.nome }}?">{% csrf_token %}<input type="hidden" name="acao" value="excluir_categoria"><input type="hidden" name="categoria_id" value="{{ categoria.pk }}"><button type="submit" class="btn-excluir" aria-label="Excluir {{ categoria.nome }}" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button></form>
                         </td>
                     </tr>
-                    {% empty %}<tr><td colspan="4">Nenhuma categoria cadastrada.</td></tr>
+                    {% empty %}<tr><td colspan="4">{% trans "Nenhuma categoria cadastrada." %}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
         <section class="nova-categoria">
-            <h2>Nova categoria</h2>
+            <h2>{% trans "Nova categoria" %}</h2>
             <form id="form-nova" class="linha-nova" method="post" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="acao" value="criar_categoria">
                 <div class="campo">
-                    <label for="nome-nova">Nome da categoria</label>
+                    <label for="nome-nova">{% trans "Nome da categoria" %}</label>
                     <input type="text" id="nome-nova" name="nome" maxlength="100" autocomplete="off" required>
                 </div>
-                <button type="submit" class="btn-adicionar">Adicionar</button>
+                <button type="submit" class="btn-adicionar">{% trans "Adicionar" %}</button>
             </form>
             <p id="mensagem-form" class="mensagem" role="status"></p>
         </section>
@@ -102,7 +105,7 @@
             <td class="col-centro"><input type="checkbox" role="switch" class="switch" checked></td>
             <td class="acoes">
                 <button type="button" class="btn-editar"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                <button type="button" class="btn-excluir" title="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                <button type="button" class="btn-excluir" title="{% trans "Excluir" %}"><i class="ti ti-trash" aria-hidden="true"></i></button>
             </td>
         </tr>
     </template>
@@ -113,15 +116,15 @@
             {% csrf_token %}
             <input type="hidden" name="acao" value="editar_categoria">
             <input type="hidden" name="categoria_id" id="id-editar">
-            <h2 id="titulo-editar">Editar categoria</h2>
+            <h2 id="titulo-editar">{% trans "Editar categoria" %}</h2>
             <div class="campo">
-                <label for="nome-editar">Nome da categoria</label>
+                <label for="nome-editar">{% trans "Nome da categoria" %}</label>
                 <input type="text" id="nome-editar" name="nome" maxlength="100" autocomplete="off" required>
             </div>
             <p id="mensagem-editar" class="mensagem" role="status"></p>
             <div class="dialogo-acoes">
-                <button type="button" id="btn-cancelar-edicao" class="btn-cancelar">Cancelar</button>
-                <button type="submit" class="btn-adicionar">Salvar</button>
+                <button type="button" id="btn-cancelar-edicao" class="btn-cancelar">{% trans "Cancelar" %}</button>
+                <button type="submit" class="btn-adicionar">{% trans "Salvar" %}</button>
             </div>
         </form>
     </dialog>
@@ -129,11 +132,11 @@
     <!-- Confirmação de saída -->
     <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">
         <i class="ti ti-logout modal-icone" aria-hidden="true"></i>
-        <h2 id="titulo-sair">Tem certeza que deseja sair?</h2>
-        <p>Você precisará entrar novamente para acessar a área administrativa.</p>
+        <h2 id="titulo-sair">{% trans "Tem certeza que deseja sair?" %}</h2>
+        <p>{% trans "Você precisará entrar novamente para acessar a área administrativa." %}</p>
         <div class="modal-acoes">
-            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>Cancelar</button>
-            <button type="submit" class="btn-confirmar" form="form-logout">Sim, sair</button>
+            <button type="button" class="btn-cancelar" id="cancelar-sair" autofocus>{% trans "Cancelar" %}</button>
+            <button type="submit" class="btn-confirmar" form="form-logout">{% trans "Sim, sair" %}</button>
         </div>
     </dialog>
 
