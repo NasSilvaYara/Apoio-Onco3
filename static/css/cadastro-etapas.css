@@ -38,7 +38,7 @@
   position: relative;
   width: 38px; height: 38px;
   border-radius: 50%;
-  border: 2px solid var(--lilas);
+  border: 3px solid var(--roxo-escuro);
   background: var(--branco);
   color: var(--roxo-escuro);
   font-weight: 700;
@@ -51,7 +51,7 @@
   position: absolute;
   right: 100%; top: 50%;
   width: 36px; height: 2px;
-  background: var(--lilas);
+  background: var(--roxo-escuro);
 }
 .passo.atual { border-color: var(--roxo-escuro); box-shadow: 0 0 0 4px #EEE5FC; }
 .passo.atual::before, .passo.feito::before { background: var(--roxo-escuro); }
@@ -132,7 +132,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
   outline: 3px solid var(--lilas);
   outline-offset: 2px;
 }
-.passo .ti { font-size: 1.2rem; }
+.passo .ti { font-size: 1.4rem; }
+.passo:not(.feito) .ti {
+  color: #32174D !important;
+  -webkit-text-stroke: 0.35px currentColor;
+}
+.passo.feito .ti { color: var(--branco) !important; }
 
 .so-leitor {
   position: absolute;
@@ -142,7 +147,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 }
 
 @media (max-width: 768px) {
-  .passo .ti { font-size: 1rem; }
+  .passo .ti { font-size: 1.15rem; }
 }
 
 @media (max-width: 768px) {

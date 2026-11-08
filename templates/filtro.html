@@ -10,7 +10,7 @@
   <title>{% trans "Resultados da busca" %} – ApoioOnco</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=6">
+  <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=8">
   <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=10">
   <script src="{% static 'js/theme.js' %}?v=2" defer></script>
 </head>
@@ -184,6 +184,34 @@
         }
 
         var totalPaginas = Math.ceil(cards.length / itensPorPagina);
+
+        function ajustarAlturaResultados() {
+          var estadosOcultos = cards.map(function (card) {
+            return card.hidden;
+          });
+          cards.forEach(function (card) {
+            card.hidden = false;
+          });
+
+          var alturaMaxima = 0;
+          for (var inicio = 0; inicio < cards.length; inicio += itensPorPagina) {
+            var primeiroCartao = cards[inicio];
+            var ultimoCartao = cards[Math.min(inicio + itensPorPagina, cards.length) - 1];
+            var alturaPagina = ultimoCartao.getBoundingClientRect().bottom
+              - primeiroCartao.getBoundingClientRect().top
+              + parseFloat(window.getComputedStyle(ultimoCartao).marginBottom);
+            alturaMaxima = Math.max(alturaMaxima, alturaPagina);
+          }
+
+          cards.forEach(function (card, indice) {
+            card.hidden = estadosOcultos[indice];
+          });
+          lista.style.minHeight = alturaMaxima + "px";
+        }
+
+        ajustarAlturaResultados();
+        window.addEventListener("resize", ajustarAlturaResultados);
+
         if (totalPaginas < 2) return;
 
         paginacao.hidden = false;

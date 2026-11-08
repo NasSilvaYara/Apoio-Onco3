@@ -8,4 +8,4 @@ db.sqlite3
 !.env.example
 *.log
 media/
-EOF
+EOF.env
