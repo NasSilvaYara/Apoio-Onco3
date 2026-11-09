@@ -87,7 +87,42 @@ ul { list-style: none; }
   padding: 0 24px;
   align-items: start;
 }
- 
+
+/* Seletor de idiomas */
+.language-form {
+    display: flex;
+    align-items: center;
+}
+
+.language-select {
+    min-width: 105px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid rgba(90, 61, 127, 0.35);
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    color: #5A3D7F;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+}
+
+.language-select:hover {
+    border-color: #5A3D7F;
+}
+
+.language-select:focus-visible {
+    outline: 2px solid #5A3D7F;
+    outline-offset: 2px;
+}
+
+.language-select option {
+    background-color: #FFFFFF;
+    color: #5A3D7F;
+}
+
 /* ---------- Filtros ---------- */
 .filtros {
   background: var(--roxo-700);

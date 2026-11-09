@@ -1,0 +1,74 @@
+.campo-senha {
+  position: relative;
+  width: 100%;
+}
+
+.campo-senha input {
+  width: 100%;
+  padding-right: 3rem; /* espaço para o olhinho */
+}
+
+.campo-senha .ver-senha {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  transform: translateY(-50%);
+
+  /* anula o estilo global de "button" */
+  min-width: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--cinza);
+  font-size: 1.3rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.campo-senha .ver-senha:hover,
+.campo-senha .ver-senha:focus-visible {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] dialog {
+  color-scheme: dark;
+  background: var(--tema-superficie);
+  border: 1px solid var(--tema-borda);
+  color: var(--tema-texto);
+}
+
+:root[data-theme="dark"] dialog input {
+  background: var(--tema-controle);
+  border-color: var(--tema-borda);
+  color: var(--tema-texto);
+}
+
+:root[data-theme="dark"] dialog label,
+:root[data-theme="dark"] dialog h2 {
+  color: var(--tema-texto);
+}
+
+.formulario-login .link-esqueci {
+  align-self: flex-start;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--roxo-medio);
+  text-decoration: none;
+}
+
+.formulario-login .link-esqueci:hover {
+  text-decoration: underline;
+}
+
+.formulario-login .link-esqueci:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

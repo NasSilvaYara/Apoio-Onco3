@@ -8,7 +8,12 @@ document.querySelectorAll('.campo-senha').forEach((campo) => {
     input.type = mostrando ? 'password' : 'text';
     icone.className = mostrando ? 'ti ti-eye' : 'ti ti-eye-off';
     botao.setAttribute('aria-pressed', String(!mostrando));
-    botao.setAttribute('aria-label', mostrando ? 'Mostrar senha' : 'Ocultar senha');
+    botao.setAttribute(
+      'aria-label',
+      mostrando
+        ? botao.dataset.labelShow || 'Mostrar senha'
+        : botao.dataset.labelHide || 'Ocultar senha',
+    );
     input.focus();
   });
 });

@@ -1,3 +1,23 @@
+:root[data-theme="dark"] .language-select {
+    background-color: var(--tema-controle);
+    color: var(--tema-texto);
+    border: 1px solid var(--tema-borda);
+}
+
+:root[data-theme="dark"] .language-select:hover {
+    border-color: var(--tema-lilas);
+}
+
+:root[data-theme="dark"] .language-select:focus-visible {
+    outline: 2px solid var(--tema-lilas);
+    outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .language-select option {
+    background-color: var(--tema-superficie);
+    color: var(--tema-texto);
+}
+
 :root[data-theme="dark"] {
     color-scheme: dark;
     --tema-fundo: #15111d;
@@ -124,6 +144,23 @@
     background-color: var(--tema-controle) !important;
     border-color: var(--tema-borda) !important;
     color: var(--tema-texto-suave) !important;
+}
+
+:root[data-theme="dark"] .dropdown-filtro {
+    background-color: var(--tema-superficie);
+    border: 1px solid var(--tema-borda);
+    color: var(--tema-texto);
+    box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+}
+
+:root[data-theme="dark"] .dropdown-filtro button {
+    color: var(--tema-texto-suave);
+}
+
+:root[data-theme="dark"] .dropdown-filtro button:hover,
+:root[data-theme="dark"] .dropdown-filtro button:focus-visible {
+    background-color: var(--tema-borda);
+    color: var(--tema-texto);
 }
 
 :root[data-theme="dark"] :is(

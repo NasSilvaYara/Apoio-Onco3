@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - Encontre apoio perto de você</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
 
     <!-- Google Fonts: Plus Jakarta Sans e Sail -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +21,10 @@
     <!-- Conexão com o CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
     <script src="{% static 'js/theme.js' %}?v=2" defer></script>
+    <script src="{% static 'js/idioma.js' %}?v=1" defer></script>
     <script src="{% static 'js/home.js' %}?v=2" defer></script>
 </head>
 
@@ -117,32 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </svg>
         </button>
 
-        <form action="{% url 'set_language' %}" method="post" class="language-form">
-            {% csrf_token %}
-
-            <input type="hidden" name="next" value="{{ request.get_full_path }}">
-
-            <label for="language-select" class="visually-hidden">
-                {% trans "Selecionar idioma" %}
-            </label>
-
-            <select
-                name="language"
-                id="language-select"
-                class="language-select"
-                onchange="this.form.submit()"
-                aria-label="Selecionar idioma">
-
-                {% get_available_languages as AVAILABLE_LANGUAGES %}
-
-                {% for lang_code, lang_name in AVAILABLE_LANGUAGES %}
-                    <option value="{{ lang_code }}"
-                        {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>
-                        {{ lang_name }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
+        {% include "partials/seletor_idioma.html" %}
 
         <button type="button"
                 class="btn-login"

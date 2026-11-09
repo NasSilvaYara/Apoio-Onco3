@@ -3,36 +3,56 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Área Administrativa" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <div class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="Logo ApoioOnco" class="logo-img">
-	</div>
-        <div class="menu">
+        </div>
+        <nav class="menu" aria-label="{% trans 'Menu principal' %}">
             <span class="menu-title">{% trans "MENU" %}</span>
             <a href="{% url 'dashboard_admin' %}" class="menu-item active">{% trans "Dashboard" %}</a>
             <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Instituições" %}</a>
-            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">{% trans "Sair" %}</button></form>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
+        </nav>
+        <div class="sidebar-perfil">
+            <i class="ti ti-user-circle" aria-hidden="true"></i>
+            <div>
+                <strong>{% trans "Administrador" %}</strong>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-sair">{% trans "Sair" %}</button>
+                </form>
+            </div>
         </div>
-    </div>
+    </aside>
 
-    <div class="main-content">
+    <main class="main-content">
         <div class="header">
             <div>
                 <h1 class="welcome-title">{% trans "Bem vindo a área administrativa" %}</h1>
                 <p class="welcome-subtitle">{% trans "Acompanhe o impacto da rede de apoio e garanta que as informações para os pacientes estejam sempre atualizadas." %}</p>
-            </div>
+            </main>
         </div>
 
         <div class="cards-grid">

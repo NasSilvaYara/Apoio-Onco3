@@ -1,8 +1,14 @@
 
 from django.db import models
 from django.conf import settings
+from django.db.models import F, Value
+from django.db.models.functions import Replace, Upper
 
-from .validators import validar_cnpj, validar_imagem_instituicao
+from .validators import (
+    normalizar_cnpj,
+    validar_cnpj,
+    validar_imagem_instituicao,
+)
 
 
 class Administrador(models.Model):
@@ -45,12 +51,14 @@ class Instituicao(models.Model):
 
     idInst = models.AutoField(primary_key=True)
     cnpj = models.CharField(
-        max_length=14,
+        max_length=18,
         unique=True,
         null=True,
         blank=True,
         validators=[validar_cnpj],
     )
+    razao_social = models.CharField(max_length=200, blank=True)
+    nome_fantasia = models.CharField(max_length=200, blank=True)
     nomeInst = models.CharField(max_length=200)
     tipo = models.CharField(max_length=60, blank=True)
     descricao = models.TextField()
@@ -73,6 +81,8 @@ class Instituicao(models.Model):
     email_contato = models.EmailField(blank=True)
     site = models.URLField(blank=True)
     logradouro = models.CharField(max_length=250)
+    numero = models.CharField(max_length=20, blank=True)
+    complemento = models.CharField(max_length=100, blank=True)
     cep = models.CharField(max_length=9, blank=True)
     bairro = models.CharField(max_length=100, blank=True)
     cidade = models.CharField(max_length=100)
@@ -115,6 +125,24 @@ class Instituicao(models.Model):
         null=True,
         blank=True,
     )
+
+    @classmethod
+    def cnpj_ja_cadastrado(cls, valor):
+        cnpj = normalizar_cnpj(valor)
+        cnpj_normalizado_no_banco = Upper(
+            Replace(
+                Replace(
+                    Replace(F('cnpj'), Value('.'), Value('')),
+                    Value('/'),
+                    Value(''),
+                ),
+                Value('-'),
+                Value(''),
+            )
+        )
+        return cls.objects.annotate(
+            _cnpj_normalizado=cnpj_normalizado_no_banco,
+        ).filter(_cnpj_normalizado=cnpj).exists()
 
     def __str__(self):
         return self.nomeInst

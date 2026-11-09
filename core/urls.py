@@ -9,6 +9,7 @@ from ongs.views import (
     informacoes_view,
     login_view,
     cadastro_view,
+    cadastro_sucesso_view,
     dashboard_view,
     dashboard_instituicao_view,
     dashboard_instituicao_perfil_view,
@@ -39,6 +40,7 @@ urlpatterns = [
 
     path('login/', login_view, name='login'),
     path('cadastro/', cadastro_view, name='cadastro'),
+    path('cadastro/sucesso/', cadastro_sucesso_view, name='cadastro_sucesso'),
     path('logout/', logout_view, name='logout'),
 
     path('dashboard/', dashboard_view, name='dashboard'),

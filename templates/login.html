@@ -1,19 +1,25 @@
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="public-document public-auth-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% trans "Login" %} - ApoioOnco</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/senha.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
+{% include 'partials/seletor_idioma.html' %}
     <main>
         <div class="banner-login" aria-hidden="true">
             <h2>{% trans "Juntos, ampliamos o acesso ao apoio." %}</h2>

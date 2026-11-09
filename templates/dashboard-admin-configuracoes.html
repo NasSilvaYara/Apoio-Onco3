@@ -3,11 +3,13 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Configurações" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
@@ -15,14 +17,22 @@
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin-configuracoes.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
+    <link rel="stylesheet" href="{% static 'css/senha.css' %}?v=1">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
-    <script src="{% static 'js/configuracoes.js' %}" defer></script>
+    <script src="{% static 'js/configuracoes.js' %}?v=2" defer></script>
+    <script src="{% static 'js/senha.js' %}?v=1" defer></script>
     <script src="{% static 'js/sair.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <aside class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
@@ -32,6 +42,7 @@
             <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Gerenciar" %}</a>
             <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item">{% trans "Categorias" %}</a>
             <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item active" aria-current="page">{% trans "Configurações" %}</a>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
@@ -55,53 +66,135 @@
             </div>
         </header>
 
-        <form action="" method="POST" class="perfil-form">
+        <div class="config-form">
+        {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
+        <form action="" method="post" class="perfil-form">
             {% csrf_token %}
-            {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
+            <input type="hidden" name="acao" value="salvar_conta">
             <section class="card-perfil">
                 <h2>{% trans "Conta" %}</h2>
                 <div class="campo">
-                    <label for="email">{% trans "E-mail de acesso" %}</label>
-                    <input type="email" id="email" name="email" autocomplete="email" value="{{ request.user.email }}" required>
+                    {{ form_conta.email.label_tag }}
+                    {{ form_conta.email }}
+                    {% for error in form_conta.email.errors %}<p role="alert">{{ error }}</p>{% endfor %}
                 </div>
-
                 <div class="linha-senha">
                     <div>
                         <p class="opcao-titulo">{% trans "Senha" %}</p>
-                        <p class="opcao-desc">{% trans "Alterada há" %} {{ instituicao.senha_alterada_em|timesince|default:"—" }}</p>
+                        <p class="opcao-desc">{% trans "Mantenha sua senha segura." %}</p>
                     </div>
-                    <a href="#" class="btn btn-primario">{% trans "Alterar senha" %}</a>
+                    <div class="acoes-conta">
+                        <button type="button" class="btn btn-secundario" id="btn-alterar-senha">{% trans "Alterar senha" %}</button>
+                        <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
+                    </div>
                 </div>
             </section>
-            <section class="card-config">
-                <h2>{% trans "Administradoras" %}</h2>
-                <ul class="lista-admins">
-                    {% for administrador in administradores %}<li class="admin-item">
-                        <span class="avatar" aria-hidden="true"><i class="ti ti-user"></i></span>
-                        <div>
-                            <strong>{{ administrador.get_full_name|default:administrador.username }}</strong>
-                            <span>{{ administrador.email }}</span>
-                        </div>
-                    </li>{% empty %}<li class="admin-item">{% trans "Nenhum administrador cadastrado." %}</li>{% endfor %}
-                </ul>
-            </section>
-
-            <div class="acoes-form">
-                <a href="#" class="btn btn-secundario">{% trans "Cancelar" %}</a>
-                <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
-            </div>
         </form>
+
+        <section class="card">
+            <h2>{% trans "Administradoras" %}</h2>
+            <ul class="lista-admins">
+                {% for administrador in administradores %}
+                <li class="admin-item">
+                    <span class="avatar" aria-hidden="true"><i class="ti ti-user"></i></span>
+                    <div class="admin-dados">
+                        <strong>{{ administrador.get_full_name|default:administrador.username }}</strong>
+                        <span>{{ administrador.email }}</span>
+                        <span>{% trans "Cadastrada em" %} {{ administrador.date_joined|date:"SHORT_DATETIME_FORMAT" }}</span>
+                        <span class="admin-status {% if administrador.is_active %}is-active{% else %}is-inactive{% endif %}">
+                            {% if administrador.is_active %}{% trans "Ativa" %}{% else %}{% trans "Inativa" %}{% endif %}
+                        </span>
+                    </div>
+                    <div class="admin-acoes">
+                        <button type="button" class="btn btn-perigo" data-open-delete="{{ administrador.pk }}">{% trans "Excluir" %}</button>
+                    </div>
+                    <dialog id="dialogo-excluir-admin-{{ administrador.pk }}" aria-labelledby="titulo-excluir-admin-{{ administrador.pk }}">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="acao" value="excluir_administrador">
+                            <input type="hidden" name="administrador_id" value="{{ administrador.pk }}">
+                            <h2 id="titulo-excluir-admin-{{ administrador.pk }}">{% trans "Excluir administradora?" %}</h2>
+                            <p>{% trans "Esta ação não pode ser desfeita." %}</p>
+                            <div class="dialogo-acoes">
+                                <button type="button" class="btn btn-secundario" data-close-dialog>{% trans "Cancelar" %}</button>
+                                <button type="submit" class="btn btn-perigo">{% trans "Sim, excluir" %}</button>
+                            </div>
+                        </form>
+                    </dialog>
+                </li>
+                {% empty %}<li class="admin-item">{% trans "Nenhum administrador cadastrado." %}</li>{% endfor %}
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>{% trans "Adicionar administradora" %}</h2>
+            <form method="post" class="form-administradora">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="criar_administrador">
+                <div class="grid-campos grid-administradora">
+                {% for field in form_administrador %}
+                    <div class="campo">
+                        {{ field.label_tag }}
+                        {% if field.name == "senha" or field.name == "confirmar_senha" %}
+                            <div class="campo-senha">
+                                {{ field }}
+                                <button type="button" class="ver-senha" data-label-show="{% trans 'Mostrar senha' %}" data-label-hide="{% trans 'Ocultar senha' %}" aria-label="{% trans 'Mostrar senha' %}" aria-pressed="false">
+                                    <i class="ti ti-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% for error in field.errors %}<p role="alert">{{ error }}</p>{% endfor %}
+                    </div>
+                {% endfor %}
+                </div>
+                <div class="acoes-form">
+                    <button type="submit" class="btn btn-primario">{% trans "Adicionar administradora" %}</button>
+                </div>
+            </form>
+        </section>
+        </div>
     </main>
 
-    <dialog id="dialogo-excluir" aria-labelledby="titulo-excluir">
-        <form action="" method="POST">
+    <dialog id="dialogo-senha" aria-labelledby="titulo-senha" {% if senha_form.errors %}data-reopen="true"{% endif %}>
+        <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="acao" value="excluir_conta">
-            <h2 id="titulo-excluir">{% trans "Excluir a conta?" %}</h2>
-            <p>{% trans "Todos os dados da instituição serão removidos e ela deixará de aparecer na plataforma. Essa ação não pode ser desfeita." %}</p>
+            <input type="hidden" name="acao" value="alterar_senha">
+            <h2 id="titulo-senha">{% trans "Alterar senha" %}</h2>
+            <div class="campo">
+                {{ senha_form.senha_atual.label_tag }}
+                <div class="campo-senha">
+                    {{ senha_form.senha_atual }}
+                    <button type="button" class="ver-senha" data-label-show="{% trans 'Mostrar senha' %}" data-label-hide="{% trans 'Ocultar senha' %}" aria-label="{% trans 'Mostrar senha' %}" aria-pressed="false">
+                        <i class="ti ti-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                {% for error in senha_form.senha_atual.errors %}<p role="alert">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="campo">
+                {{ senha_form.nova_senha.label_tag }}
+                <div class="campo-senha">
+                    {{ senha_form.nova_senha }}
+                    <button type="button" class="ver-senha" data-label-show="{% trans 'Mostrar senha' %}" data-label-hide="{% trans 'Ocultar senha' %}" aria-label="{% trans 'Mostrar senha' %}" aria-pressed="false">
+                        <i class="ti ti-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                {% for error in senha_form.nova_senha.errors %}<p role="alert">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="campo">
+                {{ senha_form.confirmar_senha.label_tag }}
+                <div class="campo-senha">
+                    {{ senha_form.confirmar_senha }}
+                    <button type="button" class="ver-senha" data-label-show="{% trans 'Mostrar senha' %}" data-label-hide="{% trans 'Ocultar senha' %}" aria-label="{% trans 'Mostrar senha' %}" aria-pressed="false">
+                        <i class="ti ti-eye" aria-hidden="true"></i>
+                    </button>
+                </div>
+                {% for error in senha_form.confirmar_senha.errors %}<p role="alert">{{ error }}</p>{% endfor %}
+            </div>
             <div class="dialogo-acoes">
-                <button type="button" id="btn-cancelar-exclusao" class="btn btn-secundario">{% trans "Cancelar" %}</button>
-                <button type="submit" class="btn btn-perigo">{% trans "Sim, excluir" %}</button>
+                <button type="button" class="btn btn-secundario" data-close-dialog>{% trans "Cancelar" %}</button>
+                <button type="submit" class="btn btn-primario">{% trans "Salvar nova senha" %}</button>
             </div>
         </form>
     </dialog>

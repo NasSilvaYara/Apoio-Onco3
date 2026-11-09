@@ -3,23 +3,32 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Gerenciar instituições" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gerenciar-dashboard.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
-    <script src="{% static 'js/gerenciar.js' %}" defer></script>
+    <script src="{% static 'js/gerenciar-dashboard.js' %}?v=2" defer></script>
     <script src="{% static 'js/sair.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <aside class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
@@ -29,6 +38,7 @@
             <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item active" aria-current="page">{% trans "Gerenciar" %}</a>
             <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" >{% trans "Categorias" %}</a>
             <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" >{% trans "Configurações" %}</a>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
@@ -53,37 +63,53 @@
         </header>
         {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
 
-        <form class="filtros" action="" method="get">
-            <div class="campo-busca">
-                <label for="busca" class="so-leitor">{% trans "Buscar por nome, CNPJ ou cidade" %}</label>
-                <input type="search" id="busca" name="busca" value="{{ busca }}" placeholder="{% trans "Buscar por nome, CNPJ ou cidade" %}">
-                <i class="ti ti-search" aria-hidden="true"></i>
+        <section class="gerenciar-filtros" aria-label="{% trans 'Filtros de instituições' %}">
+            <div class="gerenciar-busca">
+                <label for="busca-instituicoes">{% trans "Buscar instituições" %}</label>
+                <input type="search" id="busca-instituicoes" placeholder="{% trans 'Nome, CNPJ, cidade ou e-mail' %}" autocomplete="off">
             </div>
-            <div class="campo-select">
-                <label for="filtro-status" class="so-leitor">{% trans "Filtrar por status" %}</label>
-                <select id="filtro-status" name="status">
-                    <option value="">{% trans "Todos os status" %}</option>
-                    <option value="ativa" {% if status_selecionado == 'ativa' %}selected{% endif %}>{% trans "Ativa" %}</option>
-                    <option value="pendente" {% if status_selecionado == 'pendente' %}selected{% endif %}>{% trans "Pendente" %}</option>
-                    <option value="rejeitada" {% if status_selecionado == 'rejeitada' %}selected{% endif %}>{% trans "Rejeitada" %}</option>
-                    <option value="inativa" {% if status_selecionado == 'inativa' %}selected{% endif %}>{% trans "Inativa" %}</option>
-                </select>
+            <div class="gerenciar-selects">
+                <div>
+                    <label for="filtro-tipo">{% trans "Tipo de instituição" %}</label>
+                    <select id="filtro-tipo">
+                        <option value="">{% trans "Todos os tipos" %}</option>
+                        {% for tipo in tipos_instituicao %}
+                        <option value="{{ tipo.valor }}">{{ tipo.rotulo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro-estado">{% trans "Estado" %}</label>
+                    <select id="filtro-estado">
+                        <option value="">{% trans "Todos os estados" %}</option>
+                        {% for estado in estados %}
+                        <option value="{{ estado }}">{{ estado }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="campo-select">
-                <label for="filtro-cidade" class="so-leitor">{% trans "Filtrar por cidade" %}</label>
-                <select id="filtro-cidade" name="cidade">
-                    <option value="">{% trans "Todas as cidades" %}</option>
-                    {% for cidade in cidades %}<option value="{{ cidade }}" {% if cidade_selecionada == cidade %}selected{% endif %}>{{ cidade }}</option>{% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn-filtro">{% trans "Filtrar" %}</button>
-        </form>
+        </section>
 
-        <p class="contagem" id="contagem" aria-live="polite">{{ instituicoes|length }} {% trans "instituições" %}</p>
+        <div class="status-tabs" role="group" aria-label="{% trans 'Filtrar por status' %}">
+            <button type="button" class="status-tab" aria-pressed="false" data-status-filter="todas">
+                {% trans "Todas" %} <span data-status-count="todas">0</span>
+            </button>
+            <button type="button" class="status-tab is-active" aria-pressed="true" data-status-filter="pendente">
+                {% trans "Pendentes" %} <span data-status-count="pendente">0</span>
+            </button>
+            <button type="button" class="status-tab" aria-pressed="false" data-status-filter="ativo">
+                {% trans "Ativos" %} <span data-status-count="ativo">0</span>
+            </button>
+            <button type="button" class="status-tab" aria-pressed="false" data-status-filter="desativado">
+                {% trans "Desativados" %} <span data-status-count="desativado">0</span>
+            </button>
+        </div>
 
-        <div class="tabela-wrap">
-            <table class="tabela" id="tabela">
-                <caption class="so-leitor">{% trans "Lista de instituições cadastradas" %}</caption>
+        <p class="contagem" id="contagem-instituicoes" aria-live="polite"></p>
+        <p class="texto-leitor" id="texto-contagem">{% trans "{count} instituições encontradas" %}</p>
+        <p class="texto-leitor" data-no-information>{% trans "Não informado" %}</p>
+        <div class="instituicoes-tabela-wrap">
+            <table class="instituicoes-tabela">
                 <thead>
                     <tr>
                         <th scope="col">{% trans "Instituição" %}</th>
@@ -93,28 +119,164 @@
                         <th scope="col">{% trans "Ações" %}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="lista-instituicoes">
                     {% for inst in instituicoes %}
-                    <tr data-status="{{ inst.status }}" data-cidade="{{ inst.cidade }}">
-                        <td>{{ inst.nomeInst }}</td><td>{{ inst.cnpj|default:"—" }}</td><td>{{ inst.cidade }}</td>
-                        <td><span class="badge">{{ inst.get_status_display }}</span></td>
-                        <td class="acoes">
-                            {% if inst.status == 'pendente' %}
-                            <form method="post" data-confirm="Rejeitar {{ inst.nomeInst }}?">{% csrf_token %}<input type="hidden" name="instituicao_id" value="{{ inst.pk }}"><button type="submit" name="acao" value="rejeitar" class="btn-acao btn-inativar" title="Rejeitar" aria-label="Rejeitar {{ inst.nomeInst }}"><i class="ti ti-ban" aria-hidden="true"></i></button></form>
-                            <form method="post">{% csrf_token %}<input type="hidden" name="instituicao_id" value="{{ inst.pk }}"><button type="submit" name="acao" value="aprovar" class="btn-acao btn-aprovar" title="Aprovar" aria-label="Aprovar {{ inst.nomeInst }}"><i class="ti ti-check" aria-hidden="true"></i></button></form>
-                            {% elif inst.status == 'ativa' %}
-                            <form method="post" data-confirm="Inativar {{ inst.nomeInst }}?">{% csrf_token %}<input type="hidden" name="instituicao_id" value="{{ inst.pk }}"><button type="submit" name="acao" value="inativar" class="btn-acao btn-inativar" title="Inativar" aria-label="Inativar {{ inst.nomeInst }}"><i class="ti ti-ban" aria-hidden="true"></i></button></form>
-                            {% else %}
-                            <form method="post">{% csrf_token %}<input type="hidden" name="instituicao_id" value="{{ inst.pk }}"><button type="submit" name="acao" value="reativar" class="btn-acao btn-aprovar" title="Reativar" aria-label="Reativar {{ inst.nomeInst }}"><i class="ti ti-check" aria-hidden="true"></i></button></form>
-                            {% endif %}
+                    <tr
+                        data-institution-id="{{ inst.id }}"
+                        data-status="{{ inst.status }}"
+                        data-type="{{ inst.tipo }}"
+                        data-state="{{ inst.estado }}">
+                        <td>
+                            <button type="button" class="instituicao-linha__detalhes"
+                                data-open-institution aria-haspopup="dialog">
+                                <strong>{{ inst.nome }}</strong>
+                                <span class="instituicao-linha__tipo">{{ inst.tipo_display }}</span>
+                            </button>
+                        </td>
+                        <td class="instituicao-cnpj">{{ inst.cnpj_formatado|default:"—" }}</td>
+                        <td>{{ inst.cidade|default:"—" }}, {{ inst.estado|default:"—" }}</td>
+                        <td><span class="status-badge" data-status-label>{{ inst.status_display }}</span></td>
+                        <td>
+                            <div class="instituicao-acoes" data-action-cell>
+                                {% if inst.status == 'pendente' %}
+                                <button type="button" class="acao-icone acao-icone--negativa" data-quick-action="rejeitar"
+                                    aria-label="{% trans 'Reprovar' %}" title="{% trans 'Reprovar' %}">
+                                    <i class="ti ti-ban" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="acao-icone acao-icone--positiva" data-quick-action="aprovar"
+                                    aria-label="{% trans 'Aprovar' %}" title="{% trans 'Aprovar' %}">
+                                    <i class="ti ti-check" aria-hidden="true"></i>
+                                </button>
+                                {% elif inst.status == 'ativa' %}
+                                <button type="button" class="acao-icone acao-icone--negativa" data-quick-action="inativar"
+                                    aria-label="{% trans 'Desativar' %}" title="{% trans 'Desativar' %}">
+                                    <i class="ti ti-ban" aria-hidden="true"></i>
+                                </button>
+                                {% else %}
+                                <button type="button" class="acao-icone acao-icone--positiva" data-quick-action="reativar"
+                                    aria-label="{% trans 'Reativar' %}" title="{% trans 'Reativar' %}">
+                                    <i class="ti ti-check" aria-hidden="true"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
-                    {% empty %}<tr><td colspan="5">{% trans "Nenhuma instituição encontrada." %}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <p class="sem-resultado" id="sem-resultado" hidden>{% trans "Nenhuma instituição encontrada com esses filtros." %}</p>
         </div>
+        <p class="sem-resultado" id="sem-resultado" hidden>{% trans "Não encontramos instituições com esses filtros. Tente ajustar sua busca." %}</p>
+
+        {{ instituicoes|json_script:"instituicoes-data" }}
+
+        <dialog class="painel-instituicao" id="painel-instituicao" aria-labelledby="painel-titulo">
+            <div class="painel-instituicao__conteudo">
+                <header class="painel-instituicao__cabecalho">
+                    <div>
+                        <p class="painel-instituicao__sobrelinha">{% trans "Revisão de cadastro" %}</p>
+                        <h2 id="painel-titulo" data-detail="nome"></h2>
+                    </div>
+                    <button type="button" class="painel-fechar" data-close-panel aria-label="{% trans 'Fechar detalhes' %}">&times;</button>
+                </header>
+
+                <div class="painel-instituicao__dados">
+                    <section class="detalhe-secao">
+                        <h3>{% trans "Identificação" %}</h3>
+                        <dl>
+                            <div><dt>{% trans "CNPJ" %}</dt><dd data-detail="cnpj_formatado"></dd></div>
+                            <div><dt>{% trans "Razão social" %}</dt><dd data-detail="razao_social"></dd></div>
+                            <div><dt>{% trans "Nome fantasia" %}</dt><dd data-detail="nome_fantasia"></dd></div>
+                            <div><dt>{% trans "Nome da instituição" %}</dt><dd data-detail="nome"></dd></div>
+                            <div><dt>{% trans "Tipo" %}</dt><dd data-detail="tipo_display"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Descrição" %}</dt><dd data-detail="descricao"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Conteúdo informativo" %}</dt><dd data-detail="conteudo_informativo"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Horário de atendimento" %}</dt><dd data-detail="horario"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Tipos de serviço" %}</dt><dd data-detail="servicos"></dd></div>
+                        </dl>
+                        <div class="logo-instituicao" data-logo-container hidden>
+                            <img data-logo alt="{% trans 'Logo da instituição' %}">
+                            <p data-logo-empty hidden>{% trans "Não informado" %}</p>
+                            <button type="button" class="botao-secundario" data-enlarge-logo>{% trans "Ampliar imagem" %}</button>
+                        </div>
+                    </section>
+
+                    <section class="detalhe-secao">
+                        <h3>{% trans "Endereço" %}</h3>
+                        <dl>
+                            <div><dt>{% trans "CEP" %}</dt><dd data-detail="cep"></dd></div>
+                            <div><dt>{% trans "Endereço" %}</dt><dd data-detail="logradouro"></dd></div>
+                            <div><dt>{% trans "Número" %}</dt><dd data-detail="numero"></dd></div>
+                            <div><dt>{% trans "Complemento" %}</dt><dd data-detail="complemento"></dd></div>
+                            <div><dt>{% trans "Bairro" %}</dt><dd data-detail="bairro"></dd></div>
+                            <div><dt>{% trans "Cidade" %}</dt><dd data-detail="cidade"></dd></div>
+                            <div><dt>{% trans "Estado" %}</dt><dd data-detail="estado"></dd></div>
+                        </dl>
+                    </section>
+
+                    <section class="detalhe-secao">
+                        <h3>{% trans "Contato" %}</h3>
+                        <dl>
+                            <div><dt>{% trans "Telefone" %}</dt><dd data-detail="telefone"></dd></div>
+                            <div><dt>WhatsApp</dt><dd data-detail="whatsapp"></dd></div>
+                            <div><dt>{% trans "E-mail de atendimento" %}</dt><dd data-detail="email_contato"></dd></div>
+                            <div><dt>{% trans "Site" %}</dt><dd><a data-detail-link="site" target="_blank" rel="noopener noreferrer"></a></dd></div>
+                            <div><dt>Instagram</dt><dd data-detail="instagram"></dd></div>
+                            <div><dt>Facebook</dt><dd data-detail="facebook"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Outras redes sociais" %}</dt><dd data-detail="redes_sociais"></dd></div>
+                        </dl>
+                    </section>
+
+                    <section class="detalhe-secao">
+                        <h3>{% trans "Acesso" %}</h3>
+                        <dl><div><dt>{% trans "E-mail de acesso" %}</dt><dd data-detail="email_acesso"></dd></div></dl>
+                        <p class="nota-seguranca">{% trans "Senhas não são exibidas por segurança." %}</p>
+                    </section>
+
+                    <section class="detalhe-secao">
+                        <h3>{% trans "Situação do cadastro" %}</h3>
+                        <dl>
+                            <div><dt>{% trans "Status atual" %}</dt><dd data-detail="status_display"></dd></div>
+                            <div><dt>{% trans "Data do cadastro" %}</dt><dd data-detail="criado_em"></dd></div>
+                            <div><dt>{% trans "Avaliado em" %}</dt><dd data-detail="avaliado_em"></dd></div>
+                            <div><dt>{% trans "Atualizado em" %}</dt><dd data-detail="atualizado_em"></dd></div>
+                            <div class="detalhe-largo"><dt>{% trans "Motivo da reprovação" %}</dt><dd data-detail="motivo_rejeicao"></dd></div>
+                        </dl>
+                    </section>
+                </div>
+
+                <form class="acoes-painel" id="form-moderacao" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="instituicao_id" data-institution-id-input>
+                    <div class="motivo-reprovacao" data-rejection-reason hidden>
+                        <label for="motivo-reprovacao">{% trans "Motivo (opcional)" %}</label>
+                        <textarea id="motivo-reprovacao" name="motivo_rejeicao" rows="3"></textarea>
+                    </div>
+                    <p class="mensagem-painel" role="status" aria-live="polite" data-action-message></p>
+                    <div class="acoes-painel__botoes">
+                        <button type="submit" class="botao-aprovar" name="acao" value="aprovar">{% trans "Aprovar" %}</button>
+                        <button type="button" class="botao-reprovar" data-show-rejection>{% trans "Reprovar" %}</button>
+                        <button type="submit" class="botao-reprovar" name="acao" value="rejeitar" data-confirm-rejection hidden>{% trans "Confirmar reprovação" %}</button>
+                        <button type="button" class="botao-secundario" data-cancel-rejection hidden>{% trans "Cancelar" %}</button>
+                        <button type="submit" class="botao-secundario" name="acao" value="inativar" data-action-inactivate hidden>{% trans "Inativar" %}</button>
+                        <button type="submit" class="botao-aprovar" name="acao" value="reativar" data-action-reactivate hidden>{% trans "Reativar" %}</button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
+        <dialog class="visualizador-logo" id="visualizador-logo" aria-label="{% trans 'Imagem ampliada da instituição' %}">
+            <button type="button" class="painel-fechar" data-close-logo aria-label="{% trans 'Fechar imagem ampliada' %}">&times;</button>
+            <img data-enlarged-logo alt="{% trans 'Logo ampliado' %}">
+        </dialog>
+
+        <p class="texto-leitor" id="texto-confirmar-aprovacao">{% trans "Confirma a aprovação desta instituição?" %}</p>
+        <p class="texto-leitor" id="texto-confirmar-reprovacao">{% trans "Confirma a reprovação desta instituição?" %}</p>
+        <p class="texto-leitor" id="texto-confirmar-inativacao">{% trans "Confirma a inativação desta instituição?" %}</p>
+        <p class="texto-leitor" id="texto-erro-acao">{% trans "Não foi possível atualizar o status. Tente novamente." %}</p>
+        <span class="texto-leitor" data-action-label="aprovar">{% trans "Aprovar" %}</span>
+        <span class="texto-leitor" data-action-label="rejeitar">{% trans "Reprovar" %}</span>
+        <span class="texto-leitor" data-action-label="inativar">{% trans "Desativar" %}</span>
+        <span class="texto-leitor" data-action-label="reativar">{% trans "Reativar" %}</span>
     </main>
     <!-- Confirmação de saída -->
     <dialog id="modal-sair" class="modal-sair" aria-labelledby="titulo-sair">

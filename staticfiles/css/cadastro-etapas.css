@@ -65,6 +65,12 @@
   width: 100%;
 }
 .etapa.ativa { display: flex; }
+.erro-campo {
+  margin: 0.35rem 0 0;
+  color: #b42318;
+  font-size: 0.9rem;
+}
+[aria-invalid="true"] { border-color: #b42318 !important; }
 
 .etapa .formulario-login label { font-size: 1.05rem; }
 .formulario-login select,

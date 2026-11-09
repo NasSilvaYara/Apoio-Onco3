@@ -1,12 +1,13 @@
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="public-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ tema.resumo }}">
     <title>{{ tema.titulo }} | ApoioOnco</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sail&display=swap" rel="stylesheet">
@@ -15,8 +16,13 @@
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=13">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/home.js' %}?v=2" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
+{% include 'partials/seletor_idioma.html' %}
     <header class="site-header">
         <nav class="navbar" aria-label="Navegação principal">
             <div class="brand">

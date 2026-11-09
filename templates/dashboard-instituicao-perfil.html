@@ -3,21 +3,30 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Meu perfil" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/meu-perfil.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <aside class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
@@ -27,8 +36,18 @@
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" target="_blank">{% trans "Meu perfil" %}</a>
             <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">{% trans "Dados de contato" %}</a>
             <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">{% trans "Configurações" %}</a>
-            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">{% trans "Sair" %}</button></form>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
+        <div class="sidebar-perfil">
+            <i class="ti ti-building-community" aria-hidden="true"></i>
+            <div>
+                <strong>{{ instituicao.nomeInst }}</strong>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-sair"><i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}</button>
+                </form>
+            </div>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -58,25 +77,25 @@
                             <i class="ti ti-photo" aria-hidden="true"></i>
                         {% endif %}
                     </div>
-                    <input type="file" id="logo-arquivo" name="logo" accept="image/*" hidden>
+                    <input type="file" id="logo-arquivo" name="logo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
                     <button type="button" id="btn-trocar-logo" class="btn btn-primario">{% trans "Trocar logo" %}</button>
                 </div>
 
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="nome">{% trans "Nome da instituição" %}</label>
-                        <input type="text" id="nome" name="nome" value="{{ instituicao.nome }}" required>
+                        <input type="text" id="nome" name="nome" value="{{ form.nome.value|default_if_none:instituicao.nomeInst }}" required>
                     </div>
                     <div class="campo">
                         <label for="tipo">{% trans "Tipo de instituição" %}</label>
                         <select id="tipo" name="tipo" required>
                             <option value="" disabled>{% trans "Selecione" %}</option>
-                            {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if instituicao.tipo == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                            {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if form.tipo.value == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
                         </select>
                     </div>
                     <div class="campo span-todos">
                         <label for="descricao">{% trans "Descrição" %}</label>
-                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ instituicao.descricao }}</textarea>
+                        <textarea id="descricao" name="descricao" rows="3" maxlength="300" required>{{ form.descricao.value|default_if_none:instituicao.descricao }}</textarea>
                     </div>
                 </div>
             </section>
@@ -86,31 +105,31 @@
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="cep">{% trans "CEP" %}</label>
-                        <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" value="{{ instituicao.cep }}" required>
+                        <input type="text" id="cep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" value="{{ form.cep.value|default_if_none:instituicao.cep }}" required>
                     </div>
                     <div class="campo span-2">
                         <label for="logradouro">{% trans "Logradouro" %}</label>
-                        <input type="text" id="logradouro" name="logradouro" value="{{ instituicao.logradouro }}" required>
+                        <input type="text" id="logradouro" name="logradouro" value="{{ form.logradouro.value|default_if_none:instituicao.logradouro }}" required>
                     </div>
                     <div class="campo">
                         <label for="numero">{% trans "Número" %}</label>
-                        <input type="text" id="numero" name="numero" value="{{ instituicao.numero }}" required>
+                        <input type="text" id="numero" name="numero" value="{{ form.numero.value|default_if_none:instituicao.numero }}" required>
                     </div>
                     <div class="campo">
                         <label for="complemento">{% trans "Complemento" %}</label>
-                        <input type="text" id="complemento" name="complemento" value="{{ instituicao.complemento }}">
+                        <input type="text" id="complemento" name="complemento" value="{{ form.complemento.value|default_if_none:instituicao.complemento }}">
                     </div>
                     <div class="campo">
                         <label for="bairro">{% trans "Bairro" %}</label>
-                        <input type="text" id="bairro" name="bairro" value="{{ instituicao.bairro }}" required>
+                        <input type="text" id="bairro" name="bairro" value="{{ form.bairro.value|default_if_none:instituicao.bairro }}" required>
                     </div>
                     <div class="campo">
                         <label for="cidade">{% trans "Cidade" %}</label>
-                        <input type="text" id="cidade" name="cidade" value="{{ instituicao.cidade }}" required>
+                        <input type="text" id="cidade" name="cidade" value="{{ form.cidade.value|default_if_none:instituicao.cidade }}" required>
                     </div>
                     <div class="campo">
                         <label for="estado">{% trans "Estado (UF)" %}</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="{% trans "Use a sigla do estado, com 2 letras" %}" value="{{ instituicao.estado }}" required>
+                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="{% trans "Use a sigla do estado, com 2 letras" %}" value="{{ form.estado.value|default_if_none:instituicao.estado }}" required>
                     </div>
                 </div>
             </section>
@@ -120,9 +139,9 @@
                 <h2>{% trans "Tipos de apoio oferecidos" %}</h2>
 
                 <div class="chips" id="chips">
-                    {% for servico in instituicao.servicosOferecidos.all %}<span class="chip">{{ servico.nome }}
-                        <button type="button" class="chip-remover" aria-label="Remover {{ servico.nome }}"><i class="ti ti-x" aria-hidden="true"></i></button>
-                        <input type="hidden" name="servicos" value="{{ servico.nome }}">
+                    {% for servico in servicos_selecionados %}<span class="chip">{{ servico }}
+                        <button type="button" class="chip-remover" aria-label="{% trans 'Remover' %} {{ servico }}"><i class="ti ti-x" aria-hidden="true"></i></button>
+                        <input type="hidden" name="servicos" value="{{ servico }}">
                     </span>{% endfor %}
                 </div>
 
@@ -141,7 +160,7 @@
                 <h2>{% trans "Funcionamento" %}</h2>
                 <div class="campo">
                     <label for="horario">{% trans "Horário de atendimento" %}</label>
-                    <textarea id="horario" name="horario" rows="3" placeholder="Ex.: seg a sex, das 8h às 17h" required>{{ instituicao.horario }}</textarea>
+                    <textarea id="horario" name="horario" rows="3" placeholder="{% trans 'Ex.: seg a sex, das 8h às 17h' %}" required>{{ form.horario.value|default_if_none:instituicao.horarioAtendimento }}</textarea>
                 </div>
             </section>
 

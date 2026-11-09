@@ -75,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
     },
@@ -119,10 +120,6 @@ LANGUAGE_CODE = 'pt-br'
 LANGUAGES = [
     ("pt-br", _("Português")),
     ("en", _("English")),
-    ("es", _("Español")),
-    ("de", _("Deutsch")),     
-    ("it", _("Italiano")),     
-    ("ja", _("日本語")), 
 ]
 
 LOCALE_PATHS = [

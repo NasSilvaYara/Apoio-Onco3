@@ -3,21 +3,30 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Dados de contato" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/dados-contato.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <aside class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
@@ -27,8 +36,18 @@
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" target="_blank">{% trans "Meu perfil" %}</a>
             <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item active" aria-current="page" target="_blank">{% trans "Dados de contato" %}</a>
             <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">{% trans "Configurações" %}</a>
-            <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit" class="menu-item">{% trans "Sair" %}</button></form>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
+        <div class="sidebar-perfil">
+            <i class="ti ti-building-community" aria-hidden="true"></i>
+            <div>
+                <strong>{{ instituicao.nomeInst }}</strong>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-sair"><i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}</button>
+                </form>
+            </div>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -52,11 +71,11 @@
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="telefone">{% trans "Telefone principal" %}</label>
-                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ instituicao.telefone }}">
+                        <input type="tel" id="telefone" name="telefone" placeholder="(00) 0000-0000" value="{{ form.telefone.value|default_if_none:instituicao.telefone }}">
                     </div>
                     <div class="campo">
                         <label for="whatsapp">{% trans "WhatsApp" %} <span class="opcional">({% trans "opcional" %})</span></label>
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ instituicao.telefone_whatsapp }}">
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(00) 00000-0000" value="{{ form.whatsapp.value|default_if_none:instituicao.telefone_whatsapp }}">
                     </div>
                 </div>
             </section>
@@ -66,11 +85,11 @@
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="email_atendimento">{% trans "E-mail de atendimento" %}</label>
-                        <input type="email" id="email_atendimento" name="email_atendimento" value="{{ instituicao.email_contato }}">
+                        <input type="email" id="email_atendimento" name="email_atendimento" value="{{ form.email_atendimento.value|default_if_none:instituicao.email_contato }}">
                     </div>
                     <div class="campo">
                         <label for="site">{% trans "Site" %} <span class="opcional">({% trans "opcional" %})</span></label>
-                        <input type="url" id="site" name="site" placeholder="https://" value="{{ instituicao.site }}">
+                        <input type="url" id="site" name="site" placeholder="https://" value="{{ form.site.value|default_if_none:instituicao.site }}">
                     </div>
                 </div>
             </section>
@@ -79,7 +98,17 @@
                 <h2>{% trans "Redes sociais" %}</h2>
                 <div class="campo">
                     <label for="redes">{% trans "Outras redes sociais" %} <span class="opcional">({% trans "opcional" %})</span></label>
-                    <input type="text" id="redes" name="redes" placeholder="@suainstituicao" value="{{ instituicao.redes }}">
+                    <input type="text" id="redes" name="redes" placeholder="@suainstituicao" value="{{ form.redes.value|default_if_none:instituicao.redes_sociais }}">
+                </div>
+                <div class="grid-campos">
+                    <div class="campo">
+                        <label for="instagram">{% trans "Instagram" %}</label>
+                        <input type="text" id="instagram" name="instagram" value="{{ form.instagram.value|default_if_none:instituicao.instagram }}">
+                    </div>
+                    <div class="campo">
+                        <label for="facebook">{% trans "Facebook" %}</label>
+                        <input type="text" id="facebook" name="facebook" value="{{ form.facebook.value|default_if_none:instituicao.facebook }}">
+                    </div>
                 </div>
             </section>
 

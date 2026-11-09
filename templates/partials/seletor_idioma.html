@@ -1,0 +1,57 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+
+<div class="seletor-idioma" data-language-selector>
+  <form class="seletor-idioma__form" method="post" action="{% url 'set_language' %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+    <button
+      class="seletor-idioma__gatilho"
+      type="button"
+      aria-label="{% trans 'Selecionar idioma' %}"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls="seletor-idioma-opcoes">
+      {% if CURRENT_LANGUAGE == 'pt-br' %}
+        <span class="fi fi-br" aria-hidden="true"></span>
+        <span class="seletor-idioma__rotulo">{% trans "Português (Brasil)" %}</span>
+      {% else %}
+        <span class="fi fi-us" aria-hidden="true"></span>
+        <span class="seletor-idioma__rotulo">{% trans "English (USA)" %}</span>
+      {% endif %}
+      <svg class="seletor-idioma__seta" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="m3 6 5 5 5-5"></path>
+      </svg>
+    </button>
+
+    <ul class="seletor-idioma__lista" id="seletor-idioma-opcoes" role="menu" hidden>
+      <li role="presentation">
+        <button
+          class="seletor-idioma__opcao{% if CURRENT_LANGUAGE == 'pt-br' %} is-ativo{% endif %}"
+          type="submit"
+          name="language"
+          value="pt-br"
+          role="menuitem"
+          lang="pt-br"
+          {% if CURRENT_LANGUAGE == 'pt-br' %}aria-current="true"{% endif %}>
+          <span class="fi fi-br" aria-hidden="true"></span>
+          <span>{% trans "Português (Brasil)" %}</span>
+        </button>
+      </li>
+      <li role="presentation">
+        <button
+          class="seletor-idioma__opcao{% if CURRENT_LANGUAGE == 'en' %} is-ativo{% endif %}"
+          type="submit"
+          name="language"
+          value="en"
+          role="menuitem"
+          lang="en"
+          {% if CURRENT_LANGUAGE == 'en' %}aria-current="true"{% endif %}>
+          <span class="fi fi-us" aria-hidden="true"></span>
+          <span>{% trans "English (USA)" %}</span>
+        </button>
+      </li>
+    </ul>
+  </form>
+</div>

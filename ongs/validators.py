@@ -49,13 +49,16 @@ def gerar_cnpj(base12):
 
 def validar_cnpj(valor):
     if not cnpj_valido(valor):
-        raise ValidationError('CNPJ inválido.', code='cnpj_invalido')
+        raise ValidationError(
+            'CNPJ inválido. Verifique os números informados.',
+            code='cnpj_invalido',
+        )
 
 
 def validar_imagem_instituicao(arquivo):
     extensao = Path(arquivo.name).suffix.lower()
     if extensao not in _FORMATOS_IMAGEM:
-        raise ValidationError('Envie uma imagem JPG, JPEG, PNG ou WEBP.')
+        raise ValidationError('Envie uma imagem JPG, PNG ou WEBP.')
     if arquivo.size > _TAMANHO_MAXIMO_IMAGEM:
         raise ValidationError('A imagem deve ter no máximo 5 MB.')
 
@@ -71,5 +74,3 @@ def validar_imagem_instituicao(arquivo):
 
     if formato != _FORMATOS_IMAGEM[extensao]:
         raise ValidationError('A extensão do arquivo não corresponde ao formato da imagem.')
-
-

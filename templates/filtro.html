@@ -3,39 +3,46 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="public-document">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% trans "Resultados da busca" %} – ApoioOnco</title>
+  <link rel="icon" type="image/png" href="static/img/logo.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=8">
   <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=10">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
+  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
   <script src="{% static 'js/theme.js' %}?v=2" defer></script>
+  <script src="{% static 'js/idioma.js' %}?v=1" defer></script>
 </head>
 <body>
  
-  <form action="{% url 'busca' %}" method="get">
- 
-    <!-- ===== TOPO ===== -->
-    <header class="topo">
+  <!-- ===== TOPO ===== -->
+  <header class="topo">
       <a class="topo__logo" href="{% url 'home' %}">
         <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco">
       </a>
  
       <div class="busca" role="search">
-        <input class="busca__campo" type="search" name="q" value="{{ busca }}" placeholder="{% trans "O que você procura?" %}"
+        <input class="busca__campo" type="search" name="q" form="filtro-busca-form" value="{{ busca }}" placeholder="{% trans "O que você procura?" %}"
                aria-label="{% trans "Buscar instituições" %}">
-        <button class="busca__botao" type="submit" aria-label="{% trans "Pesquisar" %}">
+        <button class="busca__botao" type="submit" form="filtro-busca-form" aria-label="{% trans "Pesquisar" %}">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         </button>
       </div>
  
       <a class="topo__perfil" href="#" aria-label="{% trans "Minha conta" %}"> <!-- BACK-END: href da conta -->
       </a>
-    </header>
+
+      {% include "partials/seletor_idioma.html" %}
+  </header>
  
+  <form id="filtro-busca-form" action="{% url 'busca' %}" method="get">
     <main class="resultados">
  
       <!-- ===== FILTROS ===== -->
@@ -158,7 +165,7 @@
           </p>
  
           <!-- IMAGEM: coloque o arquivo em static/img/ e troque o nome abaixo -->
-          <img class="nao-encontrado__imagem" src="{% static 'img/Headache-bro.png' %}"  alt="Nenhum resultado encontrado">
+          <img class="nao-encontrado__imagem" src="{% static 'Apoio-Onco3\staticfiles\img\img\Headache-bro.png' %}"  alt="Nenhum resultado encontrado">
         </div>
       </section>
  

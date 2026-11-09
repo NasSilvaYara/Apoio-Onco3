@@ -3,24 +3,31 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="public-document public-auth-document">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% trans "Cadastro" %} - {% trans "ApoioOnco" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}?v=3">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/senha.js' %}" defer></script>
-    <script src="{% static 'js/cadastro.js' %}" defer></script>
+    <script src="{% static 'js/cadastro.js' %}?v=4" defer></script>
     
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 
 <body>
+{% include 'partials/seletor_idioma.html' %}
     <main>
         <div class="banner-login" aria-hidden="true">
             <h2 id="titulo-banner">{% trans "Validar o CNPJ" %}</h2>
@@ -33,7 +40,7 @@
             <p class="subtitulo">{% trans "Faça parte da nossa rede" %}</p>
 
             <!-- Indicador de etapas -->
-            <ol class="passos" id="passos" aria-label="Etapas do cadastro">
+            <ol class="passos" id="passos" aria-label="Etapas do cadastro" {% if cadastro_enviado %}hidden{% endif %}>
                 <li class="passo" title="CNPJ"><i class="ti ti-building" aria-hidden="true"></i><span
                         class="so-leitor">{% trans "CNPJ" %}</span></li>
                 <li class="passo" title="Dados da instituição"><i class="ti ti-clipboard-text"
@@ -48,16 +55,20 @@
                         class="so-leitor">{% trans "Revisão" %}</span></li>
             </ol>
 
-            <h1 id="titulo-etapa" class="titulo-etapa">{% trans "Validar o CNPJ" %}</h1>
+            <h1 id="titulo-etapa" class="titulo-etapa" {% if cadastro_enviado %}hidden{% endif %}>{% trans "Validar o CNPJ" %}</h1>
 
-            <form id="cadastro" action="{% url 'cadastro' %}" method="POST" enctype="multipart/form-data" novalidate>
+            <form id="cadastro" action="{% url 'cadastro' %}" method="POST" enctype="multipart/form-data" novalidate
+                data-cadastro-enviado="{{ cadastro_enviado|yesno:'true,false' }}"
+                data-cnpj-retry-after="{{ cnpj_retry_after|default_if_none:'' }}" {% if cadastro_enviado %}hidden{% endif %}>
                 {% csrf_token %}
                 {% if form.errors %}
-                    <div class="form-erros" role="alert">
-                        <p>{% trans "Não foi possível concluir o cadastro. Revise as informações abaixo." %}</p>
-                        {{ form.errors }}
+                    <div id="erros-servidor" hidden>
+                        {% for campo, erros in form.errors.items %}
+                            <div data-field="{{ campo }}">{{ erros|join:" " }}</div>
+                        {% endfor %}
                     </div>
                 {% endif %}
+                <input type="hidden" id="token_validacao_cnpj" name="token_validacao_cnpj" value="">
 
                 <!-- Etapa 1: CNPJ -->
                 <section class="etapa">
@@ -231,7 +242,7 @@
             </form>
 
             <!-- Tela de sucesso -->
-            <div id="sucesso" class="sucesso" hidden>
+            <div id="sucesso" class="sucesso" role="status" aria-live="polite" {% if not cadastro_enviado %}hidden{% endif %}>
                 <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
                     <circle cx="48" cy="48" r="44" fill="none" stroke="#5A3D7F" stroke-width="6" />
                     <path d="M28 50l14 14 27-30" fill="none" stroke="#5A3D7F" stroke-width="7" stroke-linecap="round"
@@ -242,7 +253,7 @@
                 <p class="signup-text"><a href="{% url 'login' %}">{% trans "Voltar para o login" %}</a></p>
             </div>
 
-            <p class="signup-text" id="rodape-login">
+            <p class="signup-text" id="rodape-login" {% if cadastro_enviado %}hidden{% endif %}>
                 {% trans "Já possui conta?" %} <a href="{% url 'login' %}">{% trans "entre aqui" %}</a>
             </p>
         </div>

@@ -1,0 +1,106 @@
+
+.sidebar-perfil .btn-sair {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 4px;
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--branco);
+  border: 1.5px solid var(--lilas);
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-perfil .btn-sair:hover {
+  background: var(--lilas);
+  color: var(--roxo-escuro);
+}
+
+.sidebar-perfil .btn-sair:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}
+
+
+.modal-sair {
+  margin: auto;
+  width: min(92vw, 400px);
+  padding: 28px 24px;
+  border: none;
+  border-radius: 20px;
+  background: var(--branco);
+  color: var(--cinza);
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.modal-sair::backdrop {
+  background: rgba(16, 16, 16, 0.55);
+}
+
+.modal-sair[open] {
+  animation: entrar-modal 0.2s ease;
+}
+
+@keyframes entrar-modal {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal-sair .modal-icone {
+  font-size: 2.4rem;
+  color: var(--roxo-escuro);
+}
+
+.modal-sair h2 {
+  margin: 8px 0;
+  font-size: 1.2rem;
+  color: var(--roxo-escuro);
+}
+
+.modal-sair p {
+  font-size: 0.9rem;
+}
+
+.modal-acoes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.modal-acoes button {
+  min-width: 120px;
+  padding: 0.65rem 1.4rem;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.modal-acoes button:hover { opacity: 0.9; }
+
+.modal-acoes .btn-cancelar {
+  background: transparent;
+  color: var(--roxo-escuro);
+  border: 1.5px solid var(--roxo-escuro);
+}
+
+.modal-acoes .btn-confirmar {
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  border: 1.5px solid var(--roxo-escuro);
+}
+
+.modal-acoes button:focus-visible {
+  outline: 3px solid var(--lilas);
+  outline-offset: 2px;
+}

@@ -120,6 +120,16 @@ dialog p {
   margin-top: 20px;
 }
 
+.configuracao-logo {
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 8px;
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  object-fit: contain;
+}
+
 @media (max-width: 900px) {
   .zona-perigo,
   .linha-senha { flex-direction: column; align-items: flex-start; }

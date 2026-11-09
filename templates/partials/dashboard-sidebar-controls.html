@@ -1,0 +1,14 @@
+{% load i18n %}
+<button
+    type="button"
+    class="sidebar-toggle"
+    data-sidebar-toggle
+    data-label-open="{% trans 'Abrir menu' %}"
+    data-label-close="{% trans 'Fechar menu' %}"
+    aria-label="{% trans 'Abrir menu' %}"
+    aria-controls="dashboard-sidebar"
+    aria-expanded="false">
+    <span class="sidebar-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="sidebar-toggle__label">{% trans "Abrir menu" %}</span>
+</button>
+<div class="sidebar-backdrop" data-sidebar-close hidden></div>

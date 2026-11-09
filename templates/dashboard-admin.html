@@ -3,11 +3,13 @@
 {% get_current_language as CURRENT_LANGUAGE %}
 
 <!DOCTYPE html>
-<html lang="{{ CURRENT_LANGUAGE }}">
+<html lang="{{ CURRENT_LANGUAGE }}" class="dashboard-document">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Área Administrativa" %}</title>
+    <link rel="icon" type="image/png" href="static/img/logo.png">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
@@ -17,10 +19,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
     <script src="{% static 'js/dashboard-admin.js' %}" defer></script>
     <script src="{% static 'js/sair.js' %}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
-<body>
+<body class="dashboard-layout">
 
-    <aside class="sidebar">
+    {% include 'partials/dashboard-sidebar-controls.html' %}
+    <aside class="sidebar" id="dashboard-sidebar">
         <div class="logo">
             <img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco" class="logo-img">
         </div>
@@ -30,6 +38,7 @@
             <a href="{% url 'dashboard_admin_gerenciar' %}" class="menu-item">{% trans "Gerenciar" %}</a>
             <a href="{% url 'dashboard_admin_categoria' %}" class="menu-item" >{% trans "Categorias" %}</a>
             <a href="{% url 'dashboard_admin_configuracoes' %}" class="menu-item" >{% trans "Configurações" %}</a>
+            <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
             <i class="ti ti-user-circle" aria-hidden="true"></i>
