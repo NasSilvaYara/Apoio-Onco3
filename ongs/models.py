@@ -63,12 +63,7 @@ class Instituicao(models.Model):
     tipo = models.CharField(max_length=60, blank=True)
     descricao = models.TextField()
     conteudoInformativo = models.TextField(blank=True)
-    logo = models.ImageField(
-        upload_to='instituicoes/%Y/%m/',
-        blank=True,
-        null=False,
-        validators=[validar_imagem_instituicao],
-    )
+    logo = models.ImageField(upload_to="instituicoes/%Y/%m/", blank=True, default="")
 
     servicosOferecidos = models.ManyToManyField(
         TipoApoio,
