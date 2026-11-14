@@ -1,17 +1,16 @@
 html.dashboard-document,
 html.dashboard-document body {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
 }
 
 body.dashboard-layout {
   --dashboard-sidebar-width: 240px;
   display: block;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 body.dashboard-layout .sidebar {
@@ -28,13 +27,12 @@ body.dashboard-layout .sidebar {
 }
 
 body.dashboard-layout .main-content {
-  width: calc(100% - var(--dashboard-sidebar-width));
-  height: 100vh;
-  height: 100dvh;
+  width: auto;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   margin-left: var(--dashboard-sidebar-width);
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
 }
 
 .sidebar-toggle,
@@ -125,8 +123,8 @@ body.dashboard-layout .main-content {
 
   body.dashboard-layout .main-content {
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     margin-left: 0;
     padding: 72px 16px 24px;
   }

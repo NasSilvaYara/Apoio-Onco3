@@ -14,13 +14,13 @@
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}?v=2">
 
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
-    <script src="{% static 'js/dados-contato.js' %}" defer></script>
+    <script src="{% static 'js/contato-dashboard.js' %}" defer></script>
     <script src="{% static 'js/idioma.js' %}" defer></script>
     <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
@@ -99,21 +99,11 @@
                     <label for="redes">{% trans "Outras redes sociais" %} <span class="opcional">({% trans "opcional" %})</span></label>
                     <input type="text" id="redes" name="redes" placeholder="@suainstituicao" value="{{ form.redes.value|default_if_none:instituicao.redes_sociais }}">
                 </div>
-                <div class="grid-campos">
-                    <div class="campo">
-                        <label for="instagram">{% trans "Instagram" %}</label>
-                        <input type="text" id="instagram" name="instagram" value="{{ form.instagram.value|default_if_none:instituicao.instagram }}">
-                    </div>
-                    <div class="campo">
-                        <label for="facebook">{% trans "Facebook" %}</label>
-                        <input type="text" id="facebook" name="facebook" value="{{ form.facebook.value|default_if_none:instituicao.facebook }}">
-                    </div>
-                </div>
             </section>
 
             <div class="acoes-form">
-                <a href="#" class="btn btn-secundario">{% trans "Cancelar" %}</a>
-                <a href="#" class="btn btn-medio">{% trans "Ver como a usuária vê" %}</a>
+                <button type="reset" class="btn btn-secundario">{% trans "Cancelar" %}</button>
+                {% if instituicao.status == 'ativa' %}<a href="{% url 'ver_instituicao_detalhe' instituicao.pk %}" class="btn-perfil">Ver como a usuária vê</a>{% endif %}
                 <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
             </div>
         </form>

@@ -96,6 +96,53 @@
     color: var(--tema-lilas) !important;
 }
 
+:root[data-theme="dark"] .summary-box {
+    background-color: var(--tema-roxo) !important;
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .summary-box :is(h2, li, span, strong) {
+    color: #ffffff !important;
+}
+
+:root[data-theme="dark"] .chart-box,
+:root[data-theme="dark"] .chart-filtro,
+:root[data-theme="dark"] .chart-vazio {
+    color: var(--tema-texto-suave) !important;
+}
+
+:root[data-theme="dark"] .erro-campo,
+:root[data-theme="dark"] [aria-invalid="true"] {
+    color: #ffb4ab !important;
+}
+
+:root[data-theme="dark"] .cadastro-swal-popup {
+    background: var(--tema-superficie) !important;
+    color: var(--tema-texto) !important;
+}
+
+:root[data-theme="dark"] .cadastro-swal-title,
+:root[data-theme="dark"] .cadastro-swal-message {
+    color: var(--tema-texto) !important;
+}
+
+.cadastro-swal-popup {
+    background: var(--tema-superficie, #ffffff) !important;
+    color: var(--tema-texto, #3f3150) !important;
+}
+
+.cadastro-swal-title,
+.cadastro-swal-message {
+    color: var(--tema-texto, #3f3150) !important;
+}
+
+.cadastro-swal-confirm {
+    border-radius: 0.65rem !important;
+    background: #5a3d7f !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
 :root[data-theme="dark"] :is(
     .card, .institution-card, .card-inst-result, .topic-card, .faq-item,
     .contact-panel, .map-panel, .card-perfil, .card-stat, .card-servicos,

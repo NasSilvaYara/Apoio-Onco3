@@ -1,5 +1,6 @@
 from functools import wraps
 from types import SimpleNamespace
+import logging
 import unicodedata
 
 import requests
@@ -17,7 +18,7 @@ from django.contrib.messages import get_messages
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -39,10 +40,13 @@ from .forms import (
     ConfiguracoesInstituicaoForm,
     EmailAcessoForm,
     ExcluirContaForm,
+    LoginForm,
     PerfilInstituicaoForm,
 )
 from .models import Instituicao, TipoApoio
 from .validators import normalizar_cnpj
+
+logger = logging.getLogger(__name__)
 
 _TIPO_INSTITUICAO_LABELS = {
     'ong_associacao': _('ONG / associação'),
@@ -315,43 +319,37 @@ def login_view(request):
         return redirect('dashboard_admin' if request.user.is_staff else 'dashboard_instituicao')
 
     erro = ''
+    form = LoginForm(request.POST or None)
     if request.method == 'POST':
-        identificacao = request.POST.get('identificacao', '').strip()
-        senha = request.POST.get('senha', '')
-        user_model = get_user_model()
-        usuario = None
-
-        if '@' not in identificacao:
-            instituicao = Instituicao.objects.filter(
-                cnpj=normalizar_cnpj(identificacao)
-            ).select_related('usuario').first()
-            if instituicao:
-                usuario = instituicao.usuario
-
-        if usuario is None:
-            usuario = user_model.objects.filter(
-                Q(username__iexact=identificacao) | Q(email__iexact=identificacao)
+        if form.is_valid():
+            usuario = get_user_model().objects.filter(
+                email__iexact=form.cleaned_data['email'],
             ).first()
+            autenticado = None
+            if usuario is not None:
+                autenticado = authenticate(
+                    request,
+                    username=usuario.get_username(),
+                    password=form.cleaned_data['senha'],
+                )
 
-        autenticado = None
-        if usuario is not None:
-            autenticado = authenticate(
-                request,
-                username=usuario.get_username(),
-                password=senha,
+            if autenticado is not None:
+                if not autenticado.is_staff and not hasattr(autenticado, 'instituicao'):
+                    erro = 'Esta conta ainda não está vinculada a uma instituição.'
+                else:
+                    login(request, autenticado)
+                    destino = 'dashboard_admin' if autenticado.is_staff else 'dashboard_instituicao'
+                    return redirect(destino)
+            else:
+                erro = 'E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.'
+        else:
+            erro = ' '.join(
+                mensagem
+                for erros in form.errors.values()
+                for mensagem in erros
             )
 
-        if autenticado is not None:
-            if not autenticado.is_staff and not hasattr(autenticado, 'instituicao'):
-                erro = 'Esta conta n├úo est├í vinculada a uma institui├º├úo.'
-            else:
-                login(request, autenticado)
-                destino = 'dashboard_admin' if autenticado.is_staff else 'dashboard_instituicao'
-                return redirect(destino)
-        else:
-            erro = 'E-mail/CNPJ ou senha inv├ílidos.'
-
-    return render(request, 'login.html', {'erro': erro})
+    return render(request, 'login.html', {'erro': erro, 'form': form})
 
 
 @require_POST
@@ -592,15 +590,23 @@ def cadastro_view(request):
                             'cnpj',
                             'Este CNPJ já está cadastrado na plataforma.',
                         )
+                    elif form.email_ja_cadastrado(dados['email']):
+                        form.add_error(
+                            'email',
+                            'Este e-mail já está associado a uma conta ou instituição.',
+                        )
                     else:
+                        logger.exception(
+                            'Falha de integridade inesperada ao criar cadastro de instituição.'
+                        )
                         form.add_error(
                             None,
-                            'CNPJ ou e-mail já cadastrado. Confira os dados informados.',
+                            'Não foi possível concluir o cadastro. Tente novamente.',
                         )
                 else:
                     messages.success(
                         request,
-                        'Cadastro enviado. A institui├º├úo ficar├í dispon├¡vel ap├│s a aprova├º├úo administrativa.',
+                        'Cadastro enviado. A instituição ficará disponível após a aprovação administrativa.',
                     )
                     return redirect('cadastro_sucesso')
 
@@ -702,8 +708,6 @@ def dashboard_instituicao_contato_view(request):
             instituicao.email_contato = dados['email_atendimento']
             instituicao.site = dados['site']
             instituicao.redes_sociais = dados['redes']
-            instituicao.instagram = dados['instagram']
-            instituicao.facebook = dados['facebook']
             try:
                 instituicao.full_clean()
                 instituicao.save()
@@ -721,8 +725,6 @@ def dashboard_instituicao_contato_view(request):
             'email_atendimento': instituicao.email_contato,
             'site': instituicao.site,
             'redes': instituicao.redes_sociais,
-            'instagram': instituicao.instagram,
-            'facebook': instituicao.facebook,
         })
     return render(request, 'dashboard-instituicao-contato.html', {
         'instituicao': instituicao,
@@ -950,8 +952,6 @@ def dashboard_admin_gerenciar_view(request):
             'email_contato': instituicao.email_contato,
             'site': instituicao.site,
             'redes_sociais': instituicao.redes_sociais,
-            'instagram': instituicao.instagram,
-            'facebook': instituicao.facebook,
             'email_acesso': emails_acesso.get(instituicao.pk) or '',
             'status': instituicao.status,
             'status_display': _STATUS_INSTITUICAO_LABELS[instituicao.status],
@@ -1193,7 +1193,13 @@ def ver_instituicao_view(request, pk=None):
         Instituicao.objects.filter(status='ativa').prefetch_related('servicosOferecidos'),
         pk=pk,
     )
-    return render(request, 'ver-instituicao.html', {'instituicao': instituicao})
+    return render(request, 'ver-instituicao.html', {
+    'instituicao': instituicao,
+    'tipo_display': _TIPO_INSTITUICAO_LABELS.get(
+        instituicao.tipo,
+        instituicao.tipo
+    ),
+})
 
 def esqueci_senha_view(request):
     return render(request, 'esqueci-senha.html')

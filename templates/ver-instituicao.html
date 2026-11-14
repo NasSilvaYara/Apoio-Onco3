@@ -13,12 +13,11 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}?v=5">
-	<link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}?v=6">
+	<link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
 	<script src="{% static 'js/theme.js' %}?v=2" defer></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
   <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
@@ -64,6 +63,7 @@
 				</div>
 				<div class="institution-heading__content">
 					<h1 id="institution-name">{{ instituicao.nomeInst }}</h1>
+					<p class="institution-type">{{ tipo_display }}</p>
 					<p class="institution-location">{{ instituicao.cidade }} - {{ instituicao.estado }}</p>
 					<span class="registration-status">{% trans "Instituição cadastrada" %}</span>
 				</div>
@@ -117,10 +117,24 @@
 						</dd>
 					</div>
 					<div class="contact-list__item">
+						<dt>{% trans "Redes sociais" %}</dt>
+						<dd>
+							{% if instituicao.redes_sociais %}
+								{{ instituicao.redes_sociais }}
+							{% else %}
+							{% endif %}
+						</dd>
+					</div>
+					<div class="contact-list__item">
 						<dt>{% trans "Endereço" %}</dt>
 						<dd>
-							{{ instituicao.logradouro }}{% if instituicao.bairro %}, {{ instituicao.bairro }}{% endif %}<br>
+							{{ instituicao.logradouro }}
+							{% if instituicao.numero %}, {{ instituicao.numero }}{% endif %}
+							{% if instituicao.complemento %} - {{ instituicao.complemento }}{% endif %}
+							{% if instituicao.bairro %}<br>{{ instituicao.bairro }}{% endif %}
+							<br>
 							{{ instituicao.cidade }} - {{ instituicao.estado }}
+							{% if instituicao.cep %}<br>CEP: {{ instituicao.cep }}{% endif %}
 						</dd>
 					</div>
 				</dl>

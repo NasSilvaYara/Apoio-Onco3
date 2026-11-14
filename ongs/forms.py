@@ -15,6 +15,22 @@ _UFS_BR = {
 }
 
 
+class LoginForm(forms.Form):
+    email = forms.EmailField(
+        error_messages={
+            'required': 'Informe seu e-mail.',
+            'invalid': 'Informe um endereço de e-mail válido.',
+        },
+    )
+    senha = forms.CharField(
+        strip=False,
+        error_messages={'required': 'Informe sua senha.'},
+    )
+
+    def clean_email(self):
+        return self.cleaned_data['email'].strip().lower()
+
+
 class CadastroInstituicaoForm(forms.Form):
     cnpj = forms.CharField(max_length=18, validators=[validar_cnpj])
     nome = forms.CharField(max_length=200)
@@ -52,11 +68,26 @@ class CadastroInstituicaoForm(forms.Form):
 
     def clean_cnpj(self):
         cnpj = normalizar_cnpj(self.cleaned_data['cnpj'])
+        if not cnpj.isdigit() or len(cnpj) != 14:
+            raise ValidationError(
+                'Informe um CNPJ com exatamente 14 dígitos numéricos.',
+            )
         if Instituicao.cnpj_ja_cadastrado(cnpj):
             raise ValidationError(
                 'Este CNPJ já está cadastrado na plataforma.',
             )
         return cnpj
+
+    @staticmethod
+    def email_ja_cadastrado(email):
+        email = email.strip().lower()
+        user_model = get_user_model()
+        return (
+            user_model.objects.filter(
+                Q(username__iexact=email) | Q(email__iexact=email)
+            ).exists()
+            or Instituicao.objects.filter(email__iexact=email).exists()
+        )
 
     def clean_cep(self):
         cep = ''.join(char for char in self.cleaned_data['cep'] if char.isdigit())
@@ -72,13 +103,10 @@ class CadastroInstituicaoForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()
-        user_model = get_user_model()
-        if user_model.objects.filter(
-            Q(username__iexact=email) | Q(email__iexact=email)
-        ).exists():
-            raise ValidationError('Este e-mail já está associado a uma conta.')
-        if Instituicao.objects.filter(email__iexact=email).exists():
-            raise ValidationError('Este e-mail já está associado a uma instituição.')
+        if self.email_ja_cadastrado(email):
+            raise ValidationError(
+                'Este e-mail já está associado a uma conta ou instituição.'
+            )
         return email
 
     def clean(self):

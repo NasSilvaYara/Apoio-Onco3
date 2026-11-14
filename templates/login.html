@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/senha.js' %}" defer></script>
+    {% include "partials/sweetalert-scripts.html" %}
+    <script src="{% static 'js/auth-alerts.js' %}?v=1" defer></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
   <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
@@ -34,20 +35,29 @@
          <h1>{% trans "Bem vindo de volta" %}</h1>
         <p class="subtitulo">{% trans "Acesse sua conta para gerenciar as informações da sua instituição." %}</p>
 
-        {% if erro %}<p role="alert">{{ erro }}</p>{% endif %}
-        {% if messages %}
-            {% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}
-        {% endif %}
-        <form action="{% url 'login' %}" method="POST">
+        <p id="erro-login" role="alert" hidden></p>
+        <div id="mensagens-login" hidden>
+            {% if erro %}<p data-swal-message>{{ erro }}</p>{% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <p data-swal-message>{{ message }}</p>
+                    {% else %}
+                        <p role="status">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <form id="login-form" action="{% url 'login' %}" method="POST" novalidate>
             {% csrf_token %}
             <div class="formulario-login">
-                <label for="identificacao">{% trans "E-mail ou CNPJ" %}</label>
-                <input type="text" id="identificacao" name="identificacao" required>
+                <label for="email">{% trans "E-mail" %}</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
             </div>
            <div class="formulario-login">
                 <label for="senha">{% trans "Senha" %}</label>
                 <div class="campo-senha">
-                    <input type="password" id="senha" name="senha" required>
+                    <input type="password" id="senha" name="senha" autocomplete="current-password" required>
                     <button type="button" class="ver-senha" aria-label="Mostrar senha" aria-pressed="false">
                         <i class="ti ti-eye" aria-hidden="true"></i>
                     </button>

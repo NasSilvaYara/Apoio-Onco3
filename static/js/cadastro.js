@@ -17,6 +17,51 @@ const TITULOS = [
 
 let atual = 0;
 
+async function mostrarErroCadastro(mensagem, titulo = 'Verifique os dados informados') {
+  const mensagemAlternativa = document.getElementById('erro-cadastro-modal');
+  if (!window.Swal) {
+    if (mensagemAlternativa) {
+      mensagemAlternativa.textContent = mensagem;
+      mensagemAlternativa.hidden = false;
+    }
+    console.error('SweetAlert2 não foi carregado; erro de cadastro:', mensagem);
+    return;
+  }
+
+  if (mensagemAlternativa) {
+    mensagemAlternativa.textContent = '';
+    mensagemAlternativa.hidden = true;
+  }
+
+  document.activeElement?.blur();
+  await window.Swal.fire({
+    icon: 'error',
+    title: titulo,
+    text: mensagem,
+    returnFocus: false,
+    confirmButtonText: 'Entendi',
+    buttonsStyling: false,
+    customClass: {
+      popup: 'cadastro-swal-popup',
+      title: 'cadastro-swal-title',
+      htmlContainer: 'cadastro-swal-message',
+      confirmButton: 'cadastro-swal-confirm',
+    },
+  });
+}
+
+function mensagemCampoInvalido(campo) {
+  const rotulo = form.querySelector(`label[for="${campo.id}"]`)?.textContent.trim();
+  if (campo.validity.valueMissing) return `Preencha o campo ${rotulo || campo.name}.`;
+  if (campo.type === 'email' && campo.validity.typeMismatch) {
+    return 'Informe um endereço de e-mail válido.';
+  }
+  if (campo.validity.tooShort) {
+    return `Use ao menos ${campo.minLength} caracteres no campo ${rotulo || campo.name}.`;
+  }
+  return campo.validationMessage;
+}
+
 /* ---------- Navegação ---------- */
 
 function mostrar(i) {
@@ -35,6 +80,14 @@ function mostrar(i) {
   if (i === etapas.length - 1) montarRevisao();
 
   const primeiro = etapas[i].querySelector('input, select, textarea');
+  if (document.activeElement?.closest('.etapa')
+    && document.activeElement.closest('.etapa') !== etapas[i]) {
+    document.activeElement.blur();
+  }
+  etapas.forEach((etapa, indice) => {
+    etapa.inert = indice !== i;
+    etapa.setAttribute('aria-hidden', indice !== i ? 'true' : 'false');
+  });
   if (primeiro) primeiro.focus();
 }
 
@@ -114,7 +167,12 @@ async function carregarCidades(uf, cidadeSelecionada = '') {
 
     if (cidadeSelecionada) definirCidade(cidadeSelecionada);
   } catch (erro) {
+    if (selEstado.value !== uf) return;
     selCidade.replaceChildren(new Option('Erro ao carregar cidades', ''));
+    await mostrarErroCadastro(
+      'Não foi possível carregar as cidades deste estado. Verifique sua conexão e tente novamente.',
+      'Falha ao carregar cidades'
+    );
   }
 }
 
@@ -129,7 +187,11 @@ if (selEstado.dataset.valor) {
 /* ---------- Consulta de CNPJ ---------- */
 
 let cnpjConsulta = { valor: '', promessa: null };
-const retryAfterInicial = Number(form.dataset.cnpjRetryAfter);
+let cnpjAvisoApiExibido = false;
+let ultimoCnpjLimpo = '';
+const retryAfterInicial = form.dataset.cnpjRetryAfter
+  ? Number(form.dataset.cnpjRetryAfter)
+  : 0;
 let cnpjRetryAt = Number.isInteger(retryAfterInicial) && retryAfterInicial >= 0
   ? Date.now() + retryAfterInicial * 1000
   : 0;
@@ -161,7 +223,11 @@ function cnpjValido(valor) {
 
 async function consultarCnpj(cnpj) {
   if (cnpjConsulta.valor === cnpj && cnpjConsulta.promessa) {
-    return cnpjConsulta.promessa;
+    const consultaAnterior = await cnpjConsulta.promessa;
+    if (!consultaAnterior.retryable || Date.now() < cnpjRetryAt) {
+      return consultaAnterior;
+    }
+    cnpjConsulta = { valor: '', promessa: null };
   }
 
   const campoCnpj = form.cnpj;
@@ -171,10 +237,20 @@ async function consultarCnpj(cnpj) {
   const tokenValidacao = document.getElementById('token_validacao_cnpj');
   if (Date.now() < cnpjRetryAt) {
     const segundos = Math.ceil((cnpjRetryAt - Date.now()) / 1000);
-    resultado.textContent =
+    const mensagem =
       `A consulta do CNPJ atingiu o limite de requisições. Tente novamente em ${segundos} segundos.`;
+    resultado.textContent = mensagem;
     resultado.classList.add('erro-campo');
-    return false;
+    const consultaLimitada = (async () => {
+      await mostrarErroCadastro(mensagem, 'Consulta temporariamente indisponível');
+      return {
+        valido: false,
+        alertaExibido: true,
+        retryable: true,
+      };
+    })();
+    cnpjConsulta = { valor: cnpj, promessa: consultaLimitada };
+    return consultaLimitada;
   }
   const promessa = (async () => {
       resultado.textContent = 'Consultando CNPJ...';
@@ -183,23 +259,45 @@ async function consultarCnpj(cnpj) {
 
       try {
         const resposta = await fetch(`/api/cnpj/${cnpj}/`);
-        const dados = await resposta.json();
+        let dados = {};
+        try {
+          dados = await resposta.json();
+        } catch (erro) {
+          if (resposta.ok) throw erro;
+        }
         if (resposta.status === 429) {
-          const retryAfter = Number(resposta.headers.get('Retry-After'));
-          if (Number.isInteger(retryAfter) && retryAfter >= 0) {
-            cnpjRetryAt = Date.now() + retryAfter * 1000;
-          }
+          const retryAfterHeader = resposta.headers.get('Retry-After');
+          const retryAfter = retryAfterHeader && /^\d+$/.test(retryAfterHeader)
+            ? Number(retryAfterHeader)
+            : 60;
+          cnpjRetryAt = Date.now() + retryAfter * 1000;
         }
 
         if (campoCnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase() !== cnpj) {
-          return false;
+          return { valido: false, alertaExibido: false };
+        }
+
+        if (resposta.status === 429 || !resposta.ok && resposta.status >= 500) {
+          const mensagem = resposta.status === 429
+            ? dados.mensagem || 'A consulta atingiu o limite de requisições. Aguarde um momento e tente novamente.'
+            : 'O serviço de consulta está temporariamente indisponível. Tente novamente mais tarde.';
+          resultado.textContent = mensagem;
+          resultado.classList.add('erro-campo');
+          await mostrarErroCadastro(mensagem, 'Consulta temporariamente indisponível');
+          cnpjAvisoApiExibido = true;
+          if (resposta.status >= 500) cnpjRetryAt = Date.now() + 30_000;
+          return {
+            valido: false,
+            alertaExibido: true,
+            retryable: resposta.status === 429 || resposta.status >= 500,
+          };
         }
 
         if (!resposta.ok || dados.valido !== true || dados.ativo !== true) {
           resultado.textContent =
-            dados.mensagem || 'CNPJ inválido ou empresa inativa.';
+            dados.mensagem || 'Não foi possível validar este CNPJ. Confira os dados informados.';
           resultado.classList.add('erro-campo');
-          return false;
+          return { valido: false, alertaExibido: false };
         }
 
         tokenValidacao.value = dados.token_validacao || '';
@@ -224,35 +322,45 @@ async function consultarCnpj(cnpj) {
 
         resultado.textContent = 'CNPJ válido e empresa ativa.';
         resultado.classList.remove('erro-campo');
-        return true;
+        return { valido: true, alertaExibido: false };
       } catch (erro) {
         if (campoCnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase() === cnpj) {
-          resultado.textContent =
-            'Não foi possível consultar o CNPJ no momento. Tente novamente mais tarde.';
+          const mensagem =
+            'Não foi possível consultar o CNPJ no momento. Verifique sua conexão e tente novamente mais tarde.';
+          resultado.textContent = mensagem;
           resultado.classList.add('erro-campo');
+          await mostrarErroCadastro(mensagem, 'Falha na consulta do CNPJ');
+          cnpjAvisoApiExibido = true;
+          cnpjRetryAt = Date.now() + 30_000;
         }
-        return false;
+        return {
+          valido: false,
+          alertaExibido: cnpjAvisoApiExibido,
+          retryable: true,
+        };
       }
     })();
   cnpjConsulta = { valor: cnpj, promessa };
-  const valido = await promessa;
-  if (!valido && cnpjConsulta.promessa === promessa) {
-    cnpjConsulta = { valor: '', promessa: null };
-  }
-  return valido;
+  return promessa;
 }
 
 form.cnpj.addEventListener('blur', async () => {
-  const cnpj = form.cnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase();
+  const cnpj = form.cnpj.value.replace(/\D/g, '');
+  if (cnpjConsulta.valor === cnpj && cnpjConsulta.promessa) {
+    const consultaAnterior = await cnpjConsulta.promessa;
+    if (!consultaAnterior.retryable || Date.now() < cnpjRetryAt) return;
+    cnpjConsulta = { valor: '', promessa: null };
+  }
+
   document.getElementById('razao_social').value = '';
   document.getElementById('nome_fantasia').value = '';
   document.getElementById('resultado-cnpj').textContent = '';
   document.getElementById('resultado-cnpj').classList.remove('erro-campo');
 
-  if (cnpj.length !== 14) {
+  if (!/^\d{14}$/.test(cnpj)) {
     if (cnpj.length > 0) {
       document.getElementById('resultado-cnpj').textContent =
-        'CNPJ inválido. Verifique os números informados.';
+        'Informe um CNPJ com exatamente 14 dígitos numéricos.';
       document.getElementById('resultado-cnpj').classList.add('erro-campo');
     }
     return;
@@ -265,6 +373,7 @@ form.cnpj.addEventListener('blur', async () => {
     return;
   }
 
+  cnpjAvisoApiExibido = false;
   await consultarCnpj(cnpj);
 });
 
@@ -274,9 +383,13 @@ async function validar(i) {
   const etapa = etapas[i];
 
   if (i === 0) {
-    const valido = cnpjValido(form.cnpj.value);
+    const cnpjLimpo = form.cnpj.value.replace(/\D/g, '');
+    const formatoValido = /^\d{14}$/.test(cnpjLimpo);
+    const valido = formatoValido && cnpjValido(cnpjLimpo);
     const mensagemCnpjInvalido =
-      'CNPJ inválido. Verifique os números informados.';
+      formatoValido
+        ? 'CNPJ inválido. Verifique os números informados.'
+        : 'Informe um CNPJ com exatamente 14 dígitos numéricos.';
     form.cnpj.setCustomValidity(
       valido ? '' : mensagemCnpjInvalido
     );
@@ -286,15 +399,31 @@ async function validar(i) {
       document.getElementById('resultado-cnpj').classList.add('erro-campo');
     }
     if (!valido) {
-      form.cnpj.reportValidity();
+      form.cnpj.setAttribute('aria-invalid', 'true');
+      await mostrarErroCadastro(mensagemCnpjInvalido);
+      form.cnpj.focus();
       return false;
     }
     form.cnpj.setCustomValidity('');
-    if (!await consultarCnpj(form.cnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase())) {
+    cnpjAvisoApiExibido = false;
+    if (cnpjConsulta.valor !== cnpjLimpo || !cnpjConsulta.promessa) {
+      const mensagem = 'Saia do campo CNPJ para consultar os dados antes de continuar.';
+      document.getElementById('resultado-cnpj').textContent = mensagem;
+      document.getElementById('resultado-cnpj').classList.add('erro-campo');
+      await mostrarErroCadastro(mensagem, 'Valide o CNPJ');
+      form.cnpj.focus();
+      return false;
+    }
+    const consulta = await cnpjConsulta.promessa;
+    if (!consulta.valido) {
       form.cnpj.setCustomValidity(
         document.getElementById('resultado-cnpj').textContent
       );
-      form.cnpj.reportValidity();
+      form.cnpj.setAttribute('aria-invalid', 'true');
+      if (!consulta.alertaExibido) {
+        await mostrarErroCadastro(form.cnpj.validationMessage);
+      }
+      form.cnpj.focus();
       return false;
     }
   }
@@ -318,7 +447,11 @@ async function validar(i) {
   }
 
   for (const campo of etapa.querySelectorAll('input, select, textarea')) {
-    if (!campo.reportValidity()) return false;
+    if (!campo.checkValidity()) {
+      await mostrarErroCadastro(mensagemCampoInvalido(campo));
+      campo.focus();
+      return false;
+    }
   }
   return true;
 }
@@ -332,13 +465,18 @@ function mascara(campo, formatar) {
 }
 
 form.cnpj.addEventListener('input', () => {
+  const cnpjNovo = form.cnpj.value.replace(/\D/g, '').slice(0, 14);
   form.cnpj.setCustomValidity('');
   form.cnpj.removeAttribute('aria-invalid');
-  document.getElementById('resultado-cnpj').textContent = '';
-  document.getElementById('resultado-cnpj').classList.remove('erro-campo');
-  document.getElementById('token_validacao_cnpj').value = '';
-  cnpjConsulta = { valor: '', promessa: null };
-  const cnpj = form.cnpj.value.replace(/[^0-9A-Z]/gi, '').toUpperCase().slice(0, 14);
+  if (cnpjNovo !== ultimoCnpjLimpo) {
+    cnpjConsulta = { valor: '', promessa: null };
+    cnpjAvisoApiExibido = false;
+    document.getElementById('resultado-cnpj').textContent = '';
+    document.getElementById('resultado-cnpj').classList.remove('erro-campo');
+    document.getElementById('token_validacao_cnpj').value = '';
+  }
+  ultimoCnpjLimpo = cnpjNovo;
+  const cnpj = form.cnpj.value.replace(/\D/g, '').slice(0, 14);
   form.cnpj.value = cnpj
     .replace(/^([0-9A-Z]{2})([0-9A-Z])/, '$1.$2')
     .replace(/^([0-9A-Z]{2})\.([0-9A-Z]{3})([0-9A-Z])/, '$1.$2.$3')
@@ -414,10 +552,13 @@ function montarRevisao() {
   }
 }
 
-function exibirErrosServidor() {
+async function exibirErrosServidor() {
   const erros = document.querySelectorAll('#erros-servidor [data-field]');
   if (!erros.length) return;
 
+  const mensagensServidor = [...erros]
+    .map((erro) => erro.textContent.trim())
+    .filter(Boolean);
   let primeiraEtapa = etapas.length - 1;
   let primeiroCampo = null;
 
@@ -456,6 +597,10 @@ function exibirErrosServidor() {
 
   document.getElementById('erros-servidor').remove();
   mostrar(primeiraEtapa);
+  await mostrarErroCadastro(
+    mensagensServidor.join('\n'),
+    'Não foi possível concluir o cadastro'
+  );
   if (primeiroCampo) primeiroCampo.focus();
 }
 

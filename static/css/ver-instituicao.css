@@ -19,7 +19,7 @@
 body {
 	display: flex;
 	flex-direction: column;
-	min-width: 320px;
+	min-width: 0;
 	min-height: 100vh;
 	margin: 0;
 	background-color:var(--surface);
@@ -205,6 +205,7 @@ input:focus-visible {
 	align-self: start;
 	align-items: center;
 	gap: 24px;
+	min-width: 0;
 }
 
 .institution-logo {
@@ -218,6 +219,11 @@ input:focus-visible {
 	border-radius: 17px;
 	background: #fff;
 	box-shadow: 0 1px 3px rgb(34 24 38 / 10%);
+}
+
+.institution-heading__content {
+	min-width: 0;
+	overflow-wrap: anywhere;
 }
 
 .institution-logo img {
@@ -419,6 +425,7 @@ input:focus-visible {
 @media (max-width: 440px) {
 	.institution-heading {
 		align-items: flex-start;
+		flex-wrap: wrap;
 		gap: 16px;
 	}
 

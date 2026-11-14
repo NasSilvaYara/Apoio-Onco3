@@ -42,7 +42,28 @@ let grafico = null;
 
 if (window.Chart && canvas) {
   Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
-  Chart.defaults.color = '#3F3A3D';
+  const coresDoGrafico = () => {
+    const temaEscuro = document.documentElement.dataset.theme === 'dark';
+    return {
+      texto: temaEscuro ? '#ddd5e6' : '#3F3A3D',
+      grade: temaEscuro ? '#49365d' : '#e2e8f0',
+    };
+  };
+  const aplicarCoresDoGrafico = () => {
+    const cores = coresDoGrafico();
+    Chart.defaults.color = cores.texto;
+    Chart.defaults.borderColor = cores.grade;
+    if (grafico) {
+      grafico.options.color = cores.texto;
+      grafico.options.scales.x.ticks.color = cores.texto;
+      grafico.options.scales.x.grid.color = cores.grade;
+      grafico.options.scales.y.ticks.color = cores.texto;
+      grafico.options.scales.y.grid.color = cores.grade;
+      grafico.update();
+    }
+  };
+
+  aplicarCoresDoGrafico();
 
   grafico = new Chart(canvas, {
     type: 'bar',
@@ -62,10 +83,19 @@ if (window.Chart && canvas) {
       plugins: { legend: { display: false } },
       scales: {
         x: { grid: { display: false } },
-        y: { beginAtZero: true, ticks: { precision: 0 } },
+        y: {
+          beginAtZero: true,
+          ticks: { precision: 0 },
+          grid: { color: coresDoGrafico().grade },
+        },
       },
     },
   });
+
+  new MutationObserver(aplicarCoresDoGrafico).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ['data-theme'] }
+  );
 } else if (canvas) {
   // Sem internet o Chart.js não carrega
   const aviso = document.createElement('p');

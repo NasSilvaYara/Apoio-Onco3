@@ -195,7 +195,7 @@ button:hover {
     width: 100%;
     min-height: 100vh;
     justify-content: flex-start; 
-    padding: 2rem 1.5rem;
+    padding: 4.5rem 1.5rem 2rem;
   }
   .corpo-login-form img{
     max-width: 100%;
@@ -224,4 +224,3 @@ button:hover {
     font-size: 1rem;
   }
 }
-

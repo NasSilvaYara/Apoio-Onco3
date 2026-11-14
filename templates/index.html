@@ -20,7 +20,7 @@
 
     <!-- Conexão com o CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=11">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
 
@@ -48,13 +48,13 @@
                     data-label-close="{% trans 'Fechar menu' %}"
                     aria-label="{% trans 'Abrir menu' %}"
                     aria-expanded="false"
-                    aria-controls="menu-principal">
+                    aria-controls="painel-menu-principal">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <div class="nav-menu-panel">
+            <div class="nav-menu-panel" id="painel-menu-principal">
                 <ul class="nav-links" id="menu-principal">
                     <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
                     <li><a href="#sobre">{% trans "Sobre" %}</a></li>

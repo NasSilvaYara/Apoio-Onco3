@@ -12,17 +12,17 @@
     <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-    <link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
-    <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/cadastro.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/cadastro-etapas.css' %}?v=4">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/senha.js' %}" defer></script>
-    <script src="{% static 'js/cadastro.js' %}?v=4" defer></script>
+    {% include "partials/sweetalert-scripts.html" %}
+    <script src="{% static 'js/cadastro.js' %}?v=7" defer></script>
     
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
   <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 
@@ -64,6 +64,7 @@
                 data-cadastro-enviado="{{ cadastro_enviado|yesno:'true,false' }}"
                 data-cnpj-retry-after="{{ cnpj_retry_after|default_if_none:'' }}" {% if cadastro_enviado %}hidden{% endif %}>
                 {% csrf_token %}
+                <p id="erro-cadastro-modal" class="erro-campo cadastro-erro-fallback" role="alert" hidden></p>
                 {% if form.errors %}
                     <div id="erros-servidor" hidden>
                         {% for campo, erros in form.errors.items %}

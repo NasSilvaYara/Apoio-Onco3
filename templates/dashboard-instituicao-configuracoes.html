@@ -16,10 +16,10 @@
     <link rel="stylesheet" href="{% static 'css/configuracoes.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}?v=1">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=16">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}?v=2">
 
     <script src="{% static 'js/configuracoes.js' %}?v=2" defer></script>
     <script src="{% static 'js/senha.js' %}?v=1" defer></script>
@@ -39,8 +39,8 @@
             <span class="menu-title">{% trans "MENU" %}</span>
             <a href="{% url 'dashboard_instituicao' %}" class="menu-item">{% trans "Início" %}</a>
             <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item">{% trans "Meu perfil" %}</a>
-            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item " aria-current="page">{% trans "Dados de contato" %}</a>
-            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item active">{% trans "Configurações" %}</a>
+            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item">{% trans "Dados de contato" %}</a>
+            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item active" aria-current="page">{% trans "Configurações" %}</a>
             <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
@@ -118,7 +118,7 @@
             </section>
 
             <div class="acoes-form">
-                <a href="#" class="btn btn-secundario">{% trans "Cancelar" %}</a>
+                <button type="reset" class="btn btn-secundario">{% trans "Cancelar" %}</button>
                 <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
             </div>
         </form>

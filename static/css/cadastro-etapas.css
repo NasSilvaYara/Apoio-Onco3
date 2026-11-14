@@ -70,6 +70,7 @@
   color: #b42318;
   font-size: 0.9rem;
 }
+.cadastro-erro-fallback { width: 100%; text-align: left; }
 [aria-invalid="true"] { border-color: #b42318 !important; }
 
 .etapa .formulario-login label { font-size: 1.05rem; }
@@ -157,6 +158,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 }
 
 @media (max-width: 768px) {
+  .passos {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .titulo-etapa {
     position: static; width: auto; height: auto;
     overflow: visible; clip-path: none;
@@ -164,7 +170,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
     text-align: center;
   }
   .passo { width: 32px; height: 32px; font-size: 0.9rem; }
-  .passo + .passo { margin-left: 20px; }
+  .passo + .passo { margin-left: 0; }
   .passo + .passo::before { width: 20px; }
   .linha { grid-template-columns: 1fr; }
   .acoes { flex-direction: column-reverse; align-items: center; }

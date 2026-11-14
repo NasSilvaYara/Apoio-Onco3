@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db import connection
+from django.db import IntegrityError, connection
 from django.test import (
     RequestFactory,
     SimpleTestCase,
@@ -20,6 +20,7 @@ from django.urls import reverse
 from PIL import Image
 
 from .cnpj_api import consultar_cnpj
+from .forms import LoginForm
 from .models import Instituicao, TipoApoio
 from .validators import (
     gerar_cnpj,
@@ -53,6 +54,24 @@ class InformacoesViewTests(TestCase):
 
 
 class ValidacaoSemBancoTests(SimpleTestCase):
+    def test_login_form_accepts_email_and_rejects_cnpj(self):
+        form = LoginForm(data={
+            'email': 'Instituicao@Example.org',
+            'senha': 'senha-segura',
+        })
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['email'], 'instituicao@example.org')
+
+        form = LoginForm(data={
+            'email': '12.345.678/0001-95',
+            'senha': 'senha-segura',
+        })
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors['email'],
+            ['Informe um endereço de e-mail válido.'],
+        )
+
     def test_cnpj_checksum_and_supported_image_formats(self):
         self.assertTrue(cnpj_valido(gerar_cnpj('112223330001')))
         self.assertTrue(cnpj_valido('12.ABC.DEF/0001-36'))
@@ -229,6 +248,7 @@ class PlataformaTests(TestCase):
             'nome_fantasia': 'Nome fantasia de teste',
         }
         dados = self.dados_cadastro()
+        dados['email'] = 'Instituicao.Exemplo@Example.ORG'
 
         response = self.client.post(reverse('cadastro'), dados)
 
@@ -257,7 +277,7 @@ class PlataformaTests(TestCase):
         )
         self.assertEqual(
             instituicao.usuario.email,
-            dados['email'],
+            dados['email'].lower(),
         )
         self.assertTrue(
             instituicao.usuario.check_password(dados['senha'])
@@ -267,6 +287,57 @@ class PlataformaTests(TestCase):
             dados['senha'],
         )
         consultar.assert_called_once_with(dados['cnpj'])
+
+    @patch('ongs.views.consultar_dados_cnpj')
+    def test_registration_rejects_case_insensitive_duplicate_email(
+        self,
+        consultar,
+    ):
+        usuario, _ = self.criar_instituicao('Existente')
+        dados = self.dados_cadastro(base='334445550001')
+        dados['email'] = usuario.email.upper()
+
+        response = self.client.post(reverse('cadastro'), dados)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context['form'].errors['email'],
+            ['Este e-mail já está associado a uma conta ou instituição.'],
+        )
+        self.assertContains(response, 'data-field="email"', html=False)
+        self.assertContains(
+            response,
+            'Este e-mail já está associado a uma conta ou instituição.',
+        )
+        consultar.assert_not_called()
+
+    @patch('ongs.views.Instituicao.objects.create', side_effect=IntegrityError)
+    @patch('ongs.views.consultar_dados_cnpj')
+    def test_unrelated_integrity_error_is_not_reported_as_duplicate(
+        self,
+        consultar,
+        criar_instituicao,
+    ):
+        consultar.return_value = {
+            'descricao_situacao_cadastral': 'ATIVA',
+            'razao_social': 'Razão social de teste',
+            'nome_fantasia': 'Nome fantasia de teste',
+        }
+
+        with self.assertLogs('ongs.views', level='ERROR') as logs:
+            response = self.client.post(
+                reverse('cadastro'),
+                self.dados_cadastro(),
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context['form'].non_field_errors(),
+            ['Não foi possível concluir o cadastro. Tente novamente.'],
+        )
+        self.assertNotContains(response, 'CNPJ ou e-mail já cadastrado')
+        self.assertTrue(logs.output)
+        criar_instituicao.assert_called_once()
 
     @patch('ongs.views.consultar_dados_cnpj')
     @patch('ongs.cnpj_api.consultar_dados_cnpj')
@@ -368,6 +439,23 @@ class PlataformaTests(TestCase):
             ['CNPJ inválido. Verifique os números informados.'],
         )
         self.assertContains(response, 'data-field="cnpj"', html=False)
+        consultar.assert_not_called()
+
+    @patch('ongs.views.consultar_dados_cnpj')
+    def test_registration_rejects_non_numeric_cnpj_before_external_lookup(
+        self,
+        consultar,
+    ):
+        dados = self.dados_cadastro()
+        dados['cnpj'] = '12.ABC.DEF/0001-36'
+
+        response = self.client.post(reverse('cadastro'), dados)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context['form'].errors['cnpj'],
+            ['Informe um CNPJ com exatamente 14 dígitos numéricos.'],
+        )
         consultar.assert_not_called()
 
     @patch('ongs.views.consultar_dados_cnpj')
@@ -631,7 +719,7 @@ class PlataformaTests(TestCase):
         response = self.client.post(
             reverse('login'),
             {
-                'identificacao': instituicao.cnpj,
+                'email': instituicao.email.upper(),
                 'senha': 'ApoioOnco!2026',
             },
         )
@@ -656,6 +744,20 @@ class PlataformaTests(TestCase):
 
         self.client.logout()
 
+    def test_login_shows_clear_sweetalert_error_for_invalid_credentials(self):
+        response = self.client.post(
+            reverse('login'),
+            {'email': 'nao-existe@example.org', 'senha': 'errada'},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.',
+        )
+        self.assertContains(response, 'sweetalert2@11')
+        self.assertContains(response, 'auth-alerts.js')
+
         admin = get_user_model().objects.create_user(
             username='admin@example.org',
             email='admin@example.org',
@@ -672,6 +774,19 @@ class PlataformaTests(TestCase):
             ).status_code,
             403,
         )
+
+    def test_login_does_not_accept_cnpj_as_an_identifier(self):
+        _, instituicao = self.criar_instituicao('Somente e-mail')
+
+        response = self.client.post(
+            reverse('login'),
+            {'email': instituicao.cnpj, 'senha': 'ApoioOnco!2026'},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertContains(response, 'Informe um endereço de e-mail válido.')
+        self.assertNotContains(response, 'CNPJ ou senha')
 
     def test_administrator_approval_and_rejection_are_persisted(self):
         admin = get_user_model().objects.create_user(

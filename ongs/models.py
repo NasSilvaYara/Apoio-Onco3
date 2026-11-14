@@ -90,8 +90,6 @@ class Instituicao(models.Model):
     horarioAtendimento = models.CharField(max_length=200)
     telefone_whatsapp = models.CharField(max_length=20, blank=True)
     redes_sociais = models.CharField(max_length=200, blank=True)
-    instagram = models.CharField(max_length=200, blank=True)
-    facebook = models.CharField(max_length=200, blank=True)
 
     status = models.CharField(
         max_length=10,
