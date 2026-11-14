@@ -66,7 +66,7 @@ class Instituicao(models.Model):
     logo = models.ImageField(
         upload_to='instituicoes/%Y/%m/',
         blank=True,
-        null=True,
+        null=False,
         validators=[validar_imagem_instituicao],
     )
 
