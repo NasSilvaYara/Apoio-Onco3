@@ -1212,6 +1212,10 @@ img {
     gap: 20px;
 }
 
+.nav-menu-panel {
+    display: contents;
+}
+
 .menu-toggle {
     display: none;
     flex-direction: column;
@@ -1402,46 +1406,65 @@ img {
         order: 2;
     }
 
-    .nav-links {
+    .nav-menu-panel {
         display: none;
         order: 3;
         flex-direction: column;
-        align-items: stretch;
-        gap: 0;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
         width: 100%;
-        padding: 10px;
-        background-color: #5A3D7F;
-        border-radius: 12px;
+        min-height: 100%;
+        padding: 100px 24px 40px;
     }
 
-    .nav-links.menu-aberto {
+    .nav-menu-panel.menu-aberto {
         display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        overflow-y: auto;
+        background: rgba(90, 61, 127, 0.96);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        width: 100%;
     }
 
     .nav-links li {
         width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
     }
 
     .nav-links a {
         display: block;
         width: 100%;
-        padding: 13px 14px;
-        font-size: 15px;
-        border-radius: 8px;
+        padding: 12px 14px;
+        color: #FFFFFF;
+        font-size: 19px;
+        text-align: center;
+        border-radius: 10px;
     }
 
     .nav-links a:hover,
     .nav-links a.active {
-        background-color: #7750A9;
+        background: rgba(255, 255, 255, 0.18);
     }
 
     .nav-actions {
         display: flex;
-        order: 4;
-        width: 100%;
+        flex-wrap: wrap;
+        width: min(100%, 360px);
         justify-content: center;
         gap: 12px;
-        padding: 8px 0;
+        padding: 0;
     }
 
     .moon-icon-img {
@@ -1742,10 +1765,6 @@ img {
 }
 
 
-/* ==========================================================
-   MENU HAMBÚRGUER EM TELA CHEIA COM TRANSPARÊNCIA
-   ========================================================== */
-
 @media (max-width: 820px) {
 
     .navbar {
@@ -1753,63 +1772,11 @@ img {
         z-index: 1000;
     }
 
-    /* Fundo ocupa a tela inteira */
-    .nav-links.menu-aberto {
-        display: flex !important;
-        position: fixed;
-        inset: 0;
-        width: 100vw;
+    .nav-menu-panel.menu-aberto {
         height: 100vh;
         height: 100dvh;
-        box-sizing: border-box;
-
-        margin: 0;
-        padding: 100px 25px 40px;
-
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 25px;
-
-        /* Roxo semitransparente com efeito de desfoque */
-        background: rgba(90, 61, 127, 0.90);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-
-        border-radius: 0;
-        z-index: 10000;
-        overflow-y: auto;
     }
 
-    /* Espaçamento dos itens */
-    .nav-links.menu-aberto li {
-        width: 100%;
-        max-width: 320px;
-        text-align: center;
-    }
-
-    /* Aparência dos links */
-    .nav-links.menu-aberto a {
-        display: block;
-        width: 100%;
-        padding: 15px 20px;
-
-        color: #2B2140;
-        font-size: 22px;
-        font-weight: 600;
-        text-decoration: none;
-
-        border-radius: 12px;
-        background: transparent;
-        transition: background 0.3s ease;
-    }
-
-    .nav-links.menu-aberto a:hover,
-    .nav-links.menu-aberto a.active {
-        background: rgba(255, 255, 255, 0.18);
-    }
-
-    /* Botão de fechar (X) fica por cima do menu */
     .menu-toggle.menu-aberto {
         position: fixed;
         top: 20px;
@@ -1818,20 +1785,7 @@ img {
         background: #5A3D7F;
     }
 
-    .menu-toggle.menu-aberto span:first-child {
-        transform: translateY(8px) rotate(45deg);
-    }
-
-    .menu-toggle.menu-aberto span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .menu-toggle.menu-aberto span:last-child {
-        transform: translateY(-8px) rotate(-45deg);
-    }
-
-    /* Bloqueia a rolagem da página ao abrir o menu */
-    body:has(.nav-links.menu-aberto) {
+    body:has(.nav-menu-panel.menu-aberto) {
         overflow: hidden;
     }
 }

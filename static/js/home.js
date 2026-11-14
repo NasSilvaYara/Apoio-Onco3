@@ -102,11 +102,12 @@ if (loginGate && loginGateCloseButton) {
 
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('#menu-principal');
+const navMenuPanel = document.querySelector('.nav-menu-panel');
 
-if (menuToggle && navLinks) {
+if (menuToggle && navLinks && navMenuPanel) {
     function setMenuOpen(isOpen) {
         menuToggle.classList.toggle('menu-aberto', isOpen);
-        navLinks.classList.toggle('menu-aberto', isOpen);
+        navMenuPanel.classList.toggle('menu-aberto', isOpen);
         menuToggle.setAttribute('aria-expanded', String(isOpen));
         menuToggle.setAttribute(
             'aria-label',
@@ -133,5 +134,9 @@ if (menuToggle && navLinks) {
 
     window.addEventListener('resize', () => {
         if (window.innerWidth > 820) setMenuOpen(false);
+    });
+
+    document.querySelector('[data-login-gate-open]')?.addEventListener('click', () => {
+        setMenuOpen(false);
     });
 }

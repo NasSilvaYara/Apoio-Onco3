@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Conexão com o CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=11">
     <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
@@ -27,7 +27,7 @@
     <!-- JS: todos com defer, rodam só depois que a página inteira foi lida -->
     <script src="{% static 'js/theme.js' %}?v=2" defer></script>
     <script src="{% static 'js/idioma.js' %}?v=1" defer></script>
-    <script src="{% static 'js/home.js' %}?v=3" defer></script>
+    <script src="{% static 'js/home.js' %}?v=4" defer></script>
 </head>
 
 <body>
@@ -54,25 +54,27 @@
                 <span></span>
             </button>
 
-            <ul class="nav-links" id="menu-principal">
-                <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
-                <li><a href="#sobre">{% trans "Sobre" %}</a></li>
-                <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
-                <li><a href="#informacoes">{% trans "Informações" %}</a></li>
-            </ul>
+            <div class="nav-menu-panel">
+                <ul class="nav-links" id="menu-principal">
+                    <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
+                    <li><a href="#sobre">{% trans "Sobre" %}</a></li>
+                    <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
+                    <li><a href="#informacoes">{% trans "Informações" %}</a></li>
+                </ul>
 
-            <div class="nav-actions">
-                {% include "partials/theme-toggle.html" with no_circle=True %}
+                <div class="nav-actions">
+                    {% include "partials/theme-toggle.html" with no_circle=True %}
 
-                {% include "partials/seletor_idioma.html" %}
+                    {% include "partials/seletor_idioma.html" %}
 
-                <button type="button"
-                        class="btn-login"
-                        data-login-gate-open
-                        aria-haspopup="dialog"
-                        aria-controls="login-gate">
-                    {% trans "Fazer login/cadastro" %}
-                </button>
+                    <button type="button"
+                            class="btn-login"
+                            data-login-gate-open
+                            aria-haspopup="dialog"
+                            aria-controls="login-gate">
+                        {% trans "Fazer login/cadastro" %}
+                    </button>
+                </div>
             </div>
         </nav>
 
@@ -437,60 +439,6 @@
             <p>{% trans "&copy; 2026 ApoioOnco. Todos os direitos reservados." %}</p>
         </div>
     </footer>
-
-    <!-- Menu hambúrguer (fica no fim do body, quando todos os elementos já existem) -->
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const botao = document.querySelector(".menu-toggle");
-        const menu = document.querySelector(".nav-links");
-        const acoes = document.querySelector(".nav-actions");
-
-        if (!botao || !menu) return;
-
-        function fecharMenu() {
-            menu.classList.remove("menu-aberto");
-            botao.classList.remove("menu-aberto");
-            botao.setAttribute("aria-expanded", "false");
-            botao.setAttribute("aria-label", "Abrir menu");
-
-            if (acoes) {
-                acoes.classList.remove("menu-aberto");
-            }
-        }
-
-        botao.addEventListener("click", function () {
-            const aberto = !menu.classList.contains("menu-aberto");
-
-            menu.classList.toggle("menu-aberto", aberto);
-            botao.classList.toggle("menu-aberto", aberto);
-            botao.setAttribute("aria-expanded", String(aberto));
-            botao.setAttribute(
-                "aria-label",
-                aberto ? "Fechar menu" : "Abrir menu"
-            );
-
-            if (acoes) {
-                acoes.classList.toggle("menu-aberto", aberto);
-            }
-        });
-
-        menu.querySelectorAll("a").forEach(function (link) {
-            link.addEventListener("click", fecharMenu);
-        });
-
-        document.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") {
-                fecharMenu();
-            }
-        });
-
-        window.addEventListener("resize", function () {
-            if (window.innerWidth > 820) {
-                fecharMenu();
-            }
-        });
-    });
-    </script>
 
 </body>
 </html>
