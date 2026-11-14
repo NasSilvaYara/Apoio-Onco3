@@ -521,9 +521,11 @@ def informacoes_view(request, tema):
         {'tema': conteudo, 'outros_temas': outros_temas},
     )
 
+
 def cadastro_view(request):
     form = CadastroInstituicaoForm(request.POST or None, request.FILES or None)
     cnpj_retry_after = None
+
     if request.method == 'POST' and form.is_valid():
         cnpj = form.cleaned_data['cnpj']
         dados_cnpj = validar_token_cnpj(
@@ -531,6 +533,7 @@ def cadastro_view(request):
             request.POST.get('token_validacao_cnpj'),
             cnpj,
         )
+
         if dados_cnpj is None:
             try:
                 dados_cnpj = consultar_dados_cnpj(cnpj)
@@ -542,6 +545,7 @@ def cadastro_view(request):
 
         if dados_cnpj is not None and not form.errors:
             situacao = dados_cnpj.get('descricao_situacao_cadastral', '')
+
             if situacao.strip().upper() != 'ATIVA':
                 form.add_error(
                     'cnpj',
@@ -550,6 +554,7 @@ def cadastro_view(request):
             else:
                 User = get_user_model()
                 dados = form.cleaned_data
+
                 try:
                     with transaction.atomic():
                         usuario = User.objects.create_user(
@@ -557,6 +562,7 @@ def cadastro_view(request):
                             email=dados['email'],
                             password=dados['senha'],
                         )
+
                         instituicao = Instituicao.objects.create(
                             cnpj=cnpj,
                             razao_social=dados_cnpj.get('razao_social') or '',
@@ -583,8 +589,14 @@ def cadastro_view(request):
                             status='pendente',
                             usuario=usuario,
                         )
+
                         instituicao.servicosOferecidos.set(dados['servicos'])
+
                 except IntegrityError:
+                    logger.exception(
+                        'Erro de integridade durante o cadastro da instituição.'
+                    )
+
                     if Instituicao.cnpj_ja_cadastrado(cnpj):
                         form.add_error(
                             'cnpj',
@@ -596,13 +608,12 @@ def cadastro_view(request):
                             'Este e-mail já está associado a uma conta ou instituição.',
                         )
                     else:
-                        logger.exception(
-                            'Falha de integridade inesperada ao criar cadastro de instituição.'
-                        )
                         form.add_error(
                             None,
-                            'Não foi possível concluir o cadastro. Tente novamente.',
+                            'Não foi possível concluir o cadastro. '
+                            'Verifique os dados ou tente novamente mais tarde.',
                         )
+
                 else:
                     messages.success(
                         request,
