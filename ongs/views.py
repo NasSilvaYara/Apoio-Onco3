@@ -1,5 +1,6 @@
 from functools import wraps
 from types import SimpleNamespace
+import unicodedata
 
 import requests
 
@@ -59,6 +60,41 @@ _STATUS_INSTITUICAO_LABELS = {
     'rejeitada': _('Desativado'),
     'inativa': _('Desativado'),
 }
+_ALIASES_SERVICOS = {
+    'banco_peruca': 'banco de perucas',
+    'banco_lenco': 'banco de lenco',
+    'apoio_psicologico': 'apoio psicologico',
+    'assistencia_social': 'assistencia social',
+}
+_ESTADOS_BRASIL = (
+    ('AC', _('Acre')),
+    ('AL', _('Alagoas')),
+    ('AP', _('Amapá')),
+    ('AM', _('Amazonas')),
+    ('BA', _('Bahia')),
+    ('CE', _('Ceará')),
+    ('DF', _('Distrito Federal')),
+    ('ES', _('Espírito Santo')),
+    ('GO', _('Goiás')),
+    ('MA', _('Maranhão')),
+    ('MT', _('Mato Grosso')),
+    ('MS', _('Mato Grosso do Sul')),
+    ('MG', _('Minas Gerais')),
+    ('PA', _('Pará')),
+    ('PB', _('Paraíba')),
+    ('PR', _('Paraná')),
+    ('PE', _('Pernambuco')),
+    ('PI', _('Piauí')),
+    ('RJ', _('Rio de Janeiro')),
+    ('RN', _('Rio Grande do Norte')),
+    ('RS', _('Rio Grande do Sul')),
+    ('RO', _('Rondônia')),
+    ('RR', _('Roraima')),
+    ('SC', _('Santa Catarina')),
+    ('SP', _('São Paulo')),
+    ('SE', _('Sergipe')),
+    ('TO', _('Tocantins')),
+)
 
 
 def _formatar_cnpj(cnpj):
@@ -66,6 +102,23 @@ def _formatar_cnpj(cnpj):
     if len(cnpj) != 14:
         return cnpj
     return f'{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}'
+
+
+def _normalizar_texto(valor):
+    return ''.join(
+        caractere
+        for caractere in unicodedata.normalize('NFD', valor.casefold())
+        if unicodedata.category(caractere) != 'Mn'
+    )
+
+
+def _valores_com_busca_sem_acentos(queryset, campo, termo):
+    termo_normalizado = _normalizar_texto(termo)
+    return [
+        valor
+        for valor in queryset.values_list(campo, flat=True).distinct()
+        if valor and termo_normalizado in _normalizar_texto(valor)
+    ]
 
 
 def instituicao_required(view):
@@ -102,35 +155,61 @@ def _instituicoes_publicas(params):
     localizacao = (params.get('localizacao') or params.get('cidade') or '').strip()
     estado = params.get('estado', '').strip().upper()
     tipo = params.get('tipo', '').strip()
-    servicos = params.getlist('servicos') if hasattr(params, 'getlist') else []
-    nomes_servicos = {
-        'banco_peruca': 'Banco de perucas',
-        'banco_lenco': 'Banco de len├ºos',
-        'apoio_psicologico': 'Apoio psicol├│gico',
-        'assistencia_social': 'Assist├¬ncia social',
-    }
+    servicos = (
+        [valor for valor in params.getlist('servicos') if valor]
+        if hasattr(params, 'getlist')
+        else []
+    )
 
     if termo:
+        nomes = _valores_com_busca_sem_acentos(instituicoes, 'nomeInst', termo)
+        cidades = _valores_com_busca_sem_acentos(instituicoes, 'cidade', termo)
+        estados = _valores_com_busca_sem_acentos(instituicoes, 'estado', termo)
+        nomes_servicos = _valores_com_busca_sem_acentos(
+            TipoApoio.objects.filter(ativo=True), 'nome', termo
+        )
         instituicoes = instituicoes.filter(
             Q(nomeInst__icontains=termo)
             | Q(cidade__icontains=termo)
             | Q(estado__icontains=termo)
             | Q(servicosOferecidos__nome__icontains=termo)
+            | Q(nomeInst__in=nomes)
+            | Q(cidade__in=cidades)
+            | Q(estado__in=estados)
+            | Q(servicosOferecidos__nome__in=nomes_servicos)
         )
     if localizacao:
+        cidades = _valores_com_busca_sem_acentos(
+            instituicoes, 'cidade', localizacao
+        )
+        estados = _valores_com_busca_sem_acentos(
+            instituicoes, 'estado', localizacao
+        )
         instituicoes = instituicoes.filter(
             Q(cidade__icontains=localizacao)
             | Q(estado__icontains=localizacao)
             | Q(cep__icontains=localizacao)
+            | Q(cidade__in=cidades)
+            | Q(estado__in=estados)
         )
     if estado:
         instituicoes = instituicoes.filter(estado__iexact=estado)
     if tipo:
         instituicoes = instituicoes.filter(tipo=tipo)
     if servicos:
-        servicos_filtrados = [nomes_servicos.get(item, item) for item in servicos]
+        valores_servicos = {
+            _ALIASES_SERVICOS.get(item, _normalizar_texto(item))
+            for item in servicos
+        }
+        tipos_apoio = TipoApoio.objects.filter(ativo=True)
+        ids_servicos = [
+            str(servico.pk)
+            for servico in tipos_apoio
+            if str(servico.pk) in valores_servicos
+            or _normalizar_texto(servico.nome) in valores_servicos
+        ]
         instituicoes = instituicoes.filter(
-            servicosOferecidos__nome__in=servicos_filtrados
+            servicosOferecidos__pk__in=ids_servicos
         )
 
     return instituicoes.distinct().order_by('nomeInst')
@@ -140,15 +219,71 @@ def _contexto_busca(request):
     params = request.GET
     instituicoes = _instituicoes_publicas(params)
     localizacao = params.get('localizacao') or params.get('cidade', '')
+    tipo_selecionado = params.get('tipo', '')
+    servicos_enviados = (
+        [
+            valor
+            for valor in params.getlist('servicos')
+            if valor
+        ]
+        if hasattr(params, 'getlist')
+        else []
+    )
+    tipos_apoio = list(TipoApoio.objects.filter(ativo=True).order_by('nome'))
+    valores_servicos = {
+        _ALIASES_SERVICOS.get(item, _normalizar_texto(item))
+        for item in servicos_enviados
+    }
+    servicos_selecionados = [
+        str(servico.pk)
+        for servico in tipos_apoio
+        if str(servico.pk) in valores_servicos
+        or _normalizar_texto(servico.nome) in valores_servicos
+    ]
+    tipos_instituicao = [
+        {
+            'value': valor,
+            'label': _TIPO_INSTITUICAO_LABELS.get(valor, label),
+        }
+        for valor, label in Instituicao.TIPO_CHOICES
+    ]
+    tipos_por_valor = {
+        tipo['value']: tipo['label'] for tipo in tipos_instituicao
+    }
+    busca = (params.get('busca') or params.get('q') or '').strip()
+    estado = params.get('estado', '').strip().upper()
+    estados_por_codigo = dict(_ESTADOS_BRASIL)
     return {
         'instituicoes': instituicoes,
         'destaques': instituicoes[:3],
-        'busca': params.get('busca') or params.get('q', ''),
+        'busca': busca,
         'localizacao': localizacao,
         'cidade': localizacao,
-        'estado_selecionado': params.get('estado', ''),
-        'tipo_selecionado': params.get('tipo', ''),
-        'servicos_selecionados': params.getlist('servicos'),
+        'estado_selecionado': estado,
+        'estado_selecionado_label': estados_por_codigo.get(estado, ''),
+        'tipo_selecionado': tipo_selecionado,
+        'tipo_selecionado_label': tipos_por_valor.get(
+            tipo_selecionado, ''
+        ),
+        'servicos_selecionados': servicos_selecionados,
+        'servico_selecionado_label': next(
+            (
+                servico.nome
+                for servico in tipos_apoio
+                if str(servico.pk) in servicos_selecionados
+            ),
+            '',
+        ),
+        'tipos_apoio': tipos_apoio,
+        'tipos_instituicao': tipos_instituicao,
+        'estados_brasil': _ESTADOS_BRASIL,
+        'tem_filtros': bool(
+            busca
+            or localizacao
+            or estado
+            or tipo_selecionado
+            or servicos_selecionados
+        ),
     }
 
 
@@ -683,30 +818,45 @@ def dashboard_instituicao_configuracoes_view(request):
 
 @administrador_required
 def dashboard_admin_view(request):
-    cidades = Instituicao.objects.filter(status='ativa').values_list(
-        'cidade', flat=True
-    ).distinct()
+    instituicoes = Instituicao.objects.all()
+    termo_cidade = request.GET.get('cidade', '').strip()
+    if termo_cidade:
+        cidades_compativeis = _valores_com_busca_sem_acentos(
+            instituicoes, 'cidade', termo_cidade
+        )
+        instituicoes = instituicoes.filter(
+            Q(cidade__icontains=termo_cidade)
+            | Q(cidade__in=cidades_compativeis)
+        )
+    instituicoes_ativas = instituicoes.filter(status='ativa')
+    cidades = instituicoes_ativas.values_list('cidade', flat=True).distinct()
     dados_dashboard = {}
     tipos = list(TipoApoio.objects.filter(ativo=True).order_by('nome'))
     for cidade in cidades:
         dados_dashboard[cidade] = [
-            Instituicao.objects.filter(
-                status='ativa', cidade=cidade, servicosOferecidos=tipo
-            ).distinct().count()
+            instituicoes_ativas.filter(cidade=cidade, servicosOferecidos=tipo)
+            .distinct()
+            .count()
             for tipo in tipos
         ]
     return render(request, 'dashboard-admin.html', {
-        'total_instituicoes': Instituicao.objects.count(),
-        'instituicoes_inativas': Instituicao.objects.filter(status='inativa').count(),
-        'instituicoes_ativas': Instituicao.objects.filter(status='ativa').count(),
-        'aguardando_aprovacao': Instituicao.objects.filter(status='pendente').count(),
+        'total_instituicoes': instituicoes.count(),
+        'instituicoes_inativas': instituicoes.filter(status='inativa').count(),
+        'instituicoes_ativas': instituicoes_ativas.count(),
+        'aguardando_aprovacao': instituicoes.filter(status='pendente').count(),
         'tipos_apoio': tipos,
+        'busca_cidade': termo_cidade,
         'dashboard_grafico': {
             'tipos': [tipo.nome for tipo in tipos],
             'cidades': dados_dashboard,
         },
         'total_por_tipo': [
-            (tipo.nome, tipo.instituicoes.filter(status='ativa').distinct().count())
+            (
+                tipo.nome,
+                instituicoes_ativas.filter(servicosOferecidos=tipo)
+                .distinct()
+                .count(),
+            )
             for tipo in tipos
         ],
     })

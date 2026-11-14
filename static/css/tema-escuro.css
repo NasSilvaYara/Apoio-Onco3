@@ -269,6 +269,77 @@
     display: block;
 }
 
+.theme-toggle-btn .theme-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+.theme-toggle-btn--circle {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    flex: 0 0 auto;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--tema-borda, #d8cde5);
+    border-radius: 50%;
+    background: var(--tema-superficie, #ffffff);
+    color: var(--tema-roxo, #5a3d7f);
+    cursor: pointer;
+    transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.theme-toggle-btn--circle:hover {
+    transform: translateY(-1px);
+    border-color: var(--tema-roxo-claro, #7750a9);
+    background: var(--tema-controle, #f3eef8);
+}
+
+.theme-toggle-btn--circle:focus-visible {
+    outline: 3px solid var(--tema-lilas, #9b72cb);
+    outline-offset: 3px;
+}
+
+.theme-toggle-actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-actions .theme-toggle-btn .theme-icon {
+    width: 34px;
+    height: 34px;
+}
+
+.auth-controls {
+    position: fixed;
+    z-index: 1000;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+@media (max-width: 520px) {
+    .theme-toggle-actions,
+    .auth-controls {
+        gap: 0.5rem;
+    }
+
+    .auth-controls {
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+}
+
 :root[data-theme="dark"] .zona-perigo {
     background-color: #351c2a !important;
     border-color: #8e3c61 !important;
@@ -413,6 +484,19 @@
 :root[data-theme="dark"] .nao-encontrado__titulo,
 :root[data-theme="dark"] .nao-encontrado__texto {
     color: var(--tema-texto-suave) !important;
+}
+
+:root[data-theme="dark"] .nova-categoria,
+:root[data-theme="dark"] .modal-sair {
+    background-color: var(--tema-superficie) !important;
+    border-color: var(--tema-borda) !important;
+    color: var(--tema-texto-suave) !important;
+}
+
+:root[data-theme="dark"] .nova-categoria :is(h2, label),
+:root[data-theme="dark"] .modal-sair h2,
+:root[data-theme="dark"] .modal-sair p {
+    color: var(--tema-texto) !important;
 }
 
 :root[data-theme="dark"] .institution-page,

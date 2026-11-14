@@ -12,13 +12,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=8">
-  <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=10">
+  <link rel="stylesheet" href="{% static 'css/filtro.css' %}?v=9">
+  <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
   <link rel="stylesheet" href="{% static 'css/secoes.css' %}">
   <script src="{% static 'js/theme.js' %}?v=2" defer></script>
   <script src="{% static 'js/idioma.js' %}?v=1" defer></script>
+  <script src="{% static 'js/limpar-filtros.js' %}?v=1" defer></script>
 </head>
 <body>
  
@@ -39,7 +40,10 @@
       <a class="topo__perfil" href="#" aria-label="{% trans "Minha conta" %}"> <!-- BACK-END: href da conta -->
       </a>
 
-      {% include "partials/seletor_idioma.html" %}
+      <div class="theme-toggle-actions">
+        {% include "partials/theme-toggle.html" %}
+        {% include "partials/seletor_idioma.html" %}
+      </div>
   </header>
  
   <form id="filtro-busca-form" action="{% url 'busca' %}" method="get">
@@ -89,44 +93,31 @@
         <label class="filtros__label" for="tipo">{% trans "Tipo de Instituição" %}</label>
         <select class="filtros__campo" id="tipo" name="tipo">
           <option value="">{% trans "Todos" %}</option>
-          <option value="ong_associacao" {% if tipo_selecionado == 'ong_associacao' %}selected{% endif %}>{% trans "ONG/ associação" %}</option>
-          <option value="hospital" {% if tipo_selecionado == 'hospital' %}selected{% endif %}>{% trans "Hospital" %}</option>
-          <option value="clinica_centro_tratamento" {% if tipo_selecionado == 'clinica_centro_tratamento' %}selected{% endif %}>{% trans "Clínica/ centro de tratamento" %}</option>
-          <option value="casa_apoio" {% if tipo_selecionado == 'casa_apoio' %}selected{% endif %}>{% trans "Casa de apoio" %}</option>
-          <option value="instituto_fundacao" {% if tipo_selecionado == 'instituto_fundacao' %}selected{% endif %}>{% trans "Instituto/fundação" %}</option>
-          <option value="voluntariado_grupo_apoio" {% if tipo_selecionado == 'voluntariado_grupo_apoio' %}selected{% endif %}>{% trans "Voluntariado/ grupo de apoio" %}</option>
-          <option value="orgao_publico" {% if tipo_selecionado == 'orgao_publico' %}selected{% endif %}>{% trans "Órgão público" %}</option>
-          <option value="outros" {% if tipo_selecionado == 'outros' %}selected{% endif %}>{% trans "Outros" %}</option>
+          {% for tipo_instituicao in tipos_instituicao %}
+          <option value="{{ tipo_instituicao.value }}" {% if tipo_selecionado == tipo_instituicao.value %}selected{% endif %}>{{ tipo_instituicao.label }}</option>
+          {% endfor %}
         </select>
  
         <fieldset class="filtros__servicos">
           <legend class="filtros__label">{% trans "Serviços" %}</legend>
+        {% for tipo_apoio in tipos_apoio %}
         <label class="check">
-          <input type="checkbox" name="servicos" value="banco_peruca" {% if 'banco_peruca' in servicos_selecionados %}checked{% endif %}>
-          <span>{% trans "Banco de Peruca" %}</span>
+          <input type="checkbox" name="servicos" value="{{ tipo_apoio.pk }}" {% if tipo_apoio.pk|stringformat:"s" in servicos_selecionados %}checked{% endif %}>
+          <span>{{ tipo_apoio.nome }}</span>
         </label>
-        <label class="check">
-          <input type="checkbox" name="servicos" value="banco_lenco" {% if 'banco_lenco' in servicos_selecionados %}checked{% endif %}>
-          <span>{% trans "Banco de Lenço" %}</span>
-        </label>
-        <label class="check">
-          <input type="checkbox" name="servicos" value="apoio_psicologico" {% if 'apoio_psicologico' in servicos_selecionados %}checked{% endif %}>
-          <span>{% trans "Apoio Psicológico" %}</span>
-        </label>
-        <label class="check">
-          <input type="checkbox" name="servicos" value="assistencia_social" {% if 'assistencia_social' in servicos_selecionados %}checked{% endif %}>
-          <span>{% trans "Assistência Social" %}</span>
-        </label>
+        {% endfor %}
         </fieldset>
  
-        <button class="filtros__aplicar" type="submit">{% trans "Aplicar Filtros" %}</button>
+        <div class="filtros__acoes">
+          <button class="filtros__aplicar" type="submit">{% trans "Aplicar Filtros" %}</button>
+          <button class="filtros__limpar" type="button" data-limpar-filtros>{% trans "Limpar filtros" %}</button>
+        </div>
       </aside>
  
       <!-- ===== RESULTADOS ===== -->
       <section class="lista">
         <h1 class="lista__titulo">{{ instituicoes|length }} {% trans "Instituições encontradas" %}</h1>
  
-        <!-- BACK-END: mostrar este bloco quando houver resultados; senão, mostrar o bloco "sem-resultados" abaixo -->
         <div class="com-resultados">
           {% for inst in instituicoes %}
           <article class="card">
@@ -154,9 +145,7 @@
         </div>
         <nav class="paginacao" id="paginacao-instituicoes" aria-label="Páginas de instituições" hidden></nav>
  
-        <!-- ===== NÃO ENCONTRADO =====
-             BACK-END: quando não houver resultados, remover o atributo "hidden" deste bloco
-             e ocultar o bloco "com-resultados" acima. -->
+        <!-- ===== NÃO ENCONTRADO ===== -->
         <div class="sem-resultados nao-encontrado" hidden>
           <h2 class="nao-encontrado__titulo">{% trans "Não encontrado" %}</h2>
           <p class="nao-encontrado__texto">
@@ -165,7 +154,7 @@
           </p>
  
           <!-- IMAGEM: coloque o arquivo em static/img/ e troque o nome abaixo -->
-          <img class="nao-encontrado__imagem" src="{% static 'Apoio-Onco3\staticfiles\img\img\Headache-bro.png' %}"  alt="Nenhum resultado encontrado">
+          <img class="nao-encontrado__imagem" src="{% static 'img/Headache-bro.png' %}" alt="Nenhum resultado encontrado">
         </div>
       </section>
  

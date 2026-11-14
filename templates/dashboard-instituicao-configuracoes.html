@@ -8,24 +8,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Configurações" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
-    
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
     <link rel="stylesheet" href="{% static 'css/configuracoes.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+
     <script src="{% static 'js/configuracoes.js' %}?v=2" defer></script>
     <script src="{% static 'js/senha.js' %}?v=1" defer></script>
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <script src="{% static 'js/idioma.js' %}" defer></script>
-    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/idioma.js' %}" defer></script>
     <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
+
 <body class="dashboard-layout">
 
     {% include 'partials/dashboard-sidebar-controls.html' %}
@@ -35,10 +37,10 @@
         </div>
         <nav class="menu" aria-label="Menu principal">
             <span class="menu-title">{% trans "MENU" %}</span>
-            <a href="{% url 'dashboard_instituicao' %}" class="menu-item" target="_blank">{% trans "Início" %}</a>
-            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" target="_blank">{% trans "Meu perfil" %}</a>
-            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item " aria-current="page" target="_blank">{% trans "Dados de contato" %}</a>
-            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item active" target="_blank">{% trans "Configurações" %}</a>
+            <a href="{% url 'dashboard_instituicao' %}" class="menu-item">{% trans "Início" %}</a>
+            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item">{% trans "Meu perfil" %}</a>
+            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item " aria-current="page">{% trans "Dados de contato" %}</a>
+            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item active">{% trans "Configurações" %}</a>
             <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
@@ -59,6 +61,7 @@
                 <h1 class="welcome-title">{% trans "Configurações" %}</h1>
                 <p class="welcome-subtitle">{% trans "Gerencie sua conta e como seu perfil aparece na plataforma." %}</p>
             </div>
+            {% include "partials/theme-toggle.html" %}
         </header>
 
         <form action="" method="post" enctype="multipart/form-data" class="perfil-form">

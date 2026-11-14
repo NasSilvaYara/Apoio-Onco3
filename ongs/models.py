@@ -146,3 +146,11 @@ class Instituicao(models.Model):
 
     def __str__(self):
         return self.nomeInst
+    
+class TraducaoCache(models.Model):
+    hash_texto = models.CharField(max_length=64)
+    idioma = models.CharField(max_length=10)
+    traducao = models.TextField()
+
+    class Meta:
+        unique_together = ("hash_texto", "idioma")

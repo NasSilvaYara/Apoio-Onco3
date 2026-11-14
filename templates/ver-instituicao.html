@@ -8,12 +8,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{{ instituicao.nomeInst }} | ApoioOnco</title>
-	<link rel="icon" type="image/png" href="static/img/logo.png">
+	<link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+	
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}?v=4">
-	<link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=11">
+	<link rel="stylesheet" href="{% static 'css/ver-instituicao.css' %}?v=5">
+	<link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
 	<script src="{% static 'js/theme.js' %}?v=2" defer></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
@@ -21,7 +22,6 @@
   <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
-{% include 'partials/seletor_idioma.html' %}
 	<header class="site-header">
 		<a class="site-header__brand" href="{% url 'home' %}" aria-label="ApoioOnco, página inicial">
 			<img src="{% static 'img/logo-inteira.png' %}" alt="ApoioOnco">
@@ -40,7 +40,10 @@
 				</svg>
 			</button>
 		</form>
-		
+		<div class="theme-toggle-actions site-header__actions">
+			{% include "partials/theme-toggle.html" %}
+			{% include 'partials/seletor_idioma.html' %}
+		</div>
 	</header>
 
 	<main class="institution-page">

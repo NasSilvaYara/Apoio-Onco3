@@ -7,3 +7,4 @@ Pillow
 requests
 django-storages
 boto3
+deep-translator

@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - Encontre apoio perto de você</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 
     <!-- Google Fonts: Plus Jakarta Sans e Sail -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,181 +19,123 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Conexão com o CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/idioma.css' %}?v=1">
+
+    <!-- JS: todos com defer, rodam só depois que a página inteira foi lida -->
     <script src="{% static 'js/theme.js' %}?v=2" defer></script>
     <script src="{% static 'js/idioma.js' %}?v=1" defer></script>
-    <script src="{% static 'js/home.js' %}?v=2" defer></script>
+    <script src="{% static 'js/home.js' %}?v=3" defer></script>
 </head>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const botao = document.querySelector(".menu-toggle");
-    const menu = document.querySelector(".nav-links");
-    const acoes = document.querySelector(".nav-actions");
-
-    if (!botao || !menu) return;
-
-    function fecharMenu() {
-        menu.classList.remove("menu-aberto");
-        botao.classList.remove("menu-aberto");
-        botao.setAttribute("aria-expanded", "false");
-        botao.setAttribute("aria-label", "Abrir menu");
-
-        if (acoes) {
-            acoes.classList.remove("menu-aberto");
-        }
-    }
-
-    botao.addEventListener("click", function () {
-        const aberto = !menu.classList.contains("menu-aberto");
-
-        menu.classList.toggle("menu-aberto", aberto);
-        botao.classList.toggle("menu-aberto", aberto);
-        botao.setAttribute("aria-expanded", String(aberto));
-        botao.setAttribute(
-            "aria-label",
-            aberto ? "Fechar menu" : "Abrir menu"
-        );
-
-        if (acoes) {
-            acoes.classList.toggle("menu-aberto", aberto);
-        }
-    });
-
-    menu.querySelectorAll("a").forEach(function (link) {
-        link.addEventListener("click", fecharMenu);
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-            fecharMenu();
-        }
-    });
-
-    window.addEventListener("resize", function () {
-        if (window.innerWidth > 820) {
-            fecharMenu();
-        }
-    });
-});
-</script>
 
 <body>
 
     <!-- 1. SEÇÃO INICIAL: HERO & HEADER (HOME) -->
     <header class="hero-header">
         <!-- Navegação Superior -->
-       <nav class="navbar">
-    <div class="nav-logo">
-        <img src="{% static 'img/logo-inteira.png' %}"
-             alt="Logo ApoioOnco"
-             class="nav-logo-full-img">
-    </div>
+        <nav class="navbar">
+            <div class="nav-logo">
+                <img src="{% static 'img/logo-inteira.png' %}"
+                     alt="Logo ApoioOnco"
+                     class="nav-logo-full-img">
+            </div>
 
-    <button class="menu-toggle"
-            type="button"
-            aria-label="Abrir menu"
-            aria-expanded="false"
-            aria-controls="menu-principal">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+            <button class="menu-toggle"
+                    type="button"
+                    data-label-open="{% trans 'Abrir menu' %}"
+                    data-label-close="{% trans 'Fechar menu' %}"
+                    aria-label="{% trans 'Abrir menu' %}"
+                    aria-expanded="false"
+                    aria-controls="menu-principal">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-    <ul class="nav-links" id="menu-principal">
-        <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
-        <li><a href="#sobre">{% trans "Sobre" %}</a></li>
-        <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
-        <li><a href="#informacoes">{% trans "Informações" %}</a></li>
-    </ul>
+            <ul class="nav-links" id="menu-principal">
+                <li><a href="{% url 'home' %}" class="active">{% trans "Início" %}</a></li>
+                <li><a href="#sobre">{% trans "Sobre" %}</a></li>
+                <li><a href="#instituicoes">{% trans "Instituições" %}</a></li>
+                <li><a href="#informacoes">{% trans "Informações" %}</a></li>
+            </ul>
 
-    <div class="nav-actions">
-        <button class="theme-toggle-btn" type="button" aria-label="Ativar tema escuro" aria-pressed="false">
-            <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="4"></circle>
-                <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
-            </svg>
-            <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"></path>
-            </svg>
-        </button>
+            <div class="nav-actions">
+                {% include "partials/theme-toggle.html" with no_circle=True %}
 
-        {% include "partials/seletor_idioma.html" %}
+                {% include "partials/seletor_idioma.html" %}
 
-        <button type="button"
-                class="btn-login"
-                data-login-gate-open
-                aria-haspopup="dialog"
-                aria-controls="login-gate">
-            {% trans "Fazer login/cadastro" %}
-        </button>
-    </div>
-</nav>
+                <button type="button"
+                        class="btn-login"
+                        data-login-gate-open
+                        aria-haspopup="dialog"
+                        aria-controls="login-gate">
+                    {% trans "Fazer login/cadastro" %}
+                </button>
+            </div>
+        </nav>
+
         <!-- Conteúdo Principal do Banner Hero -->
         <div class="hero-content">
             <h1 class="hero-title">{% trans "Encontre" %} <span class="highlight-apoio">{% trans "apoio" %}</span> {% trans "perto de você" %}</h1>
 
             <!-- Container de Busca Funcional do Django -->
-            <form action="/busca/" method="GET" class="search-box-container">
+            <form action="{% url 'filtro' %}" method="get" class="search-box-container">
                 <div class="search-bar">
                     <div class="input-with-icon">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" name="busca" value="{{ busca }}" placeholder="{% trans "O que você procura?" %}">
+                        <input type="text" name="q" value="{{ busca }}" placeholder="{% trans 'O que você procura?' %}">
                     </div>
-                   
+
                     <button type="submit" class="search-btn">{% trans "Buscar" %}</button>
                 </div>
 
-                <!-- Botões de Filtro/Pills -->
+                <!-- Filtros nativos para estado, tipo de instituição e tipo de apoio -->
                 <div class="search-filters">
-        <!-- Filtro de Localização -->
-        <div class="filtro-dropdown-container">
-            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-localizacao">
-                <i class="fa-solid fa-location-dot pin-icon"></i> {% trans "Localização" %}
-            </button>
-            <ul id="menu-localizacao" class="dropdown-filtro" hidden>
-                <li><button type="button">São Paulo - SP</button></li>
-                <li><button type="button">Rio de Janeiro - RJ</button></li>
-                <li><button type="button">Belo Horizonte - MG</button></li>
-            </ul>
-        </div>
 
-        <!-- Filtro de Tipo de Instituição -->
-        <div class="filtro-dropdown-container">
-            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-instituicao">
-                <i class="fa-solid fa-hospital pin-icon"></i> {% trans "Tipo de instituição" %}
-            </button>
-            <ul id="menu-instituicao" class="dropdown-filtro" hidden>
-                <li><button type="button">{% trans "ONG/associação" %}</button></li>
-                <li><button type="button">{% trans "Hospital" %}</button></li>
-                <li><button type="button">{% trans "Clínica/Centro de tratamento" %}</button></li>
-                <li><button type="button">{% trans "Casa de apoio" %}</button></li>
-                <li><button type="button">{% trans "Instituto/fundação" %}</button></li>
-                <li><button type="button">{% trans "Voluntariado/grupo de apoio" %}</button></li>
-                <li><button type="button">{% trans "Órgão público" %}</button></li>
-                <li><button type="button">{% trans "Outros" %}</button></li>
-            </ul>
-        </div>
+                    <!-- Estado -->
+                    <label class="visually-hidden" for="filtro-estado">{% trans "Localização por estado" %}</label>
+                    <div class="filter-control state-filter" data-sf>
+                        <i class="fa-solid fa-location-dot filter-icon" aria-hidden="true"></i>
+                        <select class="filter-btn state-filter__native" id="filtro-estado" name="estado">
+                            <option value="">{% trans "Todos os estados" %}</option>
+                            {% for codigo, nome_estado in estados_brasil %}
+                            <option value="{{ codigo }}" {% if estado_selecionado == codigo %}selected{% endif %}>{{ nome_estado }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-        <!-- Filtro de Tipo de Apoio -->
-        <div class="filtro-dropdown-container">
-            <button type="button" class="filter-btn" aria-expanded="false" aria-controls="menu-apoio">
-                <i class="fa-solid fa-hand-holding-heart pin-icon"></i> {% trans "Tipo de apoio" %}
-            </button>
-            <ul id="menu-apoio" class="dropdown-filtro" hidden>
-                <li><button type="button">{% trans "Banco de perucas" %}</button></li>
-                <li><button type="button">{% trans "Banco de lenço" %}</button></li>
-                <li><button type="button">{% trans "Apoio psicológico" %}</button></li>
-                <li><button type="button">{% trans "Assistência social" %}</button></li>
-            </ul>
-        </div>
-    </div>
-    </form>
+                    <!-- Tipo de instituição -->
+                    <label class="visually-hidden" for="filtro-tipo">{% trans "Tipo de instituição" %}</label>
+                    <div class="filter-control state-filter" data-sf>
+                        <i class="fa-solid fa-hospital filter-icon" aria-hidden="true"></i>
+                        <select class="filter-btn state-filter__native" id="filtro-tipo" name="tipo">
+                            <option value="">{% trans "Todos os tipos de instituição" %}</option>
+                            {% for tipo_instituicao in tipos_instituicao %}
+                            <option value="{{ tipo_instituicao.value }}" {% if tipo_selecionado == tipo_instituicao.value %}selected{% endif %}>{{ tipo_instituicao.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            <!-- Chamada Principal e Ilustração -->
+                    <!-- Tipo de apoio -->
+                    <label class="visually-hidden" for="filtro-apoio">{% trans "Tipo de apoio" %}</label>
+                    <div class="filter-control state-filter" data-sf>
+                        <i class="fa-solid fa-hand-holding-heart filter-icon" aria-hidden="true"></i>
+                        <select class="filter-btn state-filter__native" id="filtro-apoio" name="apoio">
+                            <option value="">{% trans "Todos os tipos de apoio" %}</option>
+                            {# O value precisa ser IGUAL ao nome cadastrado no banco (sempre em português) #}
+                            <option value="Banco de perucas" {% if apoio_selecionado == "Banco de perucas" %}selected{% endif %}>{% trans "Banco de perucas" %}</option>
+                            <option value="Banco de lenços" {% if apoio_selecionado == "Banco de lenços" %}selected{% endif %}>{% trans "Banco de lenços" %}</option>
+                            <option value="Apoio psicológico" {% if apoio_selecionado == "Apoio psicológico" %}selected{% endif %}>{% trans "Apoio psicológico" %}</option>
+                            <option value="Assistência social" {% if apoio_selecionado == "Assistência social" %}selected{% endif %}>{% trans "Assistência social" %}</option>
+                        </select>
+                    </div>
+
+                </div>
+            </form>
+
+            <!-- Chamada Principal e Ilustração (dentro do hero-content, alinhada com o resto) -->
             <div class="hero-banner">
                 <div class="hero-text-side">
                     <p class="hero-description">
@@ -208,36 +150,36 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     </header>
 
-  <!-- ÁREA DINÂMICA DE RESULTADOS DA BUSCA -->
-{% if busca or cidade or request.GET.busca %}
-<section class="results-section" style="padding: 40px 20px; background-color: #f9f9f9; text-align: center;">
-    <div class="results-container" style="max-width: 1200px; margin: 0 auto;">
-        
-        <h2 class="results-title" style="margin-bottom: 20px; color: #333;">
-            {% trans "Resultados da busca" %}: {% if busca %}<strong>"{{ busca }}"</strong>{% endif %}
-        </h2>
+    <!-- ÁREA DINÂMICA DE RESULTADOS DA BUSCA -->
+    {% if busca or cidade or request.GET.busca %}
+    <section class="results-section" style="padding: 40px 20px; background-color: #f9f9f9; text-align: center;">
+        <div class="results-container" style="max-width: 1200px; margin: 0 auto;">
 
-        <div class="results-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-            {% for inst in instituicoes %}
-                <div class="card-inst-result" style="background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; width: 300px; text-align: left;">
-                    <h3 style="color: #6c5ce7; margin-bottom: 10px;">{{ inst.nomeInst }}</h3>
-                    <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
-                    {% if inst.telefone %}<p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>{% endif %}
-                    {% if inst.email_contato %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email_contato }}</p>{% endif %}
-                    <a href="{% url 'ver_instituicao_detalhe' inst.pk %}">{% trans "Ver instituição" %}</a>
-                </div>
-            {% empty %}
-                <div style="background: #fff; border: 2px dashed #6c5ce7; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; margin: 0 auto;">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size: 36px; color: #6c5ce7; margin-bottom: 10px;"></i>
-                    <h3 style="color: #333; margin-bottom: 8px;">{% trans "Nenhuma instituição encontrada" %}</h3>
-                    <p style="color: #666;">{% trans "Não encontramos nenhuma instituição cadastrada para o termo" %} "{{ busca }}".</p>
-                </div>
-            {% endfor %}
+            <h2 class="results-title" style="margin-bottom: 20px; color: #333;">
+                {% trans "Resultados da busca" %}: {% if busca %}<strong>"{{ busca }}"</strong>{% endif %}
+            </h2>
+
+            <div class="results-grid" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                {% for inst in instituicoes %}
+                    <div class="card-inst-result" style="background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; width: 300px; text-align: left;">
+                        <h3 style="color: #6c5ce7; margin-bottom: 10px;">{{ inst.nomeInst }}</h3>
+                        <p><i class="fa-solid fa-location-dot"></i> {{ inst.cidade }} - {{ inst.estado }}</p>
+                        {% if inst.telefone %}<p><i class="fa-solid fa-phone"></i> {{ inst.telefone }}</p>{% endif %}
+                        {% if inst.email_contato %}<p><i class="fa-solid fa-envelope"></i> {{ inst.email_contato }}</p>{% endif %}
+                        <a href="{% url 'ver_instituicao_detalhe' inst.pk %}">{% trans "Ver instituição" %}</a>
+                    </div>
+                {% empty %}
+                    <div style="background: #fff; border: 2px dashed #6c5ce7; padding: 30px; border-radius: 8px; width: 100%; max-width: 600px; margin: 0 auto;">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 36px; color: #6c5ce7; margin-bottom: 10px;"></i>
+                        <h3 style="color: #333; margin-bottom: 8px;">{% trans "Nenhuma instituição encontrada" %}</h3>
+                        <p style="color: #666;">{% trans "Não encontramos instituições para os critérios informados." %}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
         </div>
-
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
 
     <!-- Conteúdo Principal da Página -->
     <main class="main-content">
@@ -495,6 +437,60 @@ document.addEventListener("DOMContentLoaded", function () {
             <p>{% trans "&copy; 2026 ApoioOnco. Todos os direitos reservados." %}</p>
         </div>
     </footer>
+
+    <!-- Menu hambúrguer (fica no fim do body, quando todos os elementos já existem) -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const botao = document.querySelector(".menu-toggle");
+        const menu = document.querySelector(".nav-links");
+        const acoes = document.querySelector(".nav-actions");
+
+        if (!botao || !menu) return;
+
+        function fecharMenu() {
+            menu.classList.remove("menu-aberto");
+            botao.classList.remove("menu-aberto");
+            botao.setAttribute("aria-expanded", "false");
+            botao.setAttribute("aria-label", "Abrir menu");
+
+            if (acoes) {
+                acoes.classList.remove("menu-aberto");
+            }
+        }
+
+        botao.addEventListener("click", function () {
+            const aberto = !menu.classList.contains("menu-aberto");
+
+            menu.classList.toggle("menu-aberto", aberto);
+            botao.classList.toggle("menu-aberto", aberto);
+            botao.setAttribute("aria-expanded", String(aberto));
+            botao.setAttribute(
+                "aria-label",
+                aberto ? "Fechar menu" : "Abrir menu"
+            );
+
+            if (acoes) {
+                acoes.classList.toggle("menu-aberto", aberto);
+            }
+        });
+
+        menu.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", fecharMenu);
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                fecharMenu();
+            }
+        });
+
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 820) {
+                fecharMenu();
+            }
+        });
+    });
+    </script>
 
 </body>
 </html>

@@ -8,13 +8,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Área Administrativa" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-admin.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
   <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
@@ -48,12 +48,13 @@
     </aside>
 
     <main class="main-content">
-        <div class="header">
+        <header class="header">
             <div>
                 <h1 class="welcome-title">{% trans "Bem vindo a área administrativa" %}</h1>
                 <p class="welcome-subtitle">{% trans "Acompanhe o impacto da rede de apoio e garanta que as informações para os pacientes estejam sempre atualizadas." %}</p>
-            </main>
-        </div>
+            </div>
+            {% include "partials/theme-toggle.html" %}
+        </header>
 
         <div class="cards-grid">
             <div class="card">
@@ -79,7 +80,7 @@
                 <p style="font-size: 0.85rem; opacity: 0.8;">{% trans "Nenhum alerta recente no sistema." %}</p>
             </div>
         </div>
-    </div>
+    </main>
 
 </body>
 </html>

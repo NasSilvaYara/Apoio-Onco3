@@ -8,14 +8,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Gerenciar instituições" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
     <link rel="stylesheet" href="{% static 'css/gerenciar-dashboard.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/gerenciar-dashboard.js' %}?v=2" defer></script>
     <script src="{% static 'js/sair.js' %}" defer></script>
@@ -60,6 +60,7 @@
                 <h1 class="welcome-title">{% trans "Gerenciar instituições" %}</h1>
                 <p class="welcome-subtitle">{% trans "Aprove, edite e inative as instituições cadastradas." %}</p>
             </div>
+            {% include "partials/theme-toggle.html" %}
         </header>
         {% if messages %}{% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}{% endif %}
 

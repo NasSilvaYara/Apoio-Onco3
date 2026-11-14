@@ -34,6 +34,12 @@ a {
     margin: 0 auto;
 }
 
+.navbar .theme-toggle-actions {
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
 .brand {
     display: inline-flex;
     flex: 0 0 auto;
@@ -475,6 +481,11 @@ summary:focus-visible {
         flex-wrap: wrap;
         gap: 10px 16px;
         padding: 12px 0;
+    }
+
+    .navbar .theme-toggle-actions {
+        flex: 1 1 100%;
+        justify-content: flex-end;
     }
 
     .nav-links {

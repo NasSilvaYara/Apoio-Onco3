@@ -347,7 +347,10 @@ body {
     background-color: #9F6CE2;
 }
 
-/* Filtros de Busca */
+/* ==========================================================================
+   FILTROS DA HOME (Estado, Tipo de instituição, Tipo de apoio)
+   A lista de opções usa o .dropdown-filtro definido mais abaixo neste arquivo.
+   ========================================================================== */
 .search-filters {
     display: flex;
     justify-content: center;
@@ -355,20 +358,24 @@ body {
     flex-wrap: wrap;
 }
 
+.filter-control {
+    position: relative;
+}
+
 .filter-btn {
     background-color: #FFFFFF;
     border: 1px solid rgba(90, 61, 127, 0.18);
-    padding: 8px 16px;
+    padding: 8px 28px 8px 34px;
     border-radius: 12px;
     font-size: 13px;
     color: #3F3A3D;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: block;
+    text-align: left;
     cursor: pointer;
     font-family: 'Plus Jakarta Sans', sans-serif;
     transition: background-color 0.2s ease;
+    max-width: 100%;
 }
 
 .filter-btn:hover {
@@ -376,10 +383,145 @@ body {
     transition: 0.8s;
 }
 
+.filter-icon {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 12px;
+    color: #3F3A3D;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
 .pin-icon {
     width: 14px;
     height: 14px;
     color: #3F3A3D;
+}
+
+.state-filter__native[hidden],
+.state-filter__trigger[hidden],
+.state-filter__options[hidden] {
+    display: none;
+}
+
+.state-filter__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+
+/* lista dos 3 filtros: SEMPRE abre para baixo (!important vence qualquer script/estilo antigo) */
+.dropdown-filtro.state-filter__options {
+    top: calc(100% + 6px) !important;
+    bottom: auto !important;
+    right: auto;
+    transform: none !important;
+    max-height: 240px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid rgba(90, 61, 127, 0.12);
+    border-radius: 16px;
+
+    /* barra de rolagem fina, na cor do site */
+    scrollbar-width: thin;
+    scrollbar-color: #C39DF5 transparent;
+}
+
+.dropdown-filtro.state-filter__options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-filtro.state-filter__options::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 10px 0;
+}
+
+.dropdown-filtro.state-filter__options::-webkit-scrollbar-thumb {
+    background: #C39DF5;
+    border-radius: 999px;
+}
+
+.dropdown-filtro.state-filter__options::-webkit-scrollbar-thumb:hover {
+    background: #9F6CE2;
+}
+
+/* Wrappers: a lista se ancora no próprio filtro */
+.filter-control,
+.filtro-dropdown-container {
+    position: relative !important;
+}
+
+/* LISTA: sempre abre para baixo, visual do site, barra de rolagem fina e lilás */
+.dropdown-filtro,
+.dropdown-filtro.state-filter__options {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    bottom: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: 50 !important;
+    min-width: 100% !important;
+    width: max-content !important;
+    max-width: 320px !important;
+    max-height: 240px !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    margin: 0 !important;
+    padding: 6px !important;
+    list-style: none !important;
+    background: #FFFFFF !important;
+    border: 1px solid rgba(90, 61, 127, 0.12) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 24px rgba(90, 61, 127, 0.16) !important;
+    scrollbar-width: thin;
+    scrollbar-color: #C39DF5 transparent;
+}
+
+.dropdown-filtro[hidden] {
+    display: none !important;
+}
+
+.dropdown-filtro::-webkit-scrollbar { width: 6px; }
+.dropdown-filtro::-webkit-scrollbar-track { background: transparent; margin: 10px 0; }
+.dropdown-filtro::-webkit-scrollbar-thumb { background: #C39DF5; border-radius: 999px; }
+.dropdown-filtro::-webkit-scrollbar-thumb:hover { background: #9F6CE2; }
+
+.dropdown-filtro li {
+    list-style: none !important;
+}
+
+/* OPÇÕES: letra roxa */
+.dropdown-filtro button {
+    display: block !important;
+    width: 100% !important;
+    padding: 9px 12px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: #5A3D7F !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dropdown-filtro button:hover,
+.dropdown-filtro button:focus-visible {
+    background: #F5F0FA !important;
+    outline: none !important;
+}
+
+/* OPÇÃO SELECIONADA: letra mais grossa + fundo roxo em degradê + cantos arredondados */
+.dropdown-filtro button[aria-selected="true"] {
+    background: linear-gradient(90deg, #EEE5FC 0%, #D6BFF7 100%) !important;
+    color: #5A3D7F !important;
+    font-weight: 700 !important;
 }
 
 /* Banner de Texto e Ilustração Hero */
@@ -389,11 +531,16 @@ body {
     justify-content: space-between;
     text-align: left;
     gap: 40px;
-    margin-top: 20px;
+    margin: 20px auto 0;
+    width: 100%;
+    max-width: 860px; /* mesma largura útil do conteúdo da página */
 }
 
 .hero-text-side {
     flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* o botão fica logo abaixo do texto, alinhado a ele */
 }
 
 .hero-description {
@@ -427,6 +574,7 @@ body {
 }
 
 .hero-img {
+    display: block;
     max-width: 380px;
     width: 100%;
     height: auto;
@@ -1147,21 +1295,34 @@ img {
 }
 
 .dropdown-filtro button {
+    display: block;
     width: 100%;
     text-align: left;
-    padding: 8px 12px;
+    padding: 9px 12px;
     border: none;
     border-radius: 10px;
     background: transparent;
-    font-family: inherit;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 0.85rem;
-    color: var(--cinza);
+    font-weight: 500;
+    color: #5A3D7F;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
-.dropdown-filtro button:hover {
-    background: #EEE5FC;
+.dropdown-filtro button:hover,
+.dropdown-filtro button:focus-visible {
+    background: #F5F0FA;
+    outline: none;
 }
+
+/* opção selecionada: letra mais grossa + fundo roxo em degradê com cantos arredondados */
+.dropdown-filtro button[aria-selected="true"] {
+    background: linear-gradient(90deg, #EEE5FC 0%, #D6BFF7 100%);
+    color: #5A3D7F;
+    font-weight: 700;
+}
+
 /* Tablets */
 
 @media (max-width: 1024px) {
@@ -1275,16 +1436,12 @@ img {
     }
 
     .nav-actions {
-        display: none;
+        display: flex;
         order: 4;
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
         gap: 12px;
         padding: 8px 0;
-    }
-
-    .nav-actions.menu-aberto {
-        display: flex;
     }
 
     .moon-icon-img {
@@ -1316,6 +1473,10 @@ img {
     .hero-text-side,
     .hero-image-side {
         width: 100%;
+    }
+
+    .hero-text-side {
+        align-items: center;
     }
 
     .hero-image-side {
@@ -1360,7 +1521,7 @@ img {
     }
 
     .filter-btn {
-        padding: 8px 10px;
+        padding: 8px 10px 8px 34px;
         font-size: 12px;
     }
 
@@ -1449,7 +1610,8 @@ img {
     }
 
     .search-filters {
-        justify-content: flex-start;
+        justify-content: center;
+        align-items: center;
     }
 
     .filter-btn {
@@ -1570,7 +1732,7 @@ img {
     }
 
     .filter-btn {
-        padding: 7px 8px;
+        padding: 7px 8px 7px 34px;
     }
 
     .main-content {
@@ -1666,11 +1828,6 @@ img {
 
     .menu-toggle.menu-aberto span:last-child {
         transform: translateY(-8px) rotate(-45deg);
-    }
-
-    /* Esconde login e tema enquanto o menu está aberto */
-    .nav-actions.menu-aberto {
-        display: none !important;
     }
 
     /* Bloqueia a rolagem da página ao abrir o menu */

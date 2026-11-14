@@ -8,11 +8,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% trans "Redefinir senha" %} - ApoioOnco</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/senha.js' %}" defer></script>
     <script src="{% static 'js/redefinir-senha.js' %}" defer></script>
@@ -22,7 +23,10 @@
   <script src="{% static 'js/idioma.js' %}" defer></script>
 </head>
 <body>
-{% include 'partials/seletor_idioma.html' %}
+    <div class="auth-controls">
+        {% include "partials/theme-toggle.html" %}
+        {% include 'partials/seletor_idioma.html' %}
+    </div>
     <main>
         <div class="banner-login" aria-hidden="true">
             <h2>{% trans "Quase lá!" %}</h2>

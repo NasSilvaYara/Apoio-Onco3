@@ -8,8 +8,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Configurações" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
-    
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{% static 'css/admin-configuracoes.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
     <link rel="stylesheet" href="{% static 'css/senha.css' %}?v=1">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=15">
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/configuracoes.js' %}?v=2" defer></script>
     <script src="{% static 'js/senha.js' %}?v=1" defer></script>
@@ -64,6 +64,7 @@
                 <h1 class="welcome-title">{% trans "Configurações" %}</h1>
                 <p class="welcome-subtitle">{% trans "Gerencie sua conta, veja os administradores e as regras da plataforma." %}</p>
             </div>
+            {% include "partials/theme-toggle.html" %}
         </header>
 
         <div class="config-form">

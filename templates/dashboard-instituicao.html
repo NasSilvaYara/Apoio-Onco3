@@ -8,18 +8,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Área da Instituição" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
-    
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
-    <script src="{% static 'js/theme.js' %}?v=1" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <script src="{% static 'js/idioma.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+
+    <script src="{% static 'js/theme.js' %}?v=1" defer></script>
+    <script src="{% static 'js/idioma.js' %}" defer></script>
     <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
+
 </head>
 <body class="dashboard-layout">
 
@@ -30,22 +32,23 @@
         </div>
         <nav class="menu" aria-label="Menu principal">
             <span class="menu-title">{% trans "MENU" %}</span>
-            <a href="{% url 'dashboard_instituicao' %}" class="menu-item active" aria-current="page" target="_blank">{% trans "Início" %}</a>
-            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" target="_blank" >{% trans "Meu perfil" %}</a>
-            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">{% trans "Dados de contato" %}</a>
-            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">{% trans "Configurações" %}</a>
+            <a href="{% url 'dashboard_instituicao' %}" class="menu-item active" aria-current="page">{% trans "Início" %}</a>
+            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item" >{% trans "Meu perfil" %}</a>
+            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item">{% trans "Dados de contato" %}</a>
+            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item">{% trans "Configurações" %}</a>
             <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
+
         <div class="sidebar-perfil">
             <i class="ti ti-building-community" aria-hidden="true"></i>
-            <div>
-                <strong>{{ instituicao.nomeInst }}</strong>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-sair"><i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}</button>
-                </form>
-            </div>
-        </div>
+        <div>
+        <strong>{{ instituicao.nomeInst }}</strong>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-sair">
+                <i class="ti ti-logout" aria-hidden="true"></i> {% trans "Sair" %}
+            </button>
+        </form>
     </aside>
 
     <main class="main-content">
@@ -54,9 +57,7 @@
                 <h1 class="welcome-title">{% trans "Olá, " %}{{ instituicao.nomeInst }}!</h1>
                 <p class="welcome-subtitle">{% trans "Aqui você acompanha as informações da sua instituição." %}</p>
             </div>
-            <button type="button" class="btn-notificacao" aria-label="Notificações">
-                <i class="ti ti-bell" aria-hidden="true"></i>
-            </button>
+            {% include "partials/theme-toggle.html" %}
         </header>
 
         <section class="grid-inicio">
@@ -73,11 +74,13 @@
             </article>
 
             <article class="card card-mensagem">
-                <p class="mensagem"> 
-                    {% trans "Mantenha as informações do perfil sempre atualizadas para que pacientes e familiares
-                    encontrem sua instituição com facilidade. Se precisar alterar seus serviços ou dados
-                    de contato, utilize o menu lateral ou as ações rápidas abaixo.
-                    <strong>Obrigado por fazer a diferença na luta contra o câncer!</strong>" %}
+                <p class="mensagem">
+                    {% blocktrans trimmed %}
+                        Mantenha as informações do perfil sempre atualizadas para que pacientes e familiares
+                        encontrem sua instituição com facilidade. Se precisar alterar seus serviços ou dados
+                        de contato, utilize o menu lateral ou as ações rápidas abaixo.
+                        <strong>Obrigado por fazer a diferença na luta contra o câncer!</strong>
+                    {% endblocktrans %}
                 </p>
                 <img src="{% static 'img/ilustracao-instituicao.png' %}" alt="" class="ilustracao">
             </article>

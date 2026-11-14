@@ -1511,3 +1511,145 @@ class PlataformaTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, ativa.nomeInst)
         self.assertNotContains(response, pendente.nomeInst)
+
+    def test_home_search_combines_filters_and_keeps_selections(self):
+        _, matching = self.criar_instituicao(
+            'Aprovada para apoio',
+            status='ativa',
+        )
+        _, other_city = self.criar_instituicao(
+            'Aprovada no Rio',
+            status='ativa',
+            base='334445550001',
+        )
+        other_city.cidade = 'Rio de Janeiro'
+        other_city.save(update_fields=['cidade'])
+
+        response = self.client.get(
+            reverse('home'),
+            {
+                'busca': 'aprovada',
+                'localizacao': 'sao paulo',
+                'estado': 'SP',
+                'tipo': 'ong_associacao',
+                'servicos': str(self.tipo_apoio.pk),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context['instituicoes']),
+            [matching],
+        )
+        self.assertTrue(response.context['tem_filtros'])
+        self.assertEqual(response.context['busca'], 'aprovada')
+        self.assertEqual(response.context['localizacao'], 'sao paulo')
+        self.assertEqual(response.context['estado_selecionado'], 'SP')
+        self.assertEqual(len(response.context['estados_brasil']), 27)
+        self.assertEqual(
+            response.context['servicos_selecionados'],
+            [str(self.tipo_apoio.pk)],
+        )
+        self.assertContains(response, matching.nomeInst)
+        self.assertNotContains(response, other_city.nomeInst)
+
+    def test_home_search_opens_results_with_selected_filters(self):
+        response = self.client.get(reverse('home'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'action="/filtro/"')
+        self.assertContains(response, 'name="q"')
+        self.assertContains(response, 'fa-location-dot filter-icon')
+        self.assertContains(response, 'fa-hospital filter-icon')
+        self.assertContains(response, 'fa-hand-holding-heart filter-icon')
+        self.assertNotContains(response, 'Limpar filtros')
+
+        response = self.client.get(
+            reverse('filtro'),
+            {
+                'q': 'apoio',
+                'estado': 'SP',
+                'tipo': 'ong_associacao',
+                'servicos': str(self.tipo_apoio.pk),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['busca'], 'apoio')
+        self.assertEqual(response.context['estado_selecionado'], 'SP')
+        self.assertEqual(
+            response.context['tipo_selecionado'],
+            'ong_associacao',
+        )
+        self.assertEqual(
+            response.context['servicos_selecionados'],
+            [str(self.tipo_apoio.pk)],
+        )
+        self.assertContains(response, 'name="q"')
+        self.assertContains(response, 'value="apoio"')
+        self.assertContains(response, 'value="SP" selected')
+        self.assertContains(
+            response,
+            'value="ong_associacao" selected',
+        )
+        self.assertContains(
+            response,
+            f'value="{self.tipo_apoio.pk}" checked',
+        )
+
+    def test_admin_dashboard_filters_cities_with_partial_accentless_search(self):
+        admin = get_user_model().objects.create_user(
+            username='busca-admin@example.org',
+            email='busca-admin@example.org',
+            password='ApoioOnco!2026',
+            is_staff=True,
+        )
+        self.client.force_login(admin)
+
+        self.criar_instituicao('Instituição São Paulo')
+        _, rio = self.criar_instituicao(
+            'Instituição Rio',
+            base='334445550001',
+        )
+        rio.cidade = 'Rio de Janeiro'
+        rio.estado = 'RJ'
+        rio.save(update_fields=['cidade', 'estado'])
+        self.criar_instituicao(
+            'Instituição Inativa São Paulo',
+            status='inativa',
+            base='445556660001',
+        )
+        self.criar_instituicao(
+            'Instituição Pendente São Paulo',
+            status='pendente',
+            base='556667770001',
+        )
+
+        response = self.client.get(
+            reverse('dashboard_admin'),
+            {'cidade': 'sao'},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(response.context['dashboard_grafico']['cidades']),
+            ['São Paulo'],
+        )
+        self.assertEqual(response.context['busca_cidade'], 'sao')
+        self.assertContains(response, 'value="sao"')
+        self.assertEqual(response.context['total_instituicoes'], 3)
+        self.assertEqual(response.context['instituicoes_inativas'], 1)
+        self.assertEqual(response.context['instituicoes_ativas'], 1)
+        self.assertEqual(response.context['aguardando_aprovacao'], 1)
+        total_por_tipo = dict(response.context['total_por_tipo'])
+        self.assertEqual(total_por_tipo[self.tipo_apoio.nome], 1)
+        self.assertEqual(sum(total_por_tipo.values()), 1)
+
+        response = self.client.get(
+            reverse('dashboard_admin'),
+            {'cidade': 'cidade inexistente'},
+        )
+        self.assertEqual(response.context['dashboard_grafico']['cidades'], {})
+        self.assertEqual(response.context['total_instituicoes'], 0)
+        self.assertEqual(response.context['instituicoes_inativas'], 0)
+        self.assertContains(response, 'Nenhum resultado encontrado.')

@@ -1,4 +1,5 @@
 {% load static %}
+{% load traducao_tags %}
 {% load i18n %}
 {% get_current_language as CURRENT_LANGUAGE %}
 
@@ -8,21 +9,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ApoioOnco - {% trans "Meu perfil" %}</title>
-    <link rel="icon" type="image/png" href="static/img/logo.png">
-    
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/dashboard-instituicao.css' %}">
     <link rel="stylesheet" href="{% static 'css/meu-perfil.css' %}">
     <link rel="stylesheet" href="{% static 'css/sair.css' %}">
-    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'css/tema-escuro.css' %}?v=14">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+
     <script src="{% static 'js/theme.js' %}?v=1" defer></script>
     <script src="{% static 'js/meu-perfil.js' %}" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-  <link rel="stylesheet" href="{% static 'css/idioma.css' %}">
-  <script src="{% static 'js/idioma.js' %}" defer></script>
-    <link rel="stylesheet" href="{% static 'css/dashboard-layout.css' %}">
+    <script src="{% static 'js/idioma.js' %}" defer></script>
     <script src="{% static 'js/dashboard-sidebar.js' %}" defer></script>
 </head>
+
 <body class="dashboard-layout">
 
     {% include 'partials/dashboard-sidebar-controls.html' %}
@@ -32,10 +35,10 @@
         </div>
         <nav class="menu" aria-label="Menu principal">
             <span class="menu-title">{% trans "MENU" %}</span>
-            <a href="{% url 'dashboard_instituicao' %}" class="menu-item" aria-current="page" target="_blank">{% trans "Início" %}</a>
-            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" target="_blank">{% trans "Meu perfil" %}</a>
-            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item" target="_blank">{% trans "Dados de contato" %}</a>
-            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item" target="_blank">{% trans "Configurações" %}</a>
+            <a href="{% url 'dashboard_instituicao' %}" class="menu-item">{% trans "Início" %}</a>
+            <a href="{% url 'dashboard_instituicao_perfil' %}" class="menu-item active" aria-current="page">{% trans "Meu perfil" %}</a>
+            <a href="{% url 'dashboard_instituicao_contato' %}" class="menu-item">{% trans "Dados de contato" %}</a>
+            <a href="{% url 'dashboard_instituicao_configuracoes' %}" class="menu-item">{% trans "Configurações" %}</a>
             <div class="item-idioma">{% include 'partials/seletor_idioma.html' %}</div>
         </nav>
         <div class="sidebar-perfil">
@@ -56,9 +59,7 @@
                 <h1 class="welcome-title">{% trans "Meu perfil" %}</h1>
                 <p class="welcome-subtitle">{% trans "Estas informações aparecem para as pacientes na busca." %}</p>
             </div>
-            <button type="button" class="btn-notificacao" aria-label="Notificações">
-                <i class="ti ti-bell" aria-hidden="true"></i>
-            </button>
+            {% include "partials/theme-toggle.html" %}
         </header>
 
         <form action="" method="POST" enctype="multipart/form-data" class="perfil-form">
@@ -72,7 +73,7 @@
                 <div class="logo-linha">
                     <div class="logo-preview" id="logo-preview">
                         {% if instituicao.logo %}
-                            <img src="{{ instituicao.logo.url }}" alt="Logo atual">
+                            <img src="{{ instituicao.logo.url }}" alt="{% trans 'Logo atual' %}">
                         {% else %}
                             <i class="ti ti-photo" aria-hidden="true"></i>
                         {% endif %}
@@ -84,13 +85,15 @@
                 <div class="grid-campos">
                     <div class="campo">
                         <label for="nome">{% trans "Nome da instituição" %}</label>
+                        {# Campos editáveis ficam SEM |traduzir, para não salvar texto traduzido no banco #}
                         <input type="text" id="nome" name="nome" value="{{ form.nome.value|default_if_none:instituicao.nomeInst }}" required>
                     </div>
                     <div class="campo">
                         <label for="tipo">{% trans "Tipo de instituição" %}</label>
                         <select id="tipo" name="tipo" required>
                             <option value="" disabled>{% trans "Selecione" %}</option>
-                            {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if form.tipo.value == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+                            {# value continua original; só o texto exibido (label) é traduzido #}
+                            {% for value, label in instituicao.TIPO_CHOICES %}<option value="{{ value }}" {% if form.tipo.value == value %}selected{% endif %}>{{ label|traduzir }}</option>{% endfor %}
                         </select>
                     </div>
                     <div class="campo span-todos">
@@ -129,7 +132,7 @@
                     </div>
                     <div class="campo">
                         <label for="estado">{% trans "Estado (UF)" %}</label>
-                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="{% trans "Use a sigla do estado, com 2 letras" %}" value="{{ form.estado.value|default_if_none:instituicao.estado }}" required>
+                        <input type="text" id="estado" name="estado" maxlength="2" pattern="[A-Za-z]{2}" title="{% trans 'Use a sigla do estado, com 2 letras' %}" value="{{ form.estado.value|default_if_none:instituicao.estado }}" required>
                     </div>
                 </div>
             </section>
@@ -139,8 +142,9 @@
                 <h2>{% trans "Tipos de apoio oferecidos" %}</h2>
 
                 <div class="chips" id="chips">
-                    {% for servico in servicos_selecionados %}<span class="chip">{{ servico }}
-                        <button type="button" class="chip-remover" aria-label="{% trans 'Remover' %} {{ servico }}"><i class="ti ti-x" aria-hidden="true"></i></button>
+                    {# Texto do chip traduzido; o value do input hidden fica ORIGINAL (é o que vai para o banco) #}
+                    {% for servico in servicos_selecionados %}<span class="chip">{{ servico|traduzir }}
+                        <button type="button" class="chip-remover" aria-label="{% trans 'Remover' %} {{ servico|traduzir }}"><i class="ti ti-x" aria-hidden="true"></i></button>
                         <input type="hidden" name="servicos" value="{{ servico }}">
                     </span>{% endfor %}
                 </div>
@@ -150,7 +154,8 @@
                         <i class="ti ti-circle-plus" aria-hidden="true"></i> {% trans "Adicionar apoio" %}
                     </button>
                     <ul id="menu-apoios" class="menu-apoios" hidden>
-                        {% for tipo_apoio in tipos_apoio %}<li><button type="button" data-apoio="{{ tipo_apoio.nome }}">{{ tipo_apoio.nome }}</button></li>{% endfor %}
+                        {# data-apoio fica ORIGINAL; só o texto do botão é traduzido #}
+                        {% for tipo_apoio in tipos_apoio %}<li><button type="button" data-apoio="{{ tipo_apoio.nome }}">{{ tipo_apoio.nome|traduzir }}</button></li>{% endfor %}
                     </ul>
                 </div>
             </section>
@@ -166,7 +171,9 @@
 
             <div class="acoes-form">
                 <a href="#" class="btn btn-secundario">{% trans "Cancelar" %}</a>
-                <a href="#" class="btn btn-medio">{% trans "Ver como a usuária vê" %}</a>
+                {% if instituicao.status == 'ativa' %}
+                    <a href="{% url 'ver_instituicao_detalhe' instituicao.pk %}" class="btn btn-perfil">{% trans "Ver perfil" %}</a>
+                {% endif %}
                 <button type="submit" class="btn btn-primario">{% trans "Salvar alterações" %}</button>
             </div>
         </form>

@@ -111,7 +111,11 @@ function atualizar() {
   }
 }
 
-campoBusca.addEventListener('input', atualizar);
-document.getElementById('form-busca').addEventListener('submit', (e) => e.preventDefault());
+campoBusca.addEventListener('input', () => {
+  atualizar();
+  if (!campoBusca.value.trim() && new URLSearchParams(window.location.search).get('cidade')) {
+    document.getElementById('form-busca').submit();
+  }
+});
 
 atualizar();
